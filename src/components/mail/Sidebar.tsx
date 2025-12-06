@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, PanelLeftClose, PanelLeft, Inbox, ChevronDown, ChevronRight } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, PanelLeftClose, PanelLeft, Inbox, ChevronDown, ChevronRight, Archive, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FamilyMember, FolderType } from "@/types/mail";
@@ -11,6 +11,8 @@ interface SidebarProps {
   onFolderChange: (folder: FolderType) => void;
   unreadCount: number;
   draftCount: number;
+  archiveCount: number;
+  trashCount: number;
   onCompose: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
@@ -22,6 +24,8 @@ const folders = [
   { id: "inbox" as FolderType, label: "받은편지함", icon: Mail },
   { id: "sent" as FolderType, label: "보낸편지함", icon: Send },
   { id: "draft" as FolderType, label: "임시보관함", icon: FileText },
+  { id: "archive" as FolderType, label: "보관함", icon: Archive },
+  { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
 ];
 
 export function Sidebar({
@@ -30,6 +34,8 @@ export function Sidebar({
   onFolderChange,
   unreadCount,
   draftCount,
+  archiveCount,
+  trashCount,
   onCompose,
   isCollapsed,
   onToggleCollapse,
@@ -100,7 +106,7 @@ export function Sidebar({
           {folders.map((folder) => {
             const Icon = folder.icon;
             const isActive = activeFolder === folder.id;
-            const count = folder.id === "inbox" ? unreadCount : folder.id === "draft" ? draftCount : 0;
+            const count = folder.id === "inbox" ? unreadCount : folder.id === "draft" ? draftCount : folder.id === "archive" ? archiveCount : folder.id === "trash" ? trashCount : 0;
 
             return (
               <li key={folder.id}>

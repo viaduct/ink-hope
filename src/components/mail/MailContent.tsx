@@ -13,12 +13,15 @@ interface MailContentProps {
   onReply: () => void;
   selectedMember?: FamilyMember | null;
   allMails?: Mail[];
+  onMoveToFolder?: (mailId: string, targetFolder: FolderType) => void;
 }
 
 const folderTitles: Record<FolderType, string> = {
   inbox: "받은편지함",
   sent: "보낸편지함",
   draft: "임시보관함",
+  archive: "보관함",
+  trash: "휴지통",
 };
 
 type TabType = "all" | "unread" | "important";
@@ -31,6 +34,7 @@ export function MailContent({
   onReply,
   selectedMember,
   allMails = [],
+  onMoveToFolder,
 }: MailContentProps) {
   const [activeTab, setActiveTab] = useState<TabType>("all");
 
@@ -77,10 +81,18 @@ export function MailContent({
           )}
           {selectedMail && (
             <div className="flex items-center gap-1">
-              <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" title="보관함">
+              <button 
+                onClick={() => onMoveToFolder?.(selectedMail.id, "archive")}
+                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" 
+                title="보관함"
+              >
                 <Archive className="w-5 h-5" />
               </button>
-              <button className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" title="휴지통">
+              <button 
+                onClick={() => onMoveToFolder?.(selectedMail.id, "trash")}
+                className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" 
+                title="휴지통"
+              >
                 <Trash2 className="w-5 h-5" />
               </button>
             </div>

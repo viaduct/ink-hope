@@ -39,6 +39,7 @@ export const mockMails: Mail[] = [
     date: "오늘",
     isRead: false,
     isNew: true,
+    folder: "inbox",
   },
   {
     id: "2",
@@ -53,6 +54,7 @@ export const mockMails: Mail[] = [
     date: "3일 전",
     isRead: true,
     isNew: false,
+    folder: "inbox",
   },
   {
     id: "3",
@@ -67,6 +69,7 @@ export const mockMails: Mail[] = [
     isNew: false,
     hasAttachments: true,
     attachmentCount: 2,
+    folder: "inbox",
   },
 ];
 

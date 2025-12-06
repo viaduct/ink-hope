@@ -19,9 +19,10 @@ export interface Mail {
   isImportant?: boolean;
   hasAttachments?: boolean;
   attachmentCount?: number;
+  folder: FolderType;
 }
 
-export type FolderType = "inbox" | "sent" | "draft";
+export type FolderType = "inbox" | "sent" | "draft" | "archive" | "trash";
 
 export interface MailOption {
   id: string;

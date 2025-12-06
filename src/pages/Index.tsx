@@ -6,6 +6,7 @@ import { ComposeModal } from "@/components/mail/ComposeModal";
 import { FloatingComposeButton } from "@/components/mail/FloatingComposeButton";
 import { familyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType } from "@/types/mail";
+import { toast } from "sonner";
 
 const Index = () => {
   const [activeFolder, setActiveFolder] = useState<FolderType>("inbox");
@@ -13,14 +14,39 @@ const Index = () => {
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [mails, setMails] = useState<Mail[]>(mockMails);
+
+  // 메일 폴더 이동 함수
+  const moveMailToFolder = (mailId: string, targetFolder: FolderType) => {
+    setMails((prevMails) =>
+      prevMails.map((mail) =>
+        mail.id === mailId ? { ...mail, folder: targetFolder } : mail
+      )
+    );
+    setSelectedMail(null);
+    
+    const folderNames: Record<FolderType, string> = {
+      inbox: "받은편지함",
+      sent: "보낸편지함",
+      draft: "임시보관함",
+      archive: "보관함",
+      trash: "휴지통",
+    };
+    toast.success(`${folderNames[targetFolder]}으로 이동했습니다.`);
+  };
+
+  // 현재 폴더에 맞는 메일 필터링
+  const folderMails = mails.filter((mail) => mail.folder === activeFolder);
 
   // 선택된 가족 구성원에 따라 편지 필터링
   const filteredMails = selectedMemberId
-    ? mockMails.filter((mail) => mail.sender.id === selectedMemberId)
-    : mockMails;
+    ? folderMails.filter((mail) => mail.sender.id === selectedMemberId)
+    : folderMails;
 
-  const unreadCount = mockMails.filter((m) => !m.isRead).length;
-  const draftCount = 1;
+  const unreadCount = mails.filter((m) => !m.isRead && m.folder === "inbox").length;
+  const draftCount = mails.filter((m) => m.folder === "draft").length;
+  const archiveCount = mails.filter((m) => m.folder === "archive").length;
+  const trashCount = mails.filter((m) => m.folder === "trash").length;
 
   // 마지막 편지 보낸 날짜 (목업)
   const lastSentDate = new Date();
@@ -42,9 +68,14 @@ const Index = () => {
         <Sidebar
           familyMembers={familyMembers}
           activeFolder={activeFolder}
-          onFolderChange={setActiveFolder}
+          onFolderChange={(folder) => {
+            setActiveFolder(folder);
+            setSelectedMemberId(null);
+          }}
           unreadCount={unreadCount}
           draftCount={draftCount}
+          archiveCount={archiveCount}
+          trashCount={trashCount}
           onCompose={() => setIsComposeOpen(true)}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -60,7 +91,8 @@ const Index = () => {
           activeFolder={activeFolder}
           onReply={() => setIsComposeOpen(true)}
           selectedMember={selectedMemberId ? familyMembers.find(m => m.id === selectedMemberId) : null}
-          allMails={mockMails}
+          allMails={mails}
+          onMoveToFolder={moveMailToFolder}
         />
 
         {/* Floating Compose Button */}
