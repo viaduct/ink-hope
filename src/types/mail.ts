@@ -16,6 +16,7 @@ export interface Mail {
   date: string;
   isRead: boolean;
   isNew: boolean;
+  isImportant?: boolean;
   hasAttachments?: boolean;
   attachmentCount?: number;
 }

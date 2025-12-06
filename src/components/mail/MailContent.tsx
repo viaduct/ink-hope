@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Image, Reply, Bookmark, ChevronLeft } from "lucide-react";
+import { Image, Reply, Bookmark, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Mail, FolderType } from "@/types/mail";
@@ -19,6 +19,8 @@ const folderTitles: Record<FolderType, string> = {
   draft: "임시보관함",
 };
 
+type TabType = "all" | "unread" | "important";
+
 export function MailContent({
   mails,
   selectedMail,
@@ -26,14 +28,16 @@ export function MailContent({
   activeFolder,
   onReply,
 }: MailContentProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<TabType>("all");
 
-  const filteredMails = mails.filter(
-    (mail) =>
-      mail.subject.includes(searchQuery) ||
-      mail.sender.name.includes(searchQuery) ||
-      mail.preview.includes(searchQuery)
-  );
+  const unreadCount = mails.filter((mail) => !mail.isRead).length;
+  const importantCount = mails.filter((mail) => mail.isImportant).length;
+
+  const filteredMails = mails.filter((mail) => {
+    if (activeTab === "unread") return !mail.isRead;
+    if (activeTab === "important") return mail.isImportant;
+    return true;
+  });
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-background">
@@ -71,18 +75,41 @@ export function MailContent({
               transition={{ duration: 0.2 }}
               className="h-full flex flex-col"
             >
-              {/* Search */}
-              <div className="px-6 py-4">
-                <div className="relative max-w-md">
-                  <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="편지 검색..."
-                    className="w-full h-10 pl-10 pr-4 bg-card border border-border rounded-xl text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring transition-all"
-                  />
-                </div>
+              {/* Tabs */}
+              <div className="px-6 py-3 border-b border-border flex items-center gap-6">
+                <button
+                  onClick={() => setActiveTab("all")}
+                  className={cn(
+                    "text-sm font-medium transition-colors pb-2 -mb-3 border-b-2",
+                    activeTab === "all"
+                      ? "text-primary border-primary"
+                      : "text-muted-foreground border-transparent hover:text-foreground"
+                  )}
+                >
+                  전체 <span className="ml-1">{mails.length}</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("unread")}
+                  className={cn(
+                    "text-sm font-medium transition-colors pb-2 -mb-3 border-b-2",
+                    activeTab === "unread"
+                      ? "text-primary border-primary"
+                      : "text-muted-foreground border-transparent hover:text-foreground"
+                  )}
+                >
+                  읽지않음 <span className="ml-1">{unreadCount}</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("important")}
+                  className={cn(
+                    "text-sm font-medium transition-colors pb-2 -mb-3 border-b-2",
+                    activeTab === "important"
+                      ? "text-primary border-primary"
+                      : "text-muted-foreground border-transparent hover:text-foreground"
+                  )}
+                >
+                  중요
+                </button>
               </div>
 
               {/* Mail List */}
