@@ -40,10 +40,7 @@ export function Sidebar({
     >
       {/* Logo */}
       <div className="h-16 flex items-center px-4 border-b border-border/50 justify-between">
-        <div className="flex items-center gap-2.5 overflow-hidden">
-          <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
-            <Mail className="w-5 h-5 text-primary-foreground" />
-          </div>
+        <div className="flex items-center overflow-hidden">
           {!isCollapsed && (
             <motion.span
               initial={{ opacity: 0 }}
@@ -51,8 +48,11 @@ export function Sidebar({
               exit={{ opacity: 0 }}
               className="text-lg font-bold text-foreground tracking-tight whitespace-nowrap"
             >
-              Orange Mail
+              To.<span className="text-primary">orange letter</span>
             </motion.span>
+          )}
+          {isCollapsed && (
+            <span className="text-lg font-bold text-primary">To.</span>
           )}
         </div>
         <button
