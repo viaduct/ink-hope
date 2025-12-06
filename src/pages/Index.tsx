@@ -4,7 +4,7 @@ import { Sidebar } from "@/components/mail/Sidebar";
 import { MailList } from "@/components/mail/MailList";
 import { MailDetail } from "@/components/mail/MailDetail";
 import { ComposeModal } from "@/components/mail/ComposeModal";
-import { familyMembers, mockMails, mailOptions } from "@/data/mockData";
+import { familyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType } from "@/types/mail";
 
 const Index = () => {
@@ -58,7 +58,6 @@ const Index = () => {
           isOpen={isComposeOpen}
           onClose={() => setIsComposeOpen(false)}
           familyMembers={familyMembers}
-          mailOptions={mailOptions}
         />
       </div>
     </>
