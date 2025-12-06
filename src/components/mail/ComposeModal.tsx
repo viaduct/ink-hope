@@ -12,7 +12,7 @@ interface ComposeModalProps {
   familyMembers: FamilyMember[];
 }
 
-type SectionType = "intro" | "body" | "conclusion";
+type SectionType = "intro" | "closing";
 
 interface SectionConfig {
   id: SectionType;
@@ -26,9 +26,9 @@ interface SectionConfig {
 const sectionConfigs: SectionConfig[] = [
   {
     id: "intro",
-    label: "서론 작성",
+    label: "시작 작성",
     emoji: "👋",
-    subtitle: "인사와 안부를 전해요",
+    subtitle: "인사와 전하고 싶은 이야기를 담아요",
     placeholder: "따뜻한 인사로 시작하기, 안부 묻기",
     quickTags: [
       "따뜻한 인사로 시작하기",
@@ -37,34 +37,17 @@ const sectionConfigs: SectionConfig[] = [
       "보고싶다는 말",
       "날씨/계절 이야기",
       "건강 걱정",
-      "오랜만에 연락",
-      "생각나서 연락",
-    ],
-  },
-  {
-    id: "body",
-    label: "본론 작성",
-    emoji: "💬",
-    subtitle: "전하고 싶은 이야기를 담아요",
-    placeholder: "일상 이야기, 가족 소식 전하기",
-    quickTags: [
       "일상 이야기",
       "가족 소식 전하기",
-      "집안 근황",
       "응원의 말",
       "추억 이야기",
-      "미래에 대한 희망",
       "감사한 마음",
       "사과하고 싶은 말",
-      "약속하기",
-      "함께했던 기억",
-      "새로운 소식",
-      "걱정하는 마음",
     ],
   },
   {
-    id: "conclusion",
-    label: "결론 작성",
+    id: "closing",
+    label: "마무리 작성",
     emoji: "🌟",
     subtitle: "마무리 인사를 전해요",
     placeholder: "건강 챙기라는 말, 사랑한다는 말",
@@ -77,6 +60,8 @@ const sectionConfigs: SectionConfig[] = [
       "항상 생각한다는 말",
       "기다리겠다는 말",
       "잊지 않겠다는 다짐",
+      "미래에 대한 희망",
+      "약속하기",
     ],
   },
 ];
@@ -168,11 +153,6 @@ export function ComposeModal({
       if (promptText.includes("건강")) {
         generatedText += "건강은 괜찮은 거지? 많이 걱정돼.\n";
       }
-      if (promptText.includes("오랜만") || promptText.includes("연락")) {
-        generatedText += "오랜만에 연락하게 됐네. 미안해.\n";
-      }
-      generatedText += "\n";
-    } else if (activeSection === "body") {
       if (promptText.includes("일상")) {
         generatedText += "요즘 집에서는 별일 없이 지내고 있어. ";
       }
@@ -185,20 +165,14 @@ export function ComposeModal({
       if (promptText.includes("추억") || promptText.includes("기억")) {
         generatedText += "예전에 함께 했던 좋은 기억들이 자꾸 떠올라. ";
       }
-      if (promptText.includes("희망") || promptText.includes("미래")) {
-        generatedText += "곧 좋은 날이 올 거야. 희망을 잃지 마. ";
-      }
       if (promptText.includes("감사")) {
         generatedText += "그동안 고마웠어. 네 덕분에 많이 배웠어. ";
       }
       if (promptText.includes("사과")) {
         generatedText += "그동안 미안했어. 더 잘하지 못해서 후회가 돼. ";
       }
-      if (promptText.includes("약속")) {
-        generatedText += "다음에 만나면 꼭 함께 하고 싶은 것들이 많아. ";
-      }
       generatedText += "\n\n";
-    } else if (activeSection === "conclusion") {
+    } else if (activeSection === "closing") {
       if (promptText.includes("건강")) {
         generatedText += "\n건강 꼭 챙기고, 밥 잘 먹어야 해.\n";
       }
@@ -216,6 +190,12 @@ export function ComposeModal({
       }
       if (promptText.includes("기다리")) {
         generatedText += "여기서 기다리고 있을게.\n";
+      }
+      if (promptText.includes("희망") || promptText.includes("미래")) {
+        generatedText += "곧 좋은 날이 올 거야. 희망을 잃지 마. ";
+      }
+      if (promptText.includes("약속")) {
+        generatedText += "다음에 만나면 꼭 함께 하고 싶은 것들이 많아. ";
       }
       generatedText += "\n그럼, 또 연락할게.\n\n- 보내는 사람 올림";
     }
@@ -287,12 +267,12 @@ export function ComposeModal({
                         key={section.id}
                         onClick={() => handleSectionClick(section.id)}
                         className={cn(
-                          "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all border",
+                          "flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-medium transition-all border",
                           "bg-card text-foreground hover:bg-primary hover:text-primary-foreground border-border hover:border-primary"
                         )}
                       >
                         <span>{section.emoji}</span>
-                        <span>{section.id === "intro" ? "서론" : section.id === "body" ? "본론" : "결론"}</span>
+                        <span>{section.id === "intro" ? "시작" : "마무리"}</span>
                       </button>
                     ))}
                   </div>
@@ -416,7 +396,7 @@ export function ComposeModal({
                     {/* Prompt Input */}
                     <div>
                       <p className="text-sm font-medium text-foreground mb-2">
-                        어떤 {currentSectionConfig.id === "intro" ? "인사/안부" : currentSectionConfig.id === "body" ? "이야기" : "마무리 인사"}를 전하고 싶으세요?
+                        어떤 {currentSectionConfig.id === "intro" ? "인사/이야기" : "마무리 인사"}를 전하고 싶으세요?
                       </p>
                       <textarea
                         value={aiPrompt}
@@ -450,7 +430,7 @@ export function ComposeModal({
                     {/* AI Info */}
                     <div className="bg-amber-50 text-amber-800 rounded-xl p-3 flex items-center gap-2 text-sm">
                       <span>💡</span>
-                      <span>AI가 {currentSectionConfig.id === "intro" ? "서론" : currentSectionConfig.id === "body" ? "본론" : "결론"}을 작성해 편지에 추가해요!</span>
+                      <span>AI가 {currentSectionConfig.id === "intro" ? "시작 부분" : "마무리 부분"}을 작성해 편지에 추가해요!</span>
                     </div>
                   </div>
 
@@ -476,7 +456,7 @@ export function ComposeModal({
                       ) : (
                         <>
                           <Sparkles className="w-4 h-4 mr-2" />
-                          {currentSectionConfig.id === "intro" ? "서론" : currentSectionConfig.id === "body" ? "본론" : "결론"} 작성
+                          {currentSectionConfig.id === "intro" ? "시작" : "마무리"} 작성
                         </>
                       )}
                     </Button>
