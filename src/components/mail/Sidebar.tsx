@@ -1,4 +1,5 @@
-import { Mail, Send, FileText, Settings, Plus, PenLine, PanelLeftClose, PanelLeft } from "lucide-react";
+import { Mail, Send, FileText, Settings, Plus, PenLine, PanelLeftClose, PanelLeft, TreeDeciduous, ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FamilyMember, FolderType } from "@/types/mail";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,8 @@ interface SidebarProps {
   onCompose: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  selectedMemberId: string | null;
+  onSelectMember: (memberId: string | null) => void;
 }
 
 const folders = [
@@ -30,7 +33,10 @@ export function Sidebar({
   onCompose,
   isCollapsed,
   onToggleCollapse,
+  selectedMemberId,
+  onSelectMember,
 }: SidebarProps) {
+  const [isTreeExpanded, setIsTreeExpanded] = useState(true);
   return (
     <motion.aside
       initial={false}
@@ -141,60 +147,92 @@ export function Sidebar({
         {/* Divider */}
         <div className="my-4 border-t border-border" />
 
-        {/* Family Members */}
+        {/* Orange Tree - Family Members */}
         {!isCollapsed && (
           <>
-            <div className="mb-2 px-3 flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                내 가족
-              </span>
-              <button className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+            <button
+              onClick={() => setIsTreeExpanded(!isTreeExpanded)}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-foreground hover:bg-secondary transition-colors"
+            >
+              {isTreeExpanded ? (
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              )}
+              <TreeDeciduous className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium">오렌지 나무</span>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="ml-auto p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              >
                 <Plus className="w-4 h-4" />
               </button>
-            </div>
-            <ul className="space-y-0.5">
-              {familyMembers.map((member) => (
-                <li key={member.id}>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground hover:bg-secondary hover:text-secondary-foreground transition-colors">
-                    <div
-                      className={cn(
-                        "w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0",
-                        member.color
-                      )}
-                    >
-                      {member.avatar}
-                    </div>
-                    <span className="text-sm flex-1 text-left truncate">{member.name}</span>
-                    <span className="text-xs text-muted-foreground/60">
-                      {member.relation}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            </button>
+            
+            {isTreeExpanded && (
+              <ul className="ml-4 border-l border-border/50 space-y-0.5">
+                {familyMembers.map((member) => {
+                  const isSelected = selectedMemberId === member.id;
+                  return (
+                    <li key={member.id}>
+                      <button 
+                        onClick={() => onSelectMember(isSelected ? null : member.id)}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-3 py-2 rounded-r-xl transition-colors",
+                          isSelected
+                            ? "bg-primary/10 text-primary border-l-2 border-primary -ml-[1px]"
+                            : "text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            "w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0",
+                            member.color
+                          )}
+                        >
+                          {member.avatar}
+                        </div>
+                        <span className="text-sm flex-1 text-left truncate">{member.name}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </>
         )}
 
         {/* Collapsed Family Avatars */}
         {isCollapsed && (
           <ul className="space-y-2">
-            {familyMembers.map((member) => (
-              <li key={member.id} className="flex justify-center">
-                <button
-                  title={`${member.name} (${member.relation})`}
-                  className="p-1.5 rounded-xl text-muted-foreground hover:bg-secondary transition-colors"
-                >
-                  <div
+            {familyMembers.map((member) => {
+              const isSelected = selectedMemberId === member.id;
+              return (
+                <li key={member.id} className="flex justify-center">
+                  <button
+                    onClick={() => onSelectMember(isSelected ? null : member.id)}
+                    title={`${member.name} (${member.relation})`}
                     className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium",
-                      member.color
+                      "p-1.5 rounded-xl transition-colors",
+                      isSelected
+                        ? "bg-primary/10 ring-2 ring-primary"
+                        : "text-muted-foreground hover:bg-secondary"
                     )}
                   >
-                    {member.avatar}
-                  </div>
-                </button>
-              </li>
-            ))}
+                    <div
+                      className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium",
+                        member.color
+                      )}
+                    >
+                      {member.avatar}
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         )}
       </nav>

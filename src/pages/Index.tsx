@@ -12,6 +12,12 @@ const Index = () => {
   const [selectedMail, setSelectedMail] = useState<Mail | null>(null);
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+
+  // 선택된 가족 구성원에 따라 편지 필터링
+  const filteredMails = selectedMemberId
+    ? mockMails.filter((mail) => mail.sender.id === selectedMemberId)
+    : mockMails;
 
   const unreadCount = mockMails.filter((m) => !m.isRead).length;
   const draftCount = 1;
@@ -42,11 +48,13 @@ const Index = () => {
           onCompose={() => setIsComposeOpen(true)}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          selectedMemberId={selectedMemberId}
+          onSelectMember={setSelectedMemberId}
         />
 
         {/* Main Content - 2단 구조 */}
         <MailContent
-          mails={mockMails}
+          mails={filteredMails}
           selectedMail={selectedMail}
           onSelectMail={setSelectedMail}
           activeFolder={activeFolder}
