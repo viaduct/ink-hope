@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Sidebar } from "@/components/mail/Sidebar";
 import { MailContent } from "@/components/mail/MailContent";
 import { ComposeModal } from "@/components/mail/ComposeModal";
+import { FloatingComposeButton } from "@/components/mail/FloatingComposeButton";
 import { familyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType } from "@/types/mail";
 
@@ -14,6 +15,11 @@ const Index = () => {
 
   const unreadCount = mockMails.filter((m) => !m.isRead).length;
   const draftCount = 1;
+
+  // 마지막 편지 보낸 날짜 (목업)
+  const lastSentDate = new Date();
+  lastSentDate.setDate(lastSentDate.getDate() - 3);
+  const daysSinceLastLetter = 3;
 
   return (
     <>
@@ -45,6 +51,12 @@ const Index = () => {
           onSelectMail={setSelectedMail}
           activeFolder={activeFolder}
           onReply={() => setIsComposeOpen(true)}
+        />
+
+        {/* Floating Compose Button */}
+        <FloatingComposeButton 
+          onCompose={() => setIsComposeOpen(true)}
+          daysSinceLastLetter={daysSinceLastLetter}
         />
 
         {/* Compose Modal */}
