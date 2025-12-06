@@ -236,7 +236,7 @@ export function MailContent({
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      나에게 ▼
+                      나에게
                     </p>
                   </div>
                 </div>
