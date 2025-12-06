@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Reply, Bookmark, ChevronLeft, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar } from "lucide-react";
+import { Image, Reply, Bookmark, ChevronLeft, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar, Archive } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
@@ -63,17 +63,27 @@ export function MailContent({
               <ChevronLeft className="w-5 h-5" />
             </button>
           )}
-          <h1 className="text-lg font-semibold text-foreground">
-            {selectedMail 
-              ? selectedMail.subject 
-              : selectedMember 
-                ? `${selectedMember.name}님과의 편지` 
-                : folderTitles[activeFolder]}
-          </h1>
           {!selectedMail && (
-            <span className="text-sm text-muted-foreground">
-              {mails.length}개의 편지
-            </span>
+            <>
+              <h1 className="text-lg font-semibold text-foreground">
+                {selectedMember 
+                  ? `${selectedMember.name}님과의 편지` 
+                  : folderTitles[activeFolder]}
+              </h1>
+              <span className="text-sm text-muted-foreground">
+                {mails.length}개의 편지
+              </span>
+            </>
+          )}
+          {selectedMail && (
+            <div className="flex items-center gap-1">
+              <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" title="보관함">
+                <Archive className="w-5 h-5" />
+              </button>
+              <button className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" title="휴지통">
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </div>
           )}
         </div>
       </header>
@@ -108,21 +118,21 @@ export function MailContent({
                     </div>
                   </div>
                   <div className="mt-4 grid grid-cols-3 gap-4">
-                    <div className="flex items-center gap-2 bg-background rounded-lg p-3">
+                    <div className="flex items-center gap-2 bg-background rounded-lg p-3 shadow-sm">
                       <MailIcon className="w-4 h-4 text-primary" />
                       <div>
                         <p className="text-xs text-muted-foreground">받은 편지</p>
                         <p className="font-semibold text-foreground">{memberStats.receivedCount}통</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 bg-background rounded-lg p-3">
+                    <div className="flex items-center gap-2 bg-background rounded-lg p-3 shadow-sm">
                       <Send className="w-4 h-4 text-primary" />
                       <div>
                         <p className="text-xs text-muted-foreground">보낸 편지</p>
                         <p className="font-semibold text-foreground">{memberStats.sentCount}통</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 bg-background rounded-lg p-3">
+                    <div className="flex items-center gap-2 bg-background rounded-lg p-3 shadow-sm">
                       <Calendar className="w-4 h-4 text-primary" />
                       <div>
                         <p className="text-xs text-muted-foreground">마지막 편지</p>
