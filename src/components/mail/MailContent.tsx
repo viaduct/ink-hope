@@ -36,7 +36,7 @@ export function MailContent({
   );
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-secondary/30">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-background">
       {/* Header */}
       <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
         <div className="flex items-center gap-3">
@@ -92,10 +92,7 @@ export function MailContent({
                     <button
                       key={mail.id}
                       onClick={() => onSelectMail(mail)}
-                      className={cn(
-                        "text-left p-4 bg-card border border-border rounded-xl transition-all duration-150 hover:shadow-card hover:border-primary/30",
-                        !mail.isRead && "border-l-[3px] border-l-primary"
-                      )}
+                      className="text-left p-4 bg-card border border-border rounded-xl transition-all duration-150 hover:shadow-xl shadow-md"
                     >
                       <div className="flex items-start gap-3">
                         <div
