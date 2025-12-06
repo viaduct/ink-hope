@@ -29,7 +29,7 @@ const Index = () => {
       inbox: "받은편지함",
       sent: "보낸편지함",
       draft: "임시보관함",
-      archive: "보관함",
+      archive: "중요편지함",
       trash: "휴지통",
     };
     toast.success(`${folderNames[targetFolder]}으로 이동했습니다.`);

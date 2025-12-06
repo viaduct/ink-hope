@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Reply, Bookmark, ChevronLeft, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar, Archive } from "lucide-react";
+import { Image, Reply, Bookmark, ChevronLeft, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
@@ -20,7 +20,7 @@ const folderTitles: Record<FolderType, string> = {
   inbox: "받은편지함",
   sent: "보낸편지함",
   draft: "임시보관함",
-  archive: "보관함",
+  archive: "중요편지함",
   trash: "휴지통",
 };
 
@@ -83,10 +83,10 @@ export function MailContent({
             <div className="flex items-center gap-1">
               <button 
                 onClick={() => onMoveToFolder?.(selectedMail.id, "archive")}
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" 
-                title="보관함"
+                className="p-2 rounded-lg text-muted-foreground hover:text-amber-500 hover:bg-amber-50 transition-colors" 
+                title="중요편지함"
               >
-                <Archive className="w-5 h-5" />
+                <Star className="w-5 h-5" />
               </button>
               <button 
                 onClick={() => onMoveToFolder?.(selectedMail.id, "trash")}
