@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, PanelLeftClose, PanelLeft, Inbox, ChevronDown, ChevronRight, Archive, Trash2 } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, Inbox, ChevronDown, ChevronRight, Star, Trash2, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FamilyMember, FolderType } from "@/types/mail";
@@ -24,7 +24,7 @@ const folders = [
   { id: "inbox" as FolderType, label: "받은편지함", icon: Mail },
   { id: "sent" as FolderType, label: "보낸편지함", icon: Send },
   { id: "draft" as FolderType, label: "임시보관함", icon: FileText },
-  { id: "archive" as FolderType, label: "보관함", icon: Archive },
+  { id: "archive" as FolderType, label: "중요편지함", icon: Star },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
 ];
 
@@ -50,7 +50,7 @@ export function Sidebar({
       transition={{ duration: 0.2, ease: "easeInOut" }}
       className="bg-card border-r border-border flex flex-col h-full overflow-hidden"
     >
-      {/* Logo */}
+      {/* Logo & Toggle */}
       <div className="h-16 flex items-center px-4 border-b border-border/50 justify-between">
         <div className="flex items-center overflow-hidden">
           {!isCollapsed && (
@@ -67,16 +67,28 @@ export function Sidebar({
             <span className="text-lg font-bold text-primary">To.</span>
           )}
         </div>
-        <button
+        <motion.button
           onClick={onToggleCollapse}
-          className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors flex-shrink-0"
-        >
-          {isCollapsed ? (
-            <PanelLeft className="w-4 h-4" />
-          ) : (
-            <PanelLeftClose className="w-4 h-4" />
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={cn(
+            "p-2 rounded-full transition-all duration-200 flex-shrink-0",
+            isCollapsed 
+              ? "bg-primary text-primary-foreground shadow-md" 
+              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           )}
-        </button>
+        >
+          <motion.div
+            animate={{ rotate: isCollapsed ? 0 : 180 }}
+            transition={{ duration: 0.2 }}
+          >
+            {isCollapsed ? (
+              <Menu className="w-4 h-4" />
+            ) : (
+              <X className="w-4 h-4" />
+            )}
+          </motion.div>
+        </motion.button>
       </div>
 
       {/* Compose Button */}
