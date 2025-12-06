@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, Plus, PenLine, PanelLeftClose, PanelLeft, TreeDeciduous, ChevronDown, ChevronRight } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, PanelLeftClose, PanelLeft, Inbox, ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FamilyMember, FolderType } from "@/types/mail";
@@ -147,7 +147,7 @@ export function Sidebar({
         {/* Divider */}
         <div className="my-4 border-t border-border" />
 
-        {/* Orange Tree - Family Members */}
+        {/* 내 편지함 - 사용자 분류 */}
         {!isCollapsed && (
           <>
             <button
@@ -159,16 +159,8 @@ export function Sidebar({
               ) : (
                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
               )}
-              <TreeDeciduous className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">오렌지 나무</span>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                className="ml-auto p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
+              <Inbox className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium">내 편지함</span>
             </button>
             
             {isTreeExpanded && (
