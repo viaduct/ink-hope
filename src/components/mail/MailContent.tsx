@@ -132,19 +132,34 @@ export function MailContent({
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
-                            <span
-                              className={cn(
-                                "text-[15px]",
-                                mail.isRead
-                                  ? "font-medium text-foreground/80"
-                                  : "font-semibold text-foreground"
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={cn(
+                                  "text-[15px]",
+                                  mail.isRead
+                                    ? "font-medium text-foreground/80"
+                                    : "font-semibold text-foreground"
+                                )}
+                              >
+                                {mail.sender.name}
+                              </span>
+                              {!mail.isRead && (
+                                <span className="inline-flex items-center gap-1 text-xs text-primary bg-accent px-2 py-0.5 rounded-full font-medium">
+                                  읽지않음
+                                </span>
                               )}
-                            >
-                              {mail.sender.name}
-                            </span>
-                            <span className="text-xs text-muted-foreground">
-                              {mail.date}
-                            </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {mail.hasAttachments && (
+                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Image className="w-3.5 h-3.5" />
+                                  {mail.attachmentCount}
+                                </span>
+                              )}
+                              <span className="text-xs text-muted-foreground">
+                                {mail.date}
+                              </span>
+                            </div>
                           </div>
                           <p
                             className={cn(
@@ -156,29 +171,11 @@ export function MailContent({
                           >
                             {mail.subject}
                           </p>
-                          <p className="text-xs text-muted-foreground/80 line-clamp-2">
+                          <p className="text-xs text-muted-foreground/80 line-clamp-1">
                             {mail.preview}
                           </p>
                         </div>
                       </div>
-
-                      {/* Tags */}
-                      {(mail.isNew || mail.hasAttachments) && (
-                        <div className="mt-3 flex items-center gap-2">
-                          {mail.isNew && (
-                            <span className="inline-flex items-center gap-1.5 text-xs text-primary bg-accent px-2 py-0.5 rounded-full font-medium">
-                              <span className="w-1.5 h-1.5 bg-primary rounded-full" />
-                              신규
-                            </span>
-                          )}
-                          {mail.hasAttachments && (
-                            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                              <Image className="w-3.5 h-3.5" />
-                              사진 {mail.attachmentCount}장
-                            </span>
-                          )}
-                        </div>
-                      )}
                     </button>
                   ))}
                 </div>
