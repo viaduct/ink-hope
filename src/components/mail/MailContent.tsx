@@ -190,109 +190,86 @@ export function MailContent({
               transition={{ duration: 0.2 }}
               className="h-full overflow-y-auto scrollbar-thin print:overflow-visible"
             >
-              <div className="max-w-3xl mx-auto p-8 print:p-0 print:max-w-none">
-                {/* Top Actions */}
-                <div className="flex items-center justify-between mb-6 print:hidden">
-                  <button
-                    onClick={() => onSelectMail(null)}
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              {/* Subject Bar */}
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-xl font-normal text-foreground">
+                    {selectedMail.subject}
+                  </h1>
+                  {!selectedMail.isRead && (
+                    <span className="px-2 py-0.5 text-xs font-medium rounded bg-accent text-primary">
+                      받은편지함
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-1 print:hidden">
+                  <button 
+                    onClick={() => window.print()}
+                    className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors"
                   >
-                    <ChevronLeft className="w-4 h-4" />
-                    목록으로
+                    <Printer className="w-5 h-5" />
                   </button>
-                  <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors">
-                      <Star className="w-4 h-4" />
-                      즐겨찾기
-                    </button>
-                    <button 
-                      onClick={() => window.print()}
-                      className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
-                    >
-                      <Printer className="w-4 h-4" />
-                      인쇄
-                    </button>
-                    <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors">
-                      <Download className="w-4 h-4" />
-                      다운로드
-                    </button>
-                  </div>
+                  <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors">
+                    <Download className="w-5 h-5" />
+                  </button>
                 </div>
+              </div>
 
-                {/* Letter Container */}
-                <div className="bg-card border border-border rounded-xl overflow-hidden print:border-0 print:shadow-none">
-                  {/* Letter Header */}
-                  <div className="p-8 border-b border-border">
-                    <div className="flex justify-between items-start mb-5">
-                      <div>
-                        <h2 className="text-2xl font-bold text-foreground mb-2">
-                          {selectedMail.sender.name}님께
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                          발신: {selectedMail.sender.facility}
-                        </p>
-                      </div>
-                      <div className="text-right text-sm text-muted-foreground">
-                        <p>수신일: {selectedMail.date}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      {!selectedMail.isRead && (
-                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-accent text-primary">
-                          읽지않음
-                        </span>
-                      )}
-                      {selectedMail.isRead && (
-                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
-                          읽음
-                        </span>
-                      )}
-                    </div>
+              {/* Sender Info */}
+              <div className="px-6 py-4 flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <div
+                    className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center font-medium text-sm flex-shrink-0",
+                      selectedMail.sender.color
+                    )}
+                  >
+                    {selectedMail.sender.avatar}
                   </div>
-
-                  {/* Letter Body */}
-                  <div className="p-8">
-                    <h3 className="text-base font-bold text-foreground mb-4">편지 내용</h3>
-                    <div className="p-6 bg-secondary/50 border border-border rounded-lg">
-                      <div className="text-foreground/90 leading-[1.8] whitespace-pre-wrap">
-                        {selectedMail.content}
-                      </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-foreground">
+                        {selectedMail.sender.name}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        &lt;{selectedMail.sender.facility}&gt;
+                      </span>
                     </div>
-                  </div>
-
-                  {/* Bottom Actions */}
-                  <div className="p-8 border-t border-border bg-secondary/30 print:hidden">
-                    <p className="text-sm font-bold text-muted-foreground text-center mb-4">
-                      이 편지에 대해
+                    <p className="text-sm text-muted-foreground">
+                      나에게 ▼
                     </p>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <Button
-                        onClick={onReply}
-                        className="h-16 flex-col gap-1 rounded-xl bg-foreground text-background hover:bg-foreground/90"
-                      >
-                        <Reply className="w-5 h-5" />
-                        <span className="text-sm font-bold">답장하기</span>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="h-16 flex-col gap-1 rounded-xl border-foreground text-foreground hover:bg-foreground hover:text-background"
-                      >
-                        <Bookmark className="w-5 h-5" />
-                        <span className="text-sm font-bold">보관하기</span>
-                      </Button>
-                    </div>
-                    <div className="flex justify-center gap-3">
-                      <button className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-muted-foreground border border-border rounded-lg hover:border-foreground hover:text-foreground transition-colors">
-                        <Star className="w-4 h-4" />
-                        즐겨찾기
-                      </button>
-                      <button className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-destructive border border-destructive rounded-lg hover:bg-destructive hover:text-destructive-foreground transition-colors">
-                        <Trash2 className="w-4 h-4" />
-                        삭제
-                      </button>
-                    </div>
                   </div>
                 </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm text-muted-foreground mr-2">
+                    {selectedMail.date}
+                  </span>
+                  <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors print:hidden">
+                    <Star className="w-5 h-5" />
+                  </button>
+                  <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors print:hidden">
+                    <Reply className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Mail Content */}
+              <div className="px-6 py-4 pl-[70px]">
+                <div className="text-foreground leading-[1.8] whitespace-pre-wrap">
+                  {selectedMail.content}
+                </div>
+              </div>
+
+              {/* Reply Button */}
+              <div className="px-6 py-6 pl-[70px] print:hidden">
+                <Button
+                  onClick={onReply}
+                  variant="outline"
+                  className="h-10 px-6 rounded-full border-border text-foreground hover:bg-secondary"
+                >
+                  <Reply className="w-4 h-4 mr-2" />
+                  답장
+                </Button>
               </div>
             </motion.div>
           )}
