@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, Inbox, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Pencil } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Pencil, Users } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FamilyMember, FolderType } from "@/types/mail";
@@ -182,8 +182,8 @@ export function Sidebar({
                 ) : (
                   <ChevronRight className="w-4 h-4 text-muted-foreground" />
                 )}
-                <Inbox className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium">내 편지함</span>
+                <Users className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium">주소록 관리</span>
               </button>
               <button
                 onClick={() => setIsAddressBookOpen(true)}
@@ -273,7 +273,7 @@ export function Sidebar({
                   Bang Kyung
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  webbreak@kakao...
+                  서울시 강남구 테헤란로 123
                 </p>
               </div>
               <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
