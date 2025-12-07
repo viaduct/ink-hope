@@ -28,7 +28,7 @@ const Index = () => {
     const folderNames: Record<FolderType, string> = {
       inbox: "받은편지함",
       sent: "보낸편지함",
-      draft: "임시보관함",
+      draft: "임시저장함",
       archive: "중요편지함",
       trash: "휴지통",
     };

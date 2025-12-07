@@ -23,7 +23,7 @@ interface SidebarProps {
 const folders = [
   { id: "inbox" as FolderType, label: "받은편지함", icon: Mail },
   { id: "sent" as FolderType, label: "보낸편지함", icon: Send },
-  { id: "draft" as FolderType, label: "임시보관함", icon: FileText },
+  { id: "draft" as FolderType, label: "임시저장함", icon: FileText },
   { id: "archive" as FolderType, label: "중요편지함", icon: Star },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
 ];
