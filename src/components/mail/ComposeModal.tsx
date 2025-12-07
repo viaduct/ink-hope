@@ -319,7 +319,7 @@ export function ComposeModal({
                       value={letterContent}
                       onChange={(e) => setLetterContent(e.target.value)}
                       className="w-full min-h-[400px] resize-none border-0 focus:outline-none focus:ring-0 text-foreground leading-relaxed letter-paper text-base bg-transparent p-6"
-                      placeholder="위의 서론/본론/결론 버튼을 클릭하여 AI의 도움을 받아 편지를 작성해보세요..."
+                      placeholder="위의 시작/중간/마무리 버튼을 클릭하여 AI의 도움을 받아 편지를 작성해보세요..."
                     />
                   </div>
                 </div>
