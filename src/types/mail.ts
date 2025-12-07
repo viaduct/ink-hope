@@ -22,6 +22,7 @@ export interface Mail {
   hasAttachments?: boolean;
   attachmentCount?: number;
   folder: FolderType;
+  originalFolder?: FolderType;
   status?: MailStatus;
 }
 

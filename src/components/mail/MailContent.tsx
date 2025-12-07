@@ -215,7 +215,14 @@ export function MailContent({
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            onMoveToFolder?.(mail.id, mail.isImportant ? mail.folder : "archive");
+                            const isCurrentlyImportant = mail.isImportant || mail.folder === "archive";
+                            if (isCurrentlyImportant) {
+                              // 중요 해제 - 원래 폴더로 복귀
+                              onMoveToFolder?.(mail.id, mail.originalFolder || "inbox");
+                            } else {
+                              // 중요 표시 - archive로 이동
+                              onMoveToFolder?.(mail.id, "archive");
+                            }
                           }}
                           className="p-1 -ml-1 rounded-full hover:bg-secondary transition-colors flex-shrink-0"
                         >
