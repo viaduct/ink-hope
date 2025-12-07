@@ -3,6 +3,8 @@ export interface FamilyMember {
   name: string;
   relation: string;
   facility: string;
+  facilityAddress?: string;
+  prisonerNumber?: string;
   avatar: string;
   color: string;
 }

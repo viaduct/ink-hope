@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkles, Send, Loader2 } from "lucide-react";
+import { X, Sparkles, Send, Loader2, ChevronRight, User, MapPin, Phone, Hash, Building } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import type { FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 
@@ -71,11 +72,20 @@ const sectionConfigs: SectionConfig[] = [
   },
 ];
 
+type Step = "confirm" | "editor";
+
+interface SenderInfo {
+  name: string;
+  phone: string;
+  address: string;
+}
+
 export function ComposeModal({
   isOpen,
   onClose,
   familyMembers,
 }: ComposeModalProps) {
+  const [currentStep, setCurrentStep] = useState<Step>("confirm");
   const [selectedRecipient, setSelectedRecipient] = useState(familyMembers[0]?.id || "");
   const [letterContent, setLetterContent] = useState("");
   const [showSectionModal, setShowSectionModal] = useState(false);
@@ -84,12 +94,20 @@ export function ComposeModal({
   const [selectedQuickTags, setSelectedQuickTags] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // 보내는 사람 정보
+  const [senderInfo, setSenderInfo] = useState<SenderInfo>({
+    name: "Bang Kyung",
+    phone: "010-1234-5678",
+    address: "서울시 강남구 테헤란로 123",
+  });
 
   const handleClose = () => {
     setLetterContent("");
     setShowSectionModal(false);
     setAiPrompt("");
     setSelectedQuickTags([]);
+    setCurrentStep("confirm");
     onClose();
   };
 
@@ -233,18 +251,22 @@ export function ComposeModal({
             {/* Header */}
             <div className="h-14 border-b border-border flex items-center justify-between px-6">
               <div className="flex items-center gap-4">
-                <h2 className="text-lg font-semibold text-foreground">📝 편지 작성</h2>
-                <select
-                  value={selectedRecipient}
-                  onChange={(e) => setSelectedRecipient(e.target.value)}
-                  className="text-sm bg-secondary border border-border rounded-lg px-4 pr-8 py-1.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_0.75rem_center]"
-                >
-                  {familyMembers.map((member) => (
-                    <option key={member.id} value={member.id}>
-                      {member.name} ({member.relation})
-                    </option>
-                  ))}
-                </select>
+                <h2 className="text-lg font-semibold text-foreground">
+                  {currentStep === "confirm" ? "📋 발송 정보 확인" : "📝 편지 작성"}
+                </h2>
+                {currentStep === "editor" && (
+                  <select
+                    value={selectedRecipient}
+                    onChange={(e) => setSelectedRecipient(e.target.value)}
+                    className="text-sm bg-secondary border border-border rounded-lg px-4 pr-8 py-1.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_0.75rem_center]"
+                  >
+                    {familyMembers.map((member) => (
+                      <option key={member.id} value={member.id}>
+                        {member.name} ({member.relation})
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
               <button
                 onClick={handleClose}
@@ -254,8 +276,154 @@ export function ComposeModal({
               </button>
             </div>
 
+            {/* Step Indicator */}
+            <div className="px-6 py-3 border-b border-border bg-secondary/30">
+              <div className="flex items-center gap-2 text-sm">
+                <span className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-full",
+                  currentStep === "confirm" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                )}>
+                  1. 정보 확인
+                </span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                <span className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-full",
+                  currentStep === "editor" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                )}>
+                  2. 편지 작성
+                </span>
+              </div>
+            </div>
+
             {/* Content */}
             <div className="flex-1 flex flex-col overflow-hidden">
+              <AnimatePresence mode="wait">
+                {currentStep === "confirm" ? (
+                  <motion.div
+                    key="confirm"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="flex-1 p-6 overflow-y-auto"
+                  >
+                    <div className="max-w-2xl mx-auto space-y-6">
+                      {/* 받는 사람 선택 */}
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">받는 사람 선택</label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {familyMembers.map((member) => (
+                            <button
+                              key={member.id}
+                              onClick={() => setSelectedRecipient(member.id)}
+                              className={cn(
+                                "p-4 rounded-xl border-2 text-left transition-all",
+                                selectedRecipient === member.id
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/50"
+                              )}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={cn(
+                                  "w-10 h-10 rounded-full flex items-center justify-center font-medium",
+                                  member.color
+                                )}>
+                                  {member.avatar}
+                                </div>
+                                <div>
+                                  <p className="font-medium text-foreground">{member.name}</p>
+                                  <p className="text-sm text-muted-foreground">{member.relation}</p>
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 받는 사람 정보 */}
+                      <div className="bg-secondary/50 rounded-xl p-5 space-y-4">
+                        <h3 className="font-semibold text-foreground flex items-center gap-2">
+                          <User className="w-4 h-4 text-primary" />
+                          받는 사람 정보
+                        </h3>
+                        <div className="grid gap-4">
+                          <div className="flex items-start gap-3">
+                            <Building className="w-4 h-4 text-muted-foreground mt-0.5" />
+                            <div>
+                              <p className="text-sm text-muted-foreground">수용시설</p>
+                              <p className="font-medium text-foreground">{selectedRecipientData?.facility}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                            <div>
+                              <p className="text-sm text-muted-foreground">시설 주소</p>
+                              <p className="font-medium text-foreground">{selectedRecipientData?.facilityAddress || "주소 정보 없음"}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <Hash className="w-4 h-4 text-muted-foreground mt-0.5" />
+                            <div>
+                              <p className="text-sm text-muted-foreground">수용자번호</p>
+                              <p className="font-medium text-foreground">{selectedRecipientData?.prisonerNumber || "번호 정보 없음"}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 보내는 사람 정보 */}
+                      <div className="bg-secondary/50 rounded-xl p-5 space-y-4">
+                        <h3 className="font-semibold text-foreground flex items-center gap-2">
+                          <User className="w-4 h-4 text-primary" />
+                          보내는 사람 정보
+                        </h3>
+                        <div className="grid gap-4">
+                          <div>
+                            <label className="text-sm text-muted-foreground mb-1 block">이름</label>
+                            <Input
+                              value={senderInfo.name}
+                              onChange={(e) => setSenderInfo({ ...senderInfo, name: e.target.value })}
+                              placeholder="이름을 입력하세요"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm text-muted-foreground mb-1 block">전화번호</label>
+                            <Input
+                              value={senderInfo.phone}
+                              onChange={(e) => setSenderInfo({ ...senderInfo, phone: e.target.value })}
+                              placeholder="전화번호를 입력하세요"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm text-muted-foreground mb-1 block">주소</label>
+                            <Input
+                              value={senderInfo.address}
+                              onChange={(e) => setSenderInfo({ ...senderInfo, address: e.target.value })}
+                              placeholder="주소를 입력하세요"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Confirm Footer */}
+                    <div className="flex justify-between pt-4">
+                      <Button variant="ghost" onClick={handleClose}>
+                        취소
+                      </Button>
+                      <Button onClick={() => setCurrentStep("editor")} className="h-10 px-6 rounded-xl">
+                        다음: 편지 작성
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="editor"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="flex-1 flex flex-col overflow-hidden"
+                  >
               {/* Section Buttons & Toolbar */}
               <div className="px-6 py-4 border-b border-border bg-secondary/30">
                 <div className="flex items-center justify-between mb-3">
@@ -327,8 +495,8 @@ export function ComposeModal({
 
               {/* Footer */}
               <div className="h-16 border-t border-border bg-card flex items-center justify-between px-6">
-                <Button variant="ghost" onClick={handleClose}>
-                  취소
+                <Button variant="ghost" onClick={() => setCurrentStep("confirm")}>
+                  이전
                 </Button>
                 <Button
                   onClick={handleSend}
@@ -339,6 +507,9 @@ export function ComposeModal({
                   발송하기
                 </Button>
               </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
 
@@ -394,7 +565,7 @@ export function ComposeModal({
                     {/* Prompt Input */}
                     <div>
                       <p className="text-sm font-medium text-foreground mb-2">
-                        어떤 {currentSectionConfig.id === "intro" ? "인사/이야기" : "마무리 인사"}를 전하고 싶으세요?
+                        어떤 {currentSectionConfig.id === "intro" ? "인사/이야기" : currentSectionConfig.id === "body" ? "본문 내용" : "마무리 인사"}를 전하고 싶으세요?
                       </p>
                       <textarea
                         value={aiPrompt}
@@ -428,7 +599,7 @@ export function ComposeModal({
                     {/* AI Info */}
                     <div className="bg-amber-50 text-amber-800 rounded-xl p-3 flex items-center gap-2 text-sm">
                       <span>💡</span>
-                      <span>AI가 {currentSectionConfig.id === "intro" ? "시작 부분" : "마무리 부분"}을 작성해 편지에 추가해요!</span>
+                      <span>AI가 {currentSectionConfig.id === "intro" ? "시작 부분" : currentSectionConfig.id === "body" ? "중간 부분" : "마무리 부분"}을 작성해 편지에 추가해요!</span>
                     </div>
                   </div>
 
@@ -454,7 +625,7 @@ export function ComposeModal({
                       ) : (
                         <>
                           <Sparkles className="w-4 h-4 mr-2" />
-                          {currentSectionConfig.id === "intro" ? "시작" : "마무리"} 작성
+                          {currentSectionConfig.id === "intro" ? "시작" : currentSectionConfig.id === "body" ? "중간" : "마무리"} 작성
                         </>
                       )}
                     </Button>
