@@ -375,6 +375,21 @@ export function ComposeModal({
                                   setSelectedRelation={setSelectedRelation}
                                   customAddress={customAddress}
                                   setCustomAddress={setCustomAddress}
+                                  familyMembers={familyMembers}
+                                  onSelectFromAddressBook={(member) => {
+                                    setRecipientName(member.name);
+                                    setPrisonerNumber(member.prisonerNumber || "");
+                                    // Find the facility
+                                    const facility = facilities.find(f => f.name === member.facility);
+                                    if (facility) {
+                                      setSelectedFacilityType(facility.type);
+                                      setSelectedRegion(facility.region);
+                                      setSelectedFacilityId(facility.id);
+                                    }
+                                    // Find the relation
+                                    const relation = member.relation as typeof selectedRelation;
+                                    setSelectedRelation(relation);
+                                  }}
                                 />
                               </div>
                             </motion.div>

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Check, Users, Info } from "lucide-react";
+import { ChevronDown, ChevronUp, Check, Users, Info, BookUser, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { 
   facilities, 
-  regions, 
   facilityTypes, 
   relationTypes,
   type FacilityType, 
   type Region,
   type RelationType 
 } from "@/data/facilities";
+import type { FamilyMember } from "@/types/mail";
 
 interface RecipientInfoStepProps {
   selectedFacilityType: FacilityType | null;
@@ -28,6 +28,8 @@ interface RecipientInfoStepProps {
   setSelectedRelation: (relation: RelationType | null) => void;
   customAddress?: string;
   setCustomAddress?: (address: string) => void;
+  familyMembers?: FamilyMember[];
+  onSelectFromAddressBook?: (member: FamilyMember) => void;
 }
 
 export function RecipientInfoStep({
@@ -45,8 +47,11 @@ export function RecipientInfoStep({
   setSelectedRelation,
   customAddress = "",
   setCustomAddress,
+  familyMembers = [],
+  onSelectFromAddressBook,
 }: RecipientInfoStepProps) {
-  const [expandedStep, setExpandedStep] = useState<number>(1);
+  const [expandedStep, setExpandedStep] = useState<number>(0);
+  const [showAddressBook, setShowAddressBook] = useState(true);
 
   // Filter facilities by type and region
   const isGeneralAddress = selectedFacilityType === "일반 주소";
@@ -124,8 +129,86 @@ export function RecipientInfoStep({
   );
 
   return (
-    <div className="space-y-2">
-      {/* Step 1: 시설 유형 선택 */}
+    <div className="space-y-3">
+      {/* 주소록에서 선택 */}
+      {familyMembers.length > 0 && (
+        <div className="border border-primary/30 rounded-xl overflow-hidden bg-primary/5">
+          <button
+            onClick={() => setShowAddressBook(!showAddressBook)}
+            className="w-full flex items-center justify-between p-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
+                <BookUser className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <div className="text-left">
+                <span className="font-medium text-primary">등록된 주소록에서 선택</span>
+                <p className="text-xs text-muted-foreground">기존에 저장된 받는사람 정보를 불러옵니다</p>
+              </div>
+            </div>
+            {showAddressBook ? (
+              <ChevronUp className="w-5 h-5 text-primary" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-primary" />
+            )}
+          </button>
+          <AnimatePresence>
+            {showAddressBook && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="px-4 pb-4">
+                  <div className="bg-background rounded-xl border border-border divide-y divide-border max-h-48 overflow-y-auto">
+                    {familyMembers.map((member) => (
+                      <button
+                        key={member.id}
+                        onClick={() => {
+                          onSelectFromAddressBook?.(member);
+                          setShowAddressBook(false);
+                        }}
+                        className="w-full flex items-center gap-3 p-3 hover:bg-secondary/50 transition-colors text-left"
+                      >
+                        <div
+                          className={cn(
+                            "w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0",
+                            member.color
+                          )}
+                        >
+                          {member.avatar}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-foreground">{member.name}</p>
+                          <p className="text-sm text-muted-foreground truncate">
+                            {member.relation} · {member.facility}
+                          </p>
+                          {member.prisonerNumber && (
+                            <p className="text-xs text-muted-foreground/70">
+                              수용자번호: {member.prisonerNumber}
+                            </p>
+                          )}
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* 새로 입력하기 구분선 */}
+      {familyMembers.length > 0 && (
+        <div className="flex items-center gap-3 py-2">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-xs text-muted-foreground">또는 새로 입력</span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+      )}
       <div className="border border-border rounded-xl overflow-hidden">
         <StepHeader
           step={1}
