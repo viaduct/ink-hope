@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Reply, Bookmark, ChevronLeft, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar } from "lucide-react";
+import { Image, Reply, Bookmark, ChevronLeft, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
@@ -14,6 +14,7 @@ interface MailContentProps {
   selectedMember?: FamilyMember | null;
   allMails?: Mail[];
   onMoveToFolder?: (mailId: string, targetFolder: FolderType) => void;
+  onEditAddressBook?: () => void;
 }
 
 const folderTitles: Record<FolderType, string> = {
@@ -35,6 +36,7 @@ export function MailContent({
   selectedMember,
   allMails = [],
   onMoveToFolder,
+  onEditAddressBook,
 }: MailContentProps) {
   const [activeTab, setActiveTab] = useState<TabType>("all");
 
@@ -128,6 +130,13 @@ export function MailContent({
                       <h3 className="font-semibold text-foreground">{selectedMember.name}</h3>
                       <p className="text-sm text-muted-foreground">{selectedMember.relation} · {selectedMember.facility}</p>
                     </div>
+                    <button
+                      onClick={onEditAddressBook}
+                      className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                      title="주소록 수정"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
                   </div>
                   <div className="mt-4 grid grid-cols-3 gap-4">
                     <div className="flex items-center gap-2 bg-background rounded-lg p-3 shadow-sm">

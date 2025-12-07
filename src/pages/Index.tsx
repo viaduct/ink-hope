@@ -4,6 +4,7 @@ import { Sidebar } from "@/components/mail/Sidebar";
 import { MailContent } from "@/components/mail/MailContent";
 import { ComposeModal } from "@/components/mail/ComposeModal";
 import { FloatingComposeButton } from "@/components/mail/FloatingComposeButton";
+import { AddressBookModal } from "@/components/mail/AddressBookModal";
 import { familyMembers as initialFamilyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
@@ -16,6 +17,7 @@ const Index = () => {
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   const [mails, setMails] = useState<Mail[]>(mockMails);
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(initialFamilyMembers);
+  const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
 
   // 메일 폴더 이동 함수
   const moveMailToFolder = (mailId: string, targetFolder: FolderType) => {
@@ -95,6 +97,7 @@ const Index = () => {
           selectedMember={selectedMemberId ? familyMembers.find(m => m.id === selectedMemberId) : null}
           allMails={mails}
           onMoveToFolder={moveMailToFolder}
+          onEditAddressBook={() => setIsAddressBookOpen(true)}
         />
 
         {/* Floating Compose Button */}
@@ -108,6 +111,14 @@ const Index = () => {
           isOpen={isComposeOpen}
           onClose={() => setIsComposeOpen(false)}
           familyMembers={familyMembers}
+        />
+
+        {/* Address Book Modal */}
+        <AddressBookModal
+          isOpen={isAddressBookOpen}
+          onClose={() => setIsAddressBookOpen(false)}
+          familyMembers={familyMembers}
+          onUpdateMembers={setFamilyMembers}
         />
       </div>
     </>
