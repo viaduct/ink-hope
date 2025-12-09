@@ -132,7 +132,7 @@ export function Sidebar({
           </Button>
         )}
 
-        {/* New Mail Notification */}
+        {/* New Mail Notification - 받은편지함으로 이동 */}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -140,6 +140,7 @@ export function Sidebar({
                 <Button
                   variant="outline"
                   size="icon"
+                  onClick={() => onFolderChange("inbox")}
                   className="w-full h-11 rounded-xl border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
                 >
                   <Bell className="w-5 h-5" />
@@ -147,16 +148,19 @@ export function Sidebar({
               ) : (
                 <Button
                   variant="outline"
+                  onClick={() => onFolderChange("inbox")}
                   className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600 justify-start px-4"
                 >
                   <Bell className="w-4 h-4 mr-1 flex-shrink-0" />
                   <span className="flex-1 text-left">새로 들어온 편지</span>
-                  <span className="bg-orange-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">3</span>
+                  {unreadCount > 0 && (
+                    <span className="bg-orange-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{unreadCount}</span>
+                  )}
                 </Button>
               )}
             </TooltipTrigger>
             <TooltipContent side="right" className="bg-orange-50 border-orange-200 text-orange-800">
-              <p>새로 들어온 편지 3건이 있어요🧡</p>
+              <p>새로 들어온 편지 {unreadCount}건이 있어요🧡</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
