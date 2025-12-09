@@ -204,20 +204,16 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                 `}
               >
                 <span className={`
-                  w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
+                  w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold
                   transition-all duration-200
                   ${currentStep === step.id 
-                    ? "bg-primary text-primary-foreground shadow-md" 
+                    ? "bg-primary text-primary-foreground shadow-lg" 
                     : currentStep > step.id 
-                      ? "bg-primary/15 text-primary" 
-                      : "bg-muted/60 text-muted-foreground/60"
+                      ? "bg-muted text-muted-foreground" 
+                      : "bg-muted/50 text-muted-foreground/50"
                   }
                 `}>
-                  {currentStep > step.id ? (
-                    <Check className="w-3.5 h-3.5" />
-                  ) : (
-                    step.id
-                  )}
+                  {step.id}
                 </span>
                 <span className={currentStep === step.id ? "font-semibold" : ""}>{step.label}</span>
               </button>
