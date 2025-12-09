@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock, FolderHeart } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,7 @@ const folders = [
   { id: "sent" as FolderType, label: "보낸편지함", icon: Send },
   { id: "draft" as FolderType, label: "임시저장함", icon: FileText },
   { id: "archive" as FolderType, label: "중요편지함", icon: Star },
+  { id: "mybox" as FolderType, label: "내편지함", icon: FolderHeart },
   { id: "spam" as FolderType, label: "스팸함", icon: AlertCircle },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
   { id: "orangetree" as FolderType, label: "오렌지나무", icon: TreeDeciduous },
