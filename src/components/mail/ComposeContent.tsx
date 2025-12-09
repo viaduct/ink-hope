@@ -301,7 +301,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         {/* 우편 종류 - 선택된 수신자만 표시 */}
                         {selectedRecipientId === recipient.id && (
                           <div className="mt-3 pt-3 border-t border-border/50">
-                            <div className="bg-amber-50 rounded-xl p-3">
+                            <div className="bg-white rounded-xl p-3">
                               <div className="mb-3">
                                 <p className="text-xs font-medium text-foreground mb-0.5">우편 종류</p>
                                 <p className="text-[11px] text-muted-foreground leading-relaxed">
