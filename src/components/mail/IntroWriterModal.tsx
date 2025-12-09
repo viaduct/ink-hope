@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,9 +20,9 @@ interface IntroWriterModalProps {
 }
 
 const quickOptions = [
-  { label: "따뜻한 인사로 시작하기", value: "warm_greeting" },
-  { label: "안부 묻기", value: "ask_wellbeing" },
-  { label: "편지 쓰게 된 계기", value: "reason" },
+  { label: "따뜻한 인사로 시작하기", value: "warm_greeting", icon: "🤗" },
+  { label: "안부 묻기", value: "ask_wellbeing", icon: "💝" },
+  { label: "편지 쓰게 된 계기", value: "reason", icon: "✉️" },
 ];
 
 export function IntroWriterModal({ 
@@ -48,13 +48,13 @@ export function IntroWriterModal({
       if (!prompt && selectedOption) {
         switch (selectedOption) {
           case "warm_greeting":
-            prompt = "따뜻하고 다정한 인사로 시작하는 서론";
+            prompt = "따뜻하고 다정한 인사로 시작하는 처음";
             break;
           case "ask_wellbeing":
-            prompt = "상대방의 안부를 묻는 서론";
+            prompt = "상대방의 안부를 묻는 처음";
             break;
           case "reason":
-            prompt = "편지를 쓰게 된 계기를 말하는 서론";
+            prompt = "편지를 쓰게 된 계기를 말하는 처음";
             break;
         }
       }
@@ -73,14 +73,14 @@ export function IntroWriterModal({
       
       if (data.intro) {
         onInsert(data.intro);
-        toast.success("서론이 추가되었습니다!");
+        toast.success("처음 부분이 추가되었습니다!");
         handleClose();
       } else if (data.error) {
         toast.error(data.error);
       }
     } catch (error) {
       console.error('Error generating intro:', error);
-      toast.error("서론 생성에 실패했습니다. 다시 시도해주세요.");
+      toast.error("생성에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setIsLoading(false);
     }
@@ -94,80 +94,90 @@ export function IntroWriterModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="sm:max-w-[520px] p-0 gap-0 overflow-hidden">
-        {/* 헤더 */}
-        <DialogHeader className="p-6 pb-4">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">👋</span>
-            <div>
-              <DialogTitle className="text-xl font-semibold text-foreground">
-                서론 작성
-              </DialogTitle>
-              <DialogDescription className="text-muted-foreground mt-0.5">
-                인사와 안부를 전해요
-              </DialogDescription>
+      <DialogContent className="sm:max-w-[480px] p-0 gap-0 overflow-hidden border-0 shadow-2xl">
+        {/* 헤더 - 그라데이션 배경 */}
+        <div className="bg-gradient-to-br from-orange-400 via-orange-500 to-amber-500 p-6 pb-8">
+          <DialogHeader className="space-y-1">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                <span className="text-2xl">👋</span>
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-bold text-white">
+                  처음 작성
+                </DialogTitle>
+                <DialogDescription className="text-white/80 mt-0.5">
+                  인사와 안부를 전해요
+                </DialogDescription>
+              </div>
             </div>
-          </div>
-        </DialogHeader>
+          </DialogHeader>
+        </div>
 
-        <div className="px-6 pb-6 space-y-5">
+        <div className="px-6 pb-6 -mt-4 space-y-5">
           {/* 현재 편지 내용 미리보기 */}
           {currentContent && (
-            <div className="bg-blue-50 dark:bg-blue-950/30 rounded-xl p-4 border border-blue-100 dark:border-blue-900">
-              <p className="text-sm text-muted-foreground mb-1">현재 편지 내용</p>
-              <p className="text-foreground line-clamp-2">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 rounded-2xl p-4 border border-blue-100/50 dark:border-blue-800/30 shadow-sm">
+              <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1.5 uppercase tracking-wide">현재 편지 내용</p>
+              <p className="text-foreground text-sm leading-relaxed line-clamp-2">
                 {currentContent.substring(0, 100)}{currentContent.length > 100 ? '...' : ''}
               </p>
             </div>
           )}
 
-          {/* 사용자 입력 */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
-              어떤 인사/안부를 전하고 싶으세요?
-            </label>
-            <Textarea
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder="예: 오랜만에 연락드려요, 날씨가 추워졌는데 건강은 어떠신지..."
-              className="min-h-[100px] resize-none bg-muted/30 border-border focus:ring-primary/20"
-            />
-          </div>
+          {/* 카드 형태의 메인 컨텐츠 */}
+          <div className="bg-card rounded-2xl p-5 shadow-sm border border-border/50 space-y-5">
+            {/* 사용자 입력 */}
+            <div className="space-y-2.5">
+              <label className="text-sm font-semibold text-foreground">
+                어떤 인사/안부를 전하고 싶으세요?
+              </label>
+              <Textarea
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                placeholder="예: 오랜만에 연락드려요, 날씨가 추워졌는데 건강은 어떠신지..."
+                className="min-h-[90px] resize-none bg-muted/40 border-0 focus:ring-2 focus:ring-primary/30 rounded-xl text-sm"
+              />
+            </div>
 
-          {/* 빠른 선택 */}
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">빠른 선택</p>
-            <div className="flex flex-wrap gap-2">
-              {quickOptions.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => handleQuickSelect(option.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
-                    selectedOption === option.value
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-card text-foreground border-border hover:bg-muted"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
+            {/* 빠른 선택 */}
+            <div className="space-y-2.5">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">빠른 선택</p>
+              <div className="flex flex-wrap gap-2">
+                {quickOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => handleQuickSelect(option.value)}
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      selectedOption === option.value
+                        ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/25"
+                        : "bg-muted/60 text-foreground hover:bg-muted border border-transparent hover:border-border"
+                    }`}
+                  >
+                    <span>{option.icon}</span>
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* AI 안내 */}
-          <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-100 dark:border-amber-900">
-            <span className="text-lg">💡</span>
-            <p className="text-sm text-amber-700 dark:text-amber-300">
-              AI가 서론을 작성해 편지에 추가해요!
+          <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 rounded-xl border border-violet-100/50 dark:border-violet-800/30">
+            <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <p className="text-sm text-violet-700 dark:text-violet-300">
+              AI가 처음 부분을 작성해 편지에 추가해요!
             </p>
           </div>
 
           {/* 버튼 */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-1">
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={handleClose}
-              className="flex-1 h-12 text-base"
+              className="flex-1 h-12 text-base font-medium hover:bg-muted"
               disabled={isLoading}
             >
               취소
@@ -175,17 +185,17 @@ export function IntroWriterModal({
             <Button
               onClick={handleGenerate}
               disabled={isLoading || (!userInput && !selectedOption)}
-              className="flex-1 h-12 text-base bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0"
+              className="flex-[2] h-12 text-base font-semibold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white border-0 shadow-lg shadow-orange-500/25 disabled:opacity-50 disabled:shadow-none"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                   생성 중...
                 </>
               ) : (
                 <>
-                  <span className="mr-2">✨</span>
-                  서론 작성
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  처음 작성
                 </>
               )}
             </Button>
