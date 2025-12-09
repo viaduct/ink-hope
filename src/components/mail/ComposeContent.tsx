@@ -310,12 +310,12 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                     e.stopPropagation();
                                     setSelectedMailType(option.id);
                                   }}
-                                  className={`
-                                    w-full p-3 rounded-lg border-2 transition-all text-left
-                                    ${selectedMailType === option.id 
-                                      ? "border-primary bg-primary/5" 
-                                      : "border-border hover:border-primary/30 bg-card"
-                                    }
+                                                  className={`
+                                                    w-full p-3 rounded-lg transition-all text-left
+                                                    ${selectedMailType === option.id 
+                                                      ? "border-2 border-primary bg-primary/5" 
+                                                      : "border border-gray-200/60 dark:border-gray-700/40 hover:border-primary/30 bg-card"
+                                                    }
                                     ${index === 0 ? "ring-1 ring-orange-200 ring-offset-1" : ""}
                                   `}
                                 >
