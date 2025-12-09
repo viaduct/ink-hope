@@ -301,57 +301,59 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         {/* 우편 종류 - 선택된 수신자만 표시 */}
                         {selectedRecipientId === recipient.id && (
                           <div className="mt-3 pt-3 border-t border-border/50">
-                            <div className="mb-4">
-                              <p className="text-xs font-medium text-foreground mb-0.5">우편 종류</p>
-                              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                                <span className="font-medium text-foreground">교정시설 우편은 내부 검수 절차로 인해</span> 모든 방식의 실제 전달 속도는 비슷합니다.
-                              </p>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                              {mailTypeOptions.map((option, index) => (
-                                <button
-                                  key={option.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedMailType(option.id);
-                                  }}
-                                  className={`
-                                    w-full p-2.5 rounded-lg transition-all text-left
-                                    ${selectedMailType === option.id 
-                                      ? "border border-primary bg-primary/5" 
-                                      : "border border-border/40 hover:border-primary/30 bg-card"
-                                    }
-                                    ${index === 0 ? "ring-1 ring-orange-200/60" : ""}
-                                  `}
-                                >
-                                  <div className="flex items-start justify-between gap-1">
-                                    <div className="flex items-start gap-1.5">
-                                      <div className={`w-3.5 h-3.5 mt-0.5 rounded-full border flex items-center justify-center shrink-0 ${
-                                        selectedMailType === option.id ? "border-primary bg-primary" : "border-muted-foreground/50"
-                                      }`}>
-                                        {selectedMailType === option.id && (
-                                          <Check className="w-2 h-2 text-primary-foreground" />
-                                        )}
-                                      </div>
-                                      <div>
-                                        <div className="flex items-center gap-1 flex-wrap">
-                                          <span className="text-xs font-semibold text-foreground">{option.label}</span>
-                                          {index === 0 && (
-                                            <span className="px-1 py-0.5 bg-primary text-primary-foreground text-[8px] font-semibold rounded">추천</span>
-                                          )}
-                                          {index === 1 && (
-                                            <span className="px-1 py-0.5 bg-blue-500 text-white text-[8px] font-semibold rounded">안심</span>
-                                          )}
+                            <div className="bg-muted/30 rounded-xl p-3">
+                              <div className="mb-3">
+                                <p className="text-xs font-medium text-foreground mb-0.5">우편 종류</p>
+                                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                  <span className="font-medium text-foreground">교정시설 우편은 내부 검수 절차로 인해</span> 모든 방식의 실제 전달 속도는 비슷합니다.
+                                </p>
+                              </div>
+                              <div className="bg-card rounded-lg p-2 border border-border/50">
+                                <div className="grid grid-cols-2 gap-2">
+                                  {mailTypeOptions.map((option, index) => (
+                                    <button
+                                      key={option.id}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedMailType(option.id);
+                                      }}
+                                      className={`
+                                        w-full p-2.5 rounded-lg transition-all text-left
+                                        ${selectedMailType === option.id 
+                                          ? "border border-primary bg-primary/5" 
+                                          : "border border-border/40 hover:border-primary/30 bg-muted/20"
+                                        }
+                                        ${index === 0 ? "ring-1 ring-orange-200/60" : ""}
+                                      `}
+                                    >
+                                      <div className="flex items-start justify-between gap-1">
+                                        <div className="flex items-start gap-1.5">
+                                          <div className={`w-3.5 h-3.5 mt-0.5 rounded-full border flex items-center justify-center shrink-0 ${
+                                            selectedMailType === option.id ? "border-primary bg-primary" : "border-muted-foreground/50"
+                                          }`}>
+                                            {selectedMailType === option.id && (
+                                              <Check className="w-2 h-2 text-primary-foreground" />
+                                            )}
+                                          </div>
+                                          <div>
+                                            <div className="flex items-center gap-1 flex-wrap">
+                                              <span className="text-xs font-semibold text-foreground">{option.label}</span>
+                                              {index === 0 && (
+                                                <span className="px-1 py-0.5 bg-primary text-primary-foreground text-[8px] font-semibold rounded">추천</span>
+                                              )}
+                                              {index === 1 && (
+                                                <span className="px-1 py-0.5 bg-blue-500 text-white text-[8px] font-semibold rounded">안심</span>
+                                              )}
+                                            </div>
+                                            <span className="text-[10px] text-muted-foreground">{option.deliveryTime}</span>
+                                          </div>
                                         </div>
-                                        <span className="text-[10px] text-muted-foreground">{option.deliveryTime}</span>
+                                        <p className="text-xs font-bold text-primary">{option.price.toLocaleString()}원</p>
                                       </div>
-                                    </div>
-                                    <p className="text-xs font-bold text-primary">{option.price.toLocaleString()}원</p>
-                                  </div>
-                                  
-                                  {/* 가장 많이 선택하는 방식 노트 - 삭제됨 */}
-                                </button>
-                              ))}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         )}
