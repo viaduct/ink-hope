@@ -215,7 +215,7 @@ export function Sidebar({
         )}
         
         {(isCollapsed || isFolderExpanded) && (
-          <ul className="space-y-0.5">
+          <ul className="space-y-1.5">
             {folders.map((folder) => {
               const Icon = folder.icon;
               const isActive = activeFolder === folder.id;
@@ -227,7 +227,7 @@ export function Sidebar({
                     onClick={() => onFolderChange(folder.id)}
                     title={isCollapsed ? folder.label : undefined}
                     className={cn(
-                      "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-all duration-150",
+                      "w-full flex items-center gap-2.5 px-2.5 py-3 rounded-lg text-sm transition-all duration-150",
                       isCollapsed && "justify-center px-0",
                       !isCollapsed && "ml-1",
                       isActive
@@ -301,7 +301,7 @@ export function Sidebar({
             </div>
             
             {isTreeExpanded && (
-              <ul className="space-y-0.5 px-1">
+              <ul className="space-y-1.5 px-1">
                 {familyMembers.map((member) => {
                   const isSelected = selectedMemberId === member.id;
                   const mailCount = Math.floor(Math.random() * 10); // 임시 카운트
@@ -310,7 +310,7 @@ export function Sidebar({
                       <button 
                         onClick={() => onSelectMember(isSelected ? null : member.id)}
                         className={cn(
-                          "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                          "w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors",
                           isSelected
                             ? "bg-primary/10 text-primary"
                             : "text-foreground hover:bg-secondary"
@@ -330,7 +330,7 @@ export function Sidebar({
                 {/* 새 편지함 추가 */}
                 <li>
                   <button 
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-foreground hover:bg-secondary"
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors text-foreground hover:bg-secondary"
                   >
                     <Plus className="w-4 h-4" />
                     <span className="text-sm">새 편지함 추가</span>
