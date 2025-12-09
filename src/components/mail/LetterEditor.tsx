@@ -1,8 +1,7 @@
 import { useState, useRef } from "react";
 import { 
   Edit3, 
-  Settings, 
-  CircleAlert,
+  Sparkles,
   Minus, 
   Plus, 
   AlignLeft, 
@@ -20,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { EmojiPicker } from "./EmojiPicker";
+import { AIWritingHelper } from "./AIWritingHelper";
 
 type TextAlign = "left" | "center" | "right";
 
@@ -60,6 +60,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
   const [isBold, setIsBold] = useState(false);
   const [textAlign, setTextAlign] = useState<TextAlign>("left");
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+  const [isAIHelperOpen, setIsAIHelperOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const charCount = content.length;
@@ -97,16 +98,13 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
           <Edit3 className="w-5 h-5 text-primary" />
           <h2 className="font-semibold text-foreground text-lg">편지 작성</h2>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 rounded-full text-sm font-medium hover:bg-amber-100 transition-colors">
-            <Settings className="w-4 h-4" />
-            API 키 설정
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 rounded-full text-sm font-medium hover:bg-amber-100 transition-colors">
-            <CircleAlert className="w-4 h-4" />
-            API 키 설정
-          </button>
-        </div>
+        <button 
+          onClick={() => setIsAIHelperOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-full text-sm font-medium hover:from-violet-600 hover:to-purple-600 transition-all shadow-md"
+        >
+          <Sparkles className="w-4 h-4" />
+          AI 도우미
+        </button>
       </div>
 
       {/* 템플릿 버튼 */}
@@ -289,6 +287,16 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
           }}
         />
       </div>
+
+      {/* AI 도우미 */}
+      <AIWritingHelper
+        isOpen={isAIHelperOpen}
+        onClose={() => setIsAIHelperOpen(false)}
+        onSelectSuggestion={(text) => {
+          onContentChange(content + text + "\n\n");
+        }}
+        currentContent={content}
+      />
     </div>
   );
 }
