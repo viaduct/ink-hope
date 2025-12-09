@@ -197,7 +197,7 @@ export function PaymentSummary({
                   "relative p-4 rounded-xl transition-all text-left",
                   mailType === option.id
                     ? "border-2 border-primary bg-primary/5"
-                    : "border-[0.5px] border-gray-200/70 dark:border-gray-700/50 hover:border-primary/30"
+                    : "border-[0.5px] border-gray-200/40 dark:border-gray-700/30 hover:border-primary/30"
                 )}
               >
                 {/* 선택 체크 */}
