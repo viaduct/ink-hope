@@ -90,7 +90,7 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* 헤더 */}
       <div className="flex items-center gap-4">
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 flex items-center justify-center">
@@ -102,131 +102,136 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
         </div>
       </div>
 
-      {/* 사진 인화 서비스 안내 */}
-      <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-5">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center shrink-0 text-2xl">
-            📸
-          </div>
-          <div>
-            <h3 className="font-semibold text-foreground mb-1">사진 인화 서비스</h3>
-            <p className="text-sm text-muted-foreground">
-              업로드하신 사진은 <span className="text-orange-600 dark:text-orange-400 font-medium">고품질 사진 인화지에 인화</span>되어 편지와 함께 동봉됩니다. 소중한 추억을 선물하세요!
-            </p>
+      {/* 흰색 라운딩 박스 - 메인 컨테이너 */}
+      <div className="bg-card rounded-3xl p-6 shadow-lg border border-border/50 space-y-6">
+        {/* 사진 인화 서비스 안내 */}
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-5">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center shrink-0 text-2xl">
+              📸
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground mb-1">사진 인화 서비스</h3>
+              <p className="text-sm text-muted-foreground">
+                업로드하신 사진은 <span className="text-orange-600 dark:text-orange-400 font-medium">고품질 사진 인화지에 인화</span>되어 편지와 함께 동봉됩니다. 소중한 추억을 선물하세요!
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 사진 그리드 */}
-      <div className="bg-card rounded-2xl border border-border p-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {/* 업로드된 사진들 */}
-          <AnimatePresence>
-            {photos.map((photo) => (
-              <motion.div
-                key={photo.id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="relative aspect-square rounded-xl overflow-hidden border-2 border-border group"
-              >
-                <img
-                  src={photo.preview}
-                  alt="업로드된 사진"
-                  className="w-full h-full object-cover transition-transform duration-300"
-                  style={{ transform: `rotate(${photo.rotation}deg)` }}
-                />
-                
-                {/* 호버 오버레이 */}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <button
-                    onClick={() => handleRotatePhoto(photo.id)}
-                    className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-                    title="회전"
-                  >
-                    <RotateCw className="w-4 h-4 text-white" />
-                  </button>
-                  <button
-                    onClick={() => setSelectedPhotoId(photo.id)}
-                    className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-                    title="확대"
-                  >
-                    <ZoomIn className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-
-                {/* 삭제 버튼 */}
-                <button
-                  onClick={() => handleRemovePhoto(photo.id)}
-                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+        {/* 사진 그리드 */}
+        <div className="bg-muted/30 rounded-2xl p-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {/* 업로드된 사진들 */}
+            <AnimatePresence>
+              {photos.map((photo) => (
+                <motion.div
+                  key={photo.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="relative aspect-square rounded-xl overflow-hidden border-2 border-border group"
                 >
-                  <X className="w-4 h-4" />
-                </button>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                  <img
+                    src={photo.preview}
+                    alt="업로드된 사진"
+                    className="w-full h-full object-cover transition-transform duration-300"
+                    style={{ transform: `rotate(${photo.rotation}deg)` }}
+                  />
+                  
+                  {/* 호버 오버레이 */}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => handleRotatePhoto(photo.id)}
+                      className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                      title="회전"
+                    >
+                      <RotateCw className="w-4 h-4 text-white" />
+                    </button>
+                    <button
+                      onClick={() => setSelectedPhotoId(photo.id)}
+                      className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                      title="확대"
+                    >
+                      <ZoomIn className="w-4 h-4 text-white" />
+                    </button>
+                  </div>
 
-          {/* 사진 추가 버튼 */}
-          {photos.length < maxPhotos && (
-            <button
-              onClick={openFilePicker}
-              className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-primary"
-            >
-              <Plus className="w-8 h-8" />
-              <span className="text-sm font-medium">추가</span>
-            </button>
+                  {/* 삭제 버튼 */}
+                  <button
+                    onClick={() => handleRemovePhoto(photo.id)}
+                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {/* 사진 추가 버튼 */}
+            {photos.length < maxPhotos && (
+              <button
+                onClick={openFilePicker}
+                className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-primary bg-card"
+              >
+                <Plus className="w-8 h-8" />
+                <span className="text-sm font-medium">추가</span>
+              </button>
+            )}
+          </div>
+
+          {/* 사진 개수 표시 */}
+          {photos.length > 0 && (
+            <div className="mt-4 flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                {photos.length} / {maxPhotos}장 업로드됨
+              </span>
+              <span className="text-primary font-medium">
+                +{photos.length * 500}원
+              </span>
+            </div>
           )}
+
+          {/* 숨겨진 파일 입력 */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileSelect}
+            className="hidden"
+          />
         </div>
 
-        {/* 사진 개수 표시 */}
+        {/* 가격 안내 - 사진이 있을 때만 표시 */}
         {photos.length > 0 && (
-          <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
-              {photos.length} / {maxPhotos}장 업로드됨
-            </span>
-            <span className="text-primary font-medium">
-              +{photos.length * 500}원
-            </span>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-xl p-4 border border-orange-200/50 dark:border-orange-800/30"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-foreground">사진 인화 비용</p>
+                <p className="text-sm text-muted-foreground">1장당 500원 (4x6 사이즈)</p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                  +{(photos.length * 500).toLocaleString()}원
+                </p>
+                <p className="text-xs text-muted-foreground">{photos.length}장 선택</p>
+              </div>
+            </div>
+          </motion.div>
         )}
 
         {/* 안내 메시지 */}
-        <p className="text-center text-muted-foreground text-sm mt-6">
-          사진을 추가하지 않으셔도 진행 가능해요
-        </p>
-
-        {/* 숨겨진 파일 입력 */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleFileSelect}
-          className="hidden"
-        />
+        <div className="bg-muted/50 rounded-xl p-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            💡 사진을 추가하지 않으셔도 진행 가능해요
+          </p>
+        </div>
       </div>
-
-      {/* 가격 안내 - 사진이 있을 때만 표시 */}
-      {photos.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-xl p-4 border border-orange-200/50 dark:border-orange-800/30"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-foreground">사진 인화 비용</p>
-              <p className="text-sm text-muted-foreground">1장당 500원 (4x6 사이즈)</p>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                +{(photos.length * 500).toLocaleString()}원
-              </p>
-              <p className="text-xs text-muted-foreground">{photos.length}장 선택</p>
-            </div>
-          </div>
-        </motion.div>
-      )}
 
       {/* 사진 확대 모달 */}
       <AnimatePresence>
