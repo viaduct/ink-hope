@@ -337,9 +337,9 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                           </div>
                                         </div>
                                       </div>
-                                      <div className="text-right">
+                                      <div className="flex items-center gap-1.5">
                                         <span className="text-[11px] text-muted-foreground">발송 후 {option.deliveryTime}</span>
-                                        <p className="text-sm font-bold text-primary">{option.price.toLocaleString()}원</p>
+                                        <span className="text-sm font-bold text-primary">{option.price.toLocaleString()}원</span>
                                       </div>
                                     </div>
                                   </button>
