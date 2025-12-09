@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AddRecipientModal } from "./AddRecipientModal";
 import { AddSenderModal } from "./AddSenderModal";
+import { AddressBookModal } from "./AddressBookModal";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
 
@@ -71,7 +72,7 @@ const sampleRecipients = [
     facility: "서울남부교도소",
     address: "서울특별시 금천구 시흥대로 439",
     prisonerNumber: "2024-1234",
-    color: "bg-primary",
+    color: "bg-orange-500",
   },
   {
     id: "2", 
@@ -128,6 +129,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   // 모달 상태
   const [isAddRecipientModalOpen, setIsAddRecipientModalOpen] = useState(false);
   const [isAddSenderModalOpen, setIsAddSenderModalOpen] = useState(false);
+  const [isAddressBookModalOpen, setIsAddressBookModalOpen] = useState(false);
   
   // 동적 데이터 (나중에 실제 데이터로 교체)
   const [recipients, setRecipients] = useState(sampleRecipients);
@@ -232,7 +234,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                       <User className="w-5 h-5 text-primary" />
                       <h2 className="font-semibold text-foreground text-lg">받는 사람 선택</h2>
                     </div>
-                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <button 
+                      onClick={() => setIsAddressBookModalOpen(true)}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
                       주소록관리
                     </button>
                   </div>
@@ -382,7 +387,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                       <Send className="w-5 h-5 text-primary" />
                       <h2 className="font-semibold text-foreground text-lg">보내는 사람</h2>
                     </div>
-                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <button 
+                      onClick={() => setIsAddressBookModalOpen(true)}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
                       주소록관리
                     </button>
                   </div>
@@ -533,6 +541,13 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
           setSenders([...senders, { ...newSender, id }]);
           setSelectedSenderId(id);
         }}
+      />
+
+      <AddressBookModal
+        isOpen={isAddressBookModalOpen}
+        onClose={() => setIsAddressBookModalOpen(false)}
+        familyMembers={familyMembers}
+        onUpdateMembers={() => {}}
       />
     </div>
   );
