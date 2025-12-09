@@ -194,11 +194,30 @@ export function PaymentSummary({
           </div>
         </div>
 
-        {/* 기본 요금 소계 */}
-        <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-2xl p-5 border border-orange-200/50 dark:border-orange-800/30">
+        {/* 결제 금액 요약 - 다크 스타일 */}
+        <div className="bg-gray-900 rounded-2xl p-6 space-y-3">
+          {/* 기본 요금 */}
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-foreground text-lg">총 결제 금액</span>
-            <span className="text-2xl font-bold text-primary">{totalPrice.toLocaleString()}원</span>
+            <span className="text-gray-300">기본 요금</span>
+            <span className="text-gray-100">{photoPrice.toLocaleString()}원</span>
+          </div>
+
+          {/* 우편료 */}
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">우편료 ({mailType})</span>
+            <span className="text-gray-100">{mailPrice.toLocaleString()}원</span>
+          </div>
+
+          {/* 구분선 */}
+          <div className="border-t border-gray-700 my-3" />
+
+          {/* 최종 결제 금액 */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-white font-medium">최종 결제 금액</p>
+              <p className="text-xs text-primary">* 수익금의 일부는 교정 교화 활동에 기부됩니다</p>
+            </div>
+            <span className="text-3xl font-bold text-white">{totalPrice.toLocaleString()}원</span>
           </div>
         </div>
 
