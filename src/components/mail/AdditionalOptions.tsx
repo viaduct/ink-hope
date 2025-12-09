@@ -96,7 +96,7 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
       <div className="flex items-center gap-2.5">
         <Gift className="w-5 h-5 text-primary" />
         <div>
-          <h2 className="text-sm font-semibold text-foreground">편지와 함께 작은 바깥의 하루를 전하세요</h2>
+          <h2 className="text-base font-semibold text-foreground">편지와 함께 작은 바깥의 하루를 전하세요</h2>
           <p className="text-muted-foreground text-xs">
             안에서는 알기 어려운 소식과 정보, 그들에게 힘이 되는 것들만 골라 전달됩니다.
           </p>

@@ -66,7 +66,7 @@ export function StationerySelector({ selectedId, onSelect }: StationerySelectorP
       {/* 헤더 */}
       <div className="flex items-center gap-2">
         <FileText className="w-5 h-5 text-primary" />
-        <h2 className="font-semibold text-foreground text-lg">편지지 선택</h2>
+        <h2 className="font-semibold text-foreground text-base">편지지 선택</h2>
       </div>
 
       {/* 카테고리 탭 */}
