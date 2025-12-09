@@ -110,28 +110,28 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
       </div>
 
       {/* 흰색 라운딩 박스 - 메인 에디터 컨테이너 */}
-      <div className="bg-card rounded-2xl p-6 shadow-md border border-border/60">
-        {/* 템플릿 버튼 - 간격 12px 통일 */}
-        <div className="flex items-center gap-3 mb-7">
+      <div className="bg-card rounded-2xl p-6 shadow-md border border-black/[0.05] dark:border-white/[0.05]">
+        {/* 템플릿 버튼 - 높이/패딩/간격 통일 */}
+        <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => setActiveModal("intro")}
-            className="flex items-center gap-1.5 px-3 py-2 bg-orange-50/80 dark:bg-orange-950/20 border border-orange-200/40 dark:border-orange-800/20 rounded-full text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100/80 dark:hover:bg-orange-950/40 transition-all"
+            className="h-10 flex items-center gap-2 px-4 py-2.5 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
           >
-            <span className="text-sm">👋</span>
+            <span>👋</span>
             처음
           </button>
           <button
             onClick={() => setActiveModal("middle")}
-            className="flex items-center gap-1.5 px-3 py-2 bg-orange-50/80 dark:bg-orange-950/20 border border-orange-200/40 dark:border-orange-800/20 rounded-full text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100/80 dark:hover:bg-orange-950/40 transition-all"
+            className="h-10 flex items-center gap-2 px-4 py-2.5 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
           >
-            <span className="text-sm">💬</span>
+            <span>💬</span>
             중간
           </button>
           <button
             onClick={() => setActiveModal("conclusion")}
-            className="flex items-center gap-1.5 px-3 py-2 bg-orange-50/80 dark:bg-orange-950/20 border border-orange-200/40 dark:border-orange-800/20 rounded-full text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100/80 dark:hover:bg-orange-950/40 transition-all"
+            className="h-10 flex items-center gap-2 px-4 py-2.5 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
           >
-            <span className="text-sm">🌟</span>
+            <span>🌟</span>
             마무리
           </button>
         </div>
@@ -257,13 +257,13 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
           </div>
         </div>
 
-        {/* 빠른 이모지 바 - 에디터와 16px 간격 */}
-        <div className="mb-4">
+        {/* 빠른 이모지 바 - 상단 툴바와 16px 간격 */}
+        <div className="mt-4 mb-4">
           <QuickEmojiBar onSelect={insertEmoji} />
         </div>
 
-        {/* 에디터 - 강조된 영역 */}
-        <div className="relative editor-area rounded-xl overflow-hidden">
+        {/* 에디터 - 명도/테두리 조정 */}
+        <div className="relative rounded-xl overflow-hidden border border-black/[0.05] dark:border-white/[0.05]">
           <textarea
             ref={textareaRef}
             value={content}
@@ -271,8 +271,8 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
             placeholder="여기에 마음을 담아 편지를 써보세요.
 막막하다면 위의 '처음/중간/마무리' 버튼을 눌러보세요."
             className={cn(
-              "w-full min-h-[320px] p-6 bg-muted/20 border-0 resize-none focus:outline-none transition-all typography-base",
-              "editor-placeholder",
+              "w-full min-h-[320px] p-6 bg-muted/10 border-0 resize-none focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all",
+              "placeholder:text-[#C6C6C6] dark:placeholder:text-muted-foreground/40",
               isBold && "font-bold"
             )}
             style={{

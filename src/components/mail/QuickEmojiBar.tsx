@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Sprout } from "lucide-react";
+import { ChevronDown, ChevronUp, Sprout, Smile } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // 오렌지 성장단계 이모티콘 이미지 import
@@ -45,24 +45,35 @@ export function QuickEmojiBar({ onSelect }: QuickEmojiBarProps) {
 
   return (
     <div className="space-y-3">
-      {/* 빠른 이모지 바 - 항상 보임 */}
-      <div className="flex items-center gap-1 flex-wrap">
-        {quickEmojis.map((emoji, index) => (
-          <button
-            key={index}
-            onClick={() => handleEmojiClick(emoji)}
-            className="w-8 h-8 flex items-center justify-center text-lg hover:bg-muted/60 hover:scale-105 rounded-md transition-all duration-150"
-          >
-            {emoji}
-          </button>
-        ))}
+      {/* 빠른 이모지 바 - 높이 44px 통일 */}
+      <div className="flex items-center h-11 gap-1.5 px-2 bg-muted/30 rounded-xl border border-border/30">
+        {/* 이모지 라벨 */}
+        <div className="flex items-center gap-1 pr-2 border-r border-border/40">
+          <Smile className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide hidden sm:inline">이모지</span>
+        </div>
+        
+        {/* 이모지 목록 */}
+        <div className="flex items-center gap-0.5 flex-1 overflow-x-auto scrollbar-thin">
+          {quickEmojis.map((emoji, index) => (
+            <button
+              key={index}
+              onClick={() => handleEmojiClick(emoji)}
+              className="w-8 h-8 flex items-center justify-center text-lg hover:bg-muted hover:scale-110 rounded-lg transition-all duration-150 shrink-0"
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+        
+        {/* 더보기 버튼 - 오른쪽 정렬 */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className={cn(
-            "ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-medium transition-all",
+            "flex items-center gap-0.5 px-2 py-1 rounded-md text-[10px] font-medium transition-all shrink-0",
             isExpanded 
               ? "bg-primary text-primary-foreground" 
-              : "bg-muted/50 text-muted-foreground hover:bg-muted/70"
+              : "text-muted-foreground hover:bg-muted"
           )}
         >
           {isExpanded ? (
