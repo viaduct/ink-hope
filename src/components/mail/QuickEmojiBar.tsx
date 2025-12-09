@@ -44,14 +44,14 @@ export function QuickEmojiBar({ onSelect }: QuickEmojiBarProps) {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {/* 빠른 이모지 바 - 항상 보임 */}
-      <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex items-center gap-1 flex-wrap">
         {quickEmojis.map((emoji, index) => (
           <button
             key={index}
             onClick={() => handleEmojiClick(emoji)}
-            className="w-9 h-9 flex items-center justify-center text-xl hover:bg-muted hover:scale-110 rounded-lg transition-all duration-150"
+            className="w-8 h-8 flex items-center justify-center text-lg hover:bg-muted/60 hover:scale-105 rounded-md transition-all duration-150"
           >
             {emoji}
           </button>
@@ -59,10 +59,10 @@ export function QuickEmojiBar({ onSelect }: QuickEmojiBarProps) {
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className={cn(
-            "ml-auto flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+            "ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-medium transition-all",
             isExpanded 
               ? "bg-primary text-primary-foreground" 
-              : "bg-muted/60 text-muted-foreground hover:bg-muted"
+              : "bg-muted/50 text-muted-foreground hover:bg-muted/70"
           )}
         >
           {isExpanded ? (
@@ -87,16 +87,16 @@ export function QuickEmojiBar({ onSelect }: QuickEmojiBarProps) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="bg-muted/30 rounded-2xl p-4 space-y-4">
+            <div className="bg-muted/30 rounded-xl p-3 space-y-3">
               {/* 탭 헤더 */}
-              <div className="flex items-center gap-2 border-b border-border pb-3">
+              <div className="flex items-center gap-1.5 border-b border-border/50 pb-2.5">
                 <button
                   onClick={() => setActiveTab("emoji")}
                   className={cn(
-                    "px-4 py-2 rounded-full text-sm font-medium transition-all",
+                    "px-3 py-1.5 rounded-full text-xs font-medium transition-all",
                     activeTab === "emoji"
                       ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted"
+                      : "text-muted-foreground hover:bg-muted/60"
                   )}
                 >
                   이모지
@@ -104,13 +104,13 @@ export function QuickEmojiBar({ onSelect }: QuickEmojiBarProps) {
                 <button
                   onClick={() => setActiveTab("orange")}
                   className={cn(
-                    "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all",
+                    "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
                     activeTab === "orange"
-                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white"
-                      : "text-muted-foreground hover:bg-muted"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted/60"
                   )}
                 >
-                  <span>🍊</span>
+                  <span className="text-sm">🍊</span>
                   오렌지
                 </button>
               </div>
@@ -120,13 +120,13 @@ export function QuickEmojiBar({ onSelect }: QuickEmojiBarProps) {
                 <>
                   {Object.entries(emojiCategories).map(([category, emojis]) => (
                     <div key={category}>
-                      <p className="text-xs font-medium text-muted-foreground mb-2">{category}</p>
-                      <div className="flex flex-wrap gap-1">
+                      <p className="text-[10px] font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">{category}</p>
+                      <div className="flex flex-wrap gap-0.5">
                         {emojis.map((emoji, index) => (
                           <button
                             key={index}
                             onClick={() => handleEmojiClick(emoji)}
-                            className="w-9 h-9 flex items-center justify-center text-xl hover:bg-card hover:scale-110 rounded-lg transition-all duration-150"
+                            className="w-8 h-8 flex items-center justify-center text-lg hover:bg-card hover:scale-105 rounded-md transition-all duration-150"
                           >
                             {emoji}
                           </button>

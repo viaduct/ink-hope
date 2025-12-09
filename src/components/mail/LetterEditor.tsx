@@ -93,94 +93,94 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-7">
       {/* 헤더 */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <Edit3 className="w-5 h-5 text-primary" />
-          <h2 className="font-semibold text-foreground text-lg">편지 작성</h2>
+          <h2 className="font-semibold text-foreground text-base tracking-tight">편지 작성</h2>
         </div>
         <button 
           onClick={() => setIsAIHelperOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-full text-sm font-medium hover:from-violet-600 hover:to-purple-600 transition-all shadow-md"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-full text-xs font-medium hover:from-violet-600 hover:to-purple-600 transition-all shadow-sm"
         >
-          <Sparkles className="w-4 h-4" />
+          <Sparkles className="w-3.5 h-3.5" />
           AI 도우미
         </button>
       </div>
 
       {/* 흰색 라운딩 박스 - 메인 에디터 컨테이너 */}
-      <div className="bg-card rounded-3xl p-6 shadow-lg border border-border/50">
-        {/* 템플릿 버튼 */}
-        <div className="flex items-center gap-2 mb-4">
+      <div className="bg-card rounded-2xl p-6 shadow-md border border-border/60">
+        {/* 템플릿 버튼 - 간격 12px 통일 */}
+        <div className="flex items-center gap-3 mb-7">
           <button
             onClick={() => setActiveModal("intro")}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-sm font-medium text-orange-700 dark:text-orange-300 hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-950/50 dark:hover:to-amber-950/50 transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 bg-orange-50/80 dark:bg-orange-950/20 border border-orange-200/40 dark:border-orange-800/20 rounded-full text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100/80 dark:hover:bg-orange-950/40 transition-all"
           >
-            <span>👋</span>
+            <span className="text-sm">👋</span>
             처음
           </button>
           <button
             onClick={() => setActiveModal("middle")}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 border border-amber-200/50 dark:border-amber-800/30 rounded-full text-sm font-medium text-amber-700 dark:text-amber-300 hover:from-amber-100 hover:to-yellow-100 dark:hover:from-amber-950/50 dark:hover:to-yellow-950/50 transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 bg-orange-50/80 dark:bg-orange-950/20 border border-orange-200/40 dark:border-orange-800/20 rounded-full text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100/80 dark:hover:bg-orange-950/40 transition-all"
           >
-            <span>💬</span>
+            <span className="text-sm">💬</span>
             중간
           </button>
           <button
             onClick={() => setActiveModal("conclusion")}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 border border-violet-200/50 dark:border-violet-800/30 rounded-full text-sm font-medium text-violet-700 dark:text-violet-300 hover:from-violet-100 hover:to-purple-100 dark:hover:from-violet-950/50 dark:hover:to-purple-950/50 transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 bg-orange-50/80 dark:bg-orange-950/20 border border-orange-200/40 dark:border-orange-800/20 rounded-full text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100/80 dark:hover:bg-orange-950/40 transition-all"
           >
-            <span>🌟</span>
+            <span className="text-sm">🌟</span>
             마무리
           </button>
         </div>
 
-        {/* 툴바 */}
-        <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-xl flex-wrap mb-4">
-          {/* 폰트 선택 */}
+        {/* 툴바 - 간격 통일 및 타이포 정리 */}
+        <div className="flex items-center gap-1.5 p-2.5 bg-muted/40 rounded-xl flex-wrap mb-4 border border-border/30">
+          {/* 폰트 선택 - 작은 크기로 */}
           <Select value={font} onValueChange={setFont}>
-            <SelectTrigger className="w-[140px] h-9 bg-card border-border">
+            <SelectTrigger className="w-[100px] h-8 bg-card border-border/50 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {fonts.map(f => (
-                <SelectItem key={f.id} value={f.id}>
+                <SelectItem key={f.id} value={f.id} className="text-xs">
                   {f.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
-          <div className="w-px h-6 bg-border mx-1" />
+          <div className="w-px h-5 bg-border/50 mx-0.5" />
 
           {/* 폰트 크기 */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <button
               onClick={() => handleFontSizeChange(-2)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+              className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground"
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-3.5 h-3.5" />
             </button>
-            <span className="w-8 text-center text-sm font-medium text-foreground">
+            <span className="w-6 text-center text-xs font-medium text-foreground tabular-nums">
               {fontSize}
             </span>
             <button
               onClick={() => handleFontSizeChange(2)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+              className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="w-px h-6 bg-border mx-1" />
+          <div className="w-px h-5 bg-border/50 mx-0.5" />
 
           {/* 굵기 */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <button
               onClick={() => setIsBold(false)}
               className={cn(
-                "w-8 h-8 flex items-center justify-center rounded-lg transition-colors text-lg",
+                "w-7 h-7 flex items-center justify-center rounded-md transition-colors text-sm",
                 !isBold ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
               )}
             >
@@ -189,7 +189,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
             <button
               onClick={() => setIsBold(true)}
               className={cn(
-                "w-8 h-8 flex items-center justify-center rounded-lg transition-colors text-lg font-bold",
+                "w-7 h-7 flex items-center justify-center rounded-md transition-colors text-sm font-bold",
                 isBold ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
               )}
             >
@@ -197,84 +197,82 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
             </button>
           </div>
 
-          <div className="w-px h-6 bg-border mx-1" />
+          <div className="w-px h-5 bg-border/50 mx-0.5" />
 
           {/* 텍스트 스타일 */}
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
-            <span className="text-lg underline">가</span>
+          <button className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground">
+            <span className="text-sm underline">가</span>
           </button>
 
           {/* 정렬 */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <button
               onClick={() => setTextAlign("left")}
               className={cn(
-                "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
+                "w-7 h-7 flex items-center justify-center rounded-md transition-colors",
                 textAlign === "left" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
               )}
             >
-              <AlignLeft className="w-4 h-4" />
+              <AlignLeft className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setTextAlign("center")}
               className={cn(
-                "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
+                "w-7 h-7 flex items-center justify-center rounded-md transition-colors",
                 textAlign === "center" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
               )}
             >
-              <AlignCenter className="w-4 h-4" />
+              <AlignCenter className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setTextAlign("right")}
               className={cn(
-                "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
+                "w-7 h-7 flex items-center justify-center rounded-md transition-colors",
                 textAlign === "right" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
               )}
             >
-              <AlignRight className="w-4 h-4" />
+              <AlignRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="w-px h-6 bg-border mx-1" />
+          <div className="w-px h-5 bg-border/50 mx-0.5" />
 
           {/* 줄바꿈 */}
           <button 
             onClick={insertLineBreak}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+            className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground"
             title="줄바꿈"
           >
-            <CornerDownLeft className="w-4 h-4" />
+            <CornerDownLeft className="w-3.5 h-3.5" />
           </button>
 
           {/* 이미지 */}
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
-            <ImageIcon className="w-4 h-4" />
+          <button className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground">
+            <ImageIcon className="w-3.5 h-3.5" />
           </button>
 
           {/* 글자 수 */}
-          <div className="ml-auto text-sm text-muted-foreground">
+          <div className="ml-auto text-xs text-muted-foreground tabular-nums">
             {charCount}자
           </div>
         </div>
 
-        {/* 빠른 이모지 바 */}
+        {/* 빠른 이모지 바 - 에디터와 16px 간격 */}
         <div className="mb-4">
           <QuickEmojiBar onSelect={insertEmoji} />
         </div>
 
-        {/* 에디터 */}
-        <div className="relative">
+        {/* 에디터 - 강조된 영역 */}
+        <div className="relative editor-area rounded-xl overflow-hidden">
           <textarea
             ref={textareaRef}
             value={content}
             onChange={(e) => onContentChange(e.target.value)}
-            placeholder={`여기에 마음을 담아 편지를 써보세요...
-
-뭐라고 써야 할지 모르겠으면
-위의 '처음/중간/마무리' 버튼을 눌러보세요! 😊`}
+            placeholder="여기에 마음을 담아 편지를 써보세요.
+막막하다면 위의 '처음/중간/마무리' 버튼을 눌러보세요."
             className={cn(
-              "w-full min-h-[350px] p-6 bg-muted/30 border-0 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all",
-              "placeholder:text-muted-foreground/60",
+              "w-full min-h-[320px] p-6 bg-muted/20 border-0 resize-none focus:outline-none transition-all typography-base",
+              "editor-placeholder",
               isBold && "font-bold"
             )}
             style={{
@@ -283,7 +281,8 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
               fontFamily: font === "pretendard" ? "Pretendard, sans-serif" : 
                          font === "nanum-gothic" ? "'Nanum Gothic', sans-serif" :
                          font === "nanum-myeongjo" ? "'Nanum Myeongjo', serif" :
-                         "'Gowun Dodum', sans-serif"
+                         "'Gowun Dodum', sans-serif",
+              lineHeight: 1.7
             }}
           />
         </div>
