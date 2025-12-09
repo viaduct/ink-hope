@@ -175,32 +175,37 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
         <div className="border-t border-border my-4" />
 
         {/* Step Progress - Chips */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {steps.map((step) => (
-            <button
-              key={step.id}
-              onClick={() => currentStep > step.id && setCurrentStep(step.id)}
-              disabled={currentStep < step.id}
-              className={`
-                flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium
-                transition-all duration-200 whitespace-nowrap border
-                ${currentStep === step.id 
-                  ? "bg-primary text-primary-foreground border-primary shadow-md" 
-                  : currentStep > step.id 
-                    ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20 cursor-pointer" 
-                    : "bg-muted text-muted-foreground border-border cursor-not-allowed"
-                }
-              `}
-            >
-              <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold">
-                {currentStep > step.id ? (
-                  <Check className="w-3.5 h-3.5" />
-                ) : (
-                  step.id
-                )}
-              </span>
-              {step.label}
-            </button>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {steps.map((step, index) => (
+            <div key={step.id} className="flex items-center gap-1.5">
+              <button
+                onClick={() => currentStep > step.id && setCurrentStep(step.id)}
+                disabled={currentStep < step.id}
+                className={`
+                  flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium
+                  transition-all duration-200 whitespace-nowrap border
+                  ${currentStep === step.id 
+                    ? "bg-primary text-primary-foreground border-primary shadow-md" 
+                    : currentStep > step.id 
+                      ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20 cursor-pointer" 
+                      : "bg-muted text-muted-foreground border-border cursor-not-allowed"
+                  }
+                `}
+              >
+                <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold">
+                  {currentStep > step.id ? (
+                    <Check className="w-3.5 h-3.5" />
+                  ) : (
+                    step.id
+                  )}
+                </span>
+                {step.label}
+              </button>
+              {/* 화살표 (마지막 스텝 제외) */}
+              {index < steps.length - 1 && (
+                <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+              )}
+            </div>
           ))}
         </div>
       </header>
