@@ -109,39 +109,56 @@ export function Sidebar({
         </motion.button>
       </div>
 
-      {/* Profile - 편지 쓰기 버튼 위에 배치 */}
-      <div className="px-3 pt-3 pb-6">
-        <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
-          <div className="relative flex-shrink-0">
-            <img 
-              src={orangeRipe} 
-              alt="프로필" 
-              className="w-11 h-11 rounded-full object-cover ring-2 ring-primary ring-offset-1"
-            />
-            {/* Social Login Provider Badge */}
-            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border border-white">
-              {/* Kakao Icon */}
-              <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-[#3C1E1E]">
-                <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.76 1.84 5.18 4.6 6.58-.2.72-.76 2.6-.87 3-.14.5.18.5.38.36.16-.1 2.52-1.7 3.54-2.4.78.1 1.56.16 2.35.16 5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/>
-              </svg>
+      {/* Profile Card */}
+      <div className="px-3 pt-3 pb-4">
+        {!isCollapsed ? (
+          <div className="flex flex-col items-center text-center">
+            {/* 프로필 이미지 */}
+            <div className="relative mb-3">
+              <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center text-2xl font-bold text-orange-600">
+                B
+              </div>
+              {/* Kakao Badge */}
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border-2 border-white">
+                <span className="text-xs font-bold text-[#3C1E1E]">K</span>
+              </div>
+            </div>
+            
+            {/* 이름 & 이메일 */}
+            <p className="text-lg font-bold text-foreground mb-0.5">Bang Kyung Chang</p>
+            <p className="text-sm text-muted-foreground mb-4 truncate max-w-full">webbreak@kakao...</p>
+            
+            {/* 통계 카드 - 가로 배치 */}
+            <div className="flex gap-2 w-full">
+              <button 
+                onClick={() => onFolderChange("inbox")}
+                className="flex-1 bg-gray-100 rounded-xl py-3 px-2 hover:bg-gray-200 transition-colors"
+              >
+                <Mail className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
+                <p className="text-xl font-bold text-foreground">{unreadCount}</p>
+                <p className="text-xs text-muted-foreground">안읽음</p>
+              </button>
+              <button 
+                onClick={onHandwrittenUpload}
+                className="flex-1 bg-gray-100 rounded-xl py-3 px-2 hover:bg-gray-200 transition-colors"
+              >
+                <FileText className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
+                <span className="text-lg">✍️</span>
+                <p className="text-xs text-muted-foreground">손편지 답기</p>
+              </button>
             </div>
           </div>
-          {!isCollapsed && (
-            <>
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-bold text-foreground truncate">
-                  Bang Kyung
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  bangkyung@kakao.com
-                </p>
-              </div>
-              <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-                <Settings className="w-4 h-4" />
-              </button>
-            </>
-          )}
-        </div>
+        ) : (
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              <img 
+                src={orangeRipe} 
+                alt="프로필" 
+                className="w-10 h-10 rounded-full object-cover ring-2 ring-primary ring-offset-1"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Top Action Buttons */}
@@ -167,86 +184,6 @@ export function Sidebar({
           </Button>
         )}
 
-        {/* 새로 들어온 편지 & 손편지 자동등록 - 가로 배치 */}
-        {!isCollapsed && (
-          <div className="flex gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    onClick={() => onFolderChange("inbox")}
-                    className="flex-1 h-10 rounded-lg text-[13px] font-medium bg-white text-orange-500 shadow-[0_0_8px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_rgba(0,0,0,0.2)] hover:bg-white hover:text-orange-600 justify-center px-3 transition-all"
-                  >
-                    <Bell className="w-4 h-4 mr-1.5 flex-shrink-0" />
-                    <span>새로 들어온 편지</span>
-                    {unreadCount > 0 && (
-                      <span className="bg-orange-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ml-1.5">{unreadCount}</span>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-orange-50 border-orange-200 text-orange-800">
-                  <p>새로 들어온 편지 {unreadCount}건이 있어요🧡</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  onClick={onHandwrittenUpload}
-                  className="flex-1 h-10 rounded-lg text-[13px] font-medium bg-white text-orange-500 shadow-[0_0_8px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_rgba(0,0,0,0.2)] hover:bg-white hover:text-orange-600 justify-center px-3 transition-all"
-                >
-                  <Inbox className="w-4 h-4 mr-1.5 flex-shrink-0" />
-                  <span>손편지 자동등록</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-[240px] text-center">
-                <p>손편지를 여러 장 업로드하면, OCR로 자동 변환되어 발송용 문장으로 정리됩니다.</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        )}
-
-        {/* Collapsed state buttons */}
-        {isCollapsed && (
-          <>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onFolderChange("inbox")}
-                    className="w-full h-10 rounded-lg bg-white text-orange-500 shadow-[0_0_8px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_rgba(0,0,0,0.2)] hover:bg-white hover:text-orange-600 transition-all"
-                  >
-                    <Bell className="w-5 h-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="bg-orange-50 border-orange-200 text-orange-800">
-                  <p>새로 들어온 편지 {unreadCount}건이 있어요🧡</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onHandwrittenUpload}
-                  className="w-full h-10 rounded-lg bg-white text-orange-500 shadow-[0_0_8px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_rgba(0,0,0,0.2)] hover:bg-white hover:text-orange-600 transition-all"
-                >
-                  <Inbox className="w-5 h-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" className="max-w-[240px] text-center">
-                <p>손편지를 여러 장 업로드하면, OCR로 자동 변환되어 발송용 문장으로 정리됩니다.</p>
-              </TooltipContent>
-            </Tooltip>
-          </>
-        )}
       </div>
 
       {/* Folders */}
