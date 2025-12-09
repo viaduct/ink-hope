@@ -254,7 +254,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center ${
                           selectedRecipientId === recipient.id 
                             ? "bg-primary" 
-                            : "bg-muted border-2 border-border"
+                            : "bg-card border-2 border-border"
                         }`}>
                           {selectedRecipientId === recipient.id && (
                             <Check className="w-4 h-4 text-primary-foreground" />
@@ -404,7 +404,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center ${
                           selectedSenderId === sender.id 
                             ? "bg-primary" 
-                            : "bg-muted border-2 border-border"
+                            : "bg-card border-2 border-border"
                         }`}>
                           {selectedSenderId === sender.id && (
                             <Check className="w-4 h-4 text-primary-foreground" />
