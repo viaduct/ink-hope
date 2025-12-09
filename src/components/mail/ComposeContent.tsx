@@ -329,10 +329,8 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                       <div>
                                         <div className="flex items-center gap-2">
                                           <span className="font-semibold text-foreground">{option.label}</span>
-                                          {option.hasTracking && (
-                                            <span className="text-xs text-primary">
-                                              {index === 0 ? "분실 위험 적음" : "추적 가능 + 전달 확인"}
-                                            </span>
+                                          {option.hasTracking && index !== 0 && (
+                                            <span className="text-xs text-primary">추적 가능 + 전달 확인</span>
                                           )}
                                           {!option.hasTracking && index === 2 && (
                                             <span className="text-xs text-muted-foreground">기본 전송</span>

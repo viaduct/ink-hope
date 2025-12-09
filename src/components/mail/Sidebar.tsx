@@ -396,24 +396,9 @@ export function Sidebar({
           {!isCollapsed && (
             <>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <p className="text-sm font-medium text-foreground truncate">
-                    Bang Kyung
-                  </p>
-                  {/* Provider name tooltip */}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#FEE500] text-[#3C1E1E] font-medium">
-                          카카오
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent side="top">
-                        <p>카카오 계정으로 로그인됨</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+                <p className="text-sm font-medium text-foreground truncate">
+                  Bang Kyung
+                </p>
                 <p className="text-xs text-muted-foreground truncate">
                   서울시 강남구 테헤란로 123
                 </p>
