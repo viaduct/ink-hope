@@ -143,16 +143,19 @@ export function LetterPreview({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Eye className="w-5 h-5 text-primary" />
           <h2 className="font-semibold text-foreground text-lg">편지 미리보기</h2>
         </div>
-        
-        {/* 컨트롤 */}
-        <div className="flex items-center gap-2">
+      </div>
+
+      {/* 흰색 라운딩 박스 - 메인 컨테이너 */}
+      <div className="bg-card rounded-3xl p-6 shadow-lg border border-border/50 space-y-6">
+        {/* 줌 컨트롤 */}
+        <div className="flex items-center justify-end">
           <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
             <button
               onClick={() => setZoom(Math.max(50, zoom - 10))}
@@ -173,131 +176,131 @@ export function LetterPreview({
             </button>
           </div>
         </div>
-      </div>
 
-      {/* 편지지 미리보기 + 에디터 영역 */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
-        {/* 에디터 영역 */}
-        <div 
-          className={cn(
-            "relative min-h-[300px] p-6",
-            stationery?.bgGradient || stationery?.bgColor || "bg-white"
-          )}
-        >
-          {/* 패턴 */}
-          {stationery?.pattern === "lines" && (
-            <div className="absolute inset-0 flex flex-col pt-8 px-6 gap-6 pointer-events-none">
-              {[...Array(15)].map((_, i) => (
-                <div key={i} className="h-px bg-amber-200/60" />
-              ))}
-            </div>
-          )}
-          {stationery?.pattern === "grid" && (
-            <div 
-              className="absolute inset-0 opacity-30 pointer-events-none"
-              style={{
-                backgroundImage: 'linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)',
-                backgroundSize: '24px 24px'
-              }}
-            />
-          )}
-
-          {/* 텍스트 에디터 */}
-          <textarea
-            value={editableContent}
-            onChange={(e) => handleContentChange(e.target.value)}
-            placeholder="편지 내용을 입력하거나 수정하세요..."
+        {/* 편지지 미리보기 영역 */}
+        <div className="rounded-2xl border border-border overflow-hidden">
+          {/* 에디터 영역 */}
+          <div 
             className={cn(
-              "relative z-10 w-full min-h-[280px] bg-transparent border-0 resize-none focus:outline-none text-gray-800 leading-relaxed",
-              "placeholder:text-gray-400"
+              "relative min-h-[300px] p-6",
+              stationery?.bgGradient || stationery?.bgColor || "bg-white"
             )}
-            style={{ fontSize: "16px" }}
-          />
-        </div>
+          >
+            {/* 패턴 */}
+            {stationery?.pattern === "lines" && (
+              <div className="absolute inset-0 flex flex-col pt-8 px-6 gap-6 pointer-events-none">
+                {[...Array(15)].map((_, i) => (
+                  <div key={i} className="h-px bg-amber-200/60" />
+                ))}
+              </div>
+            )}
+            {stationery?.pattern === "grid" && (
+              <div 
+                className="absolute inset-0 opacity-30 pointer-events-none"
+                style={{
+                  backgroundImage: 'linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)',
+                  backgroundSize: '24px 24px'
+                }}
+              />
+            )}
 
-        {/* AI 말투 변환 툴바 */}
-        <div className="border-t border-border bg-muted/30 p-4">
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Sparkles className="w-4 h-4" />
-              <span>AI로 전체 문장 다듬기</span>
-            </div>
-            
-            <div className="flex items-center gap-2 flex-wrap flex-1">
-              {toneOptions.map((tone) => (
-                <button
-                  key={tone.id}
-                  onClick={() => handleToneConvert(tone.id)}
-                  disabled={isConverting}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all border",
-                    activeTone === tone.id && isConverting
-                      ? "bg-primary/10 border-primary text-primary"
-                      : "bg-card border-border hover:border-primary/50 hover:bg-primary/5 text-foreground"
-                  )}
-                  title={tone.description}
-                >
-                  {activeTone === tone.id && isConverting ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : (
-                    <span>{tone.icon}</span>
-                  )}
-                  {tone.label}
-                </button>
-              ))}
-            </div>
+            {/* 텍스트 에디터 */}
+            <textarea
+              value={editableContent}
+              onChange={(e) => handleContentChange(e.target.value)}
+              placeholder="편지 내용을 입력하거나 수정하세요..."
+              className={cn(
+                "relative z-10 w-full min-h-[280px] bg-transparent border-0 resize-none focus:outline-none text-gray-800 leading-relaxed",
+                "placeholder:text-gray-400"
+              )}
+              style={{ fontSize: "16px" }}
+            />
+          </div>
 
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              초기화
-            </button>
+          {/* AI 말투 변환 툴바 */}
+          <div className="border-t border-border bg-muted/30 p-4">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Sparkles className="w-4 h-4" />
+                <span>AI로 전체 문장 다듬기</span>
+              </div>
+              
+              <div className="flex items-center gap-2 flex-wrap flex-1">
+                {toneOptions.map((tone) => (
+                  <button
+                    key={tone.id}
+                    onClick={() => handleToneConvert(tone.id)}
+                    disabled={isConverting}
+                    className={cn(
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all border",
+                      activeTone === tone.id && isConverting
+                        ? "bg-primary/10 border-primary text-primary"
+                        : "bg-card border-border hover:border-primary/50 hover:bg-primary/5 text-foreground"
+                    )}
+                    title={tone.description}
+                  >
+                    {activeTone === tone.id && isConverting ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <span>{tone.icon}</span>
+                    )}
+                    {tone.label}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                초기화
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 받는 사람/보내는 사람 정보 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* 받는 사람 */}
-        <div className="bg-card rounded-xl border border-border p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <User className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">받는 사람</span>
-          </div>
-          {recipientName ? (
-            <div>
-              <p className="font-semibold text-foreground">{recipientName}</p>
-              {recipientFacility && <p className="text-sm text-primary">{recipientFacility}</p>}
+        {/* 받는 사람/보내는 사람 정보 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* 받는 사람 */}
+          <div className="bg-muted/30 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <User className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-muted-foreground">받는 사람</span>
             </div>
-          ) : (
-            <p className="text-muted-foreground text-sm">선택된 수신자가 없습니다</p>
-          )}
-        </div>
-        
-        {/* 보내는 사람 */}
-        <div className="bg-card rounded-xl border border-border p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Send className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">보내는 사람</span>
+            {recipientName ? (
+              <div>
+                <p className="font-semibold text-foreground">{recipientName}</p>
+                {recipientFacility && <p className="text-sm text-primary">{recipientFacility}</p>}
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-sm">선택된 수신자가 없습니다</p>
+            )}
           </div>
-          {senderName ? (
-            <div>
-              <p className="font-semibold text-foreground">{senderName}</p>
-              {senderAddress && <p className="text-sm text-muted-foreground">{senderAddress}</p>}
+          
+          {/* 보내는 사람 */}
+          <div className="bg-muted/30 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Send className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-muted-foreground">보내는 사람</span>
             </div>
-          ) : (
-            <p className="text-muted-foreground text-sm">선택된 발신자가 없습니다</p>
-          )}
+            {senderName ? (
+              <div>
+                <p className="font-semibold text-foreground">{senderName}</p>
+                {senderAddress && <p className="text-sm text-muted-foreground">{senderAddress}</p>}
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-sm">선택된 발신자가 없습니다</p>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* 안내 메시지 */}
-      <div className="bg-muted/50 rounded-xl p-4 text-center">
-        <p className="text-sm text-muted-foreground">
-          💡 미리보기에서 직접 수정하거나, AI 버튼을 눌러 말투를 바꿀 수 있어요.
-        </p>
+        {/* 안내 메시지 */}
+        <div className="bg-muted/50 rounded-xl p-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            💡 미리보기에서 직접 수정하거나, AI 버튼을 눌러 말투를 바꿀 수 있어요.
+          </p>
+        </div>
       </div>
     </div>
   );
