@@ -107,29 +107,7 @@ export function Sidebar({
 
       {/* Top Action Buttons */}
       <div className="px-3 pt-3 flex flex-col gap-1.5">
-        {/* New Mail Notification */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {isCollapsed ? (
-                <div className="w-full h-10 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-center">
-                  <Bell className="w-4 h-4 text-amber-600" />
-                </div>
-              ) : (
-                <div className="w-full h-10 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:bg-amber-200 transition-colors">
-                  <Bell className="w-4 h-4 text-amber-600" />
-                  <span className="text-sm font-medium text-amber-700">새로 들어온 편지</span>
-                  <span className="bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">3</span>
-                </div>
-              )}
-            </TooltipTrigger>
-            <TooltipContent side="right" className="bg-amber-50 border-amber-200 text-amber-800">
-              <p>새로 들어온 편지 3건이 있어요🧡</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        {/* Compose Button */}
+        {/* Compose Button - 편지 쓰기 */}
         {isCollapsed ? (
           <Button
             onClick={onCompose}
@@ -141,26 +119,48 @@ export function Sidebar({
         ) : (
           <Button
             onClick={onCompose}
-            className="w-full h-11 rounded-xl text-[15px] font-semibold shadow-card hover:shadow-card-hover transition-all duration-200"
+            className="w-full h-11 rounded-xl text-[15px] font-medium shadow-card hover:shadow-card-hover transition-all duration-200"
           >
             <PenLine className="w-4 h-4 mr-2" />
             편지 쓰기
           </Button>
         )}
 
+        {/* New Mail Notification */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              {isCollapsed ? (
+                <div className="w-full h-11 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-amber-600" />
+                </div>
+              ) : (
+                <div className="w-full h-11 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:bg-amber-200 transition-colors">
+                  <Bell className="w-4 h-4 text-amber-600" />
+                  <span className="text-[15px] font-medium text-amber-700">새로 들어온 편지</span>
+                  <span className="bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">3</span>
+                </div>
+              )}
+            </TooltipTrigger>
+            <TooltipContent side="right" className="bg-amber-50 border-amber-200 text-amber-800">
+              <p>새로 들어온 편지 3건이 있어요🧡</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         {/* Handwritten Letter Auto-Registration */}
         {isCollapsed ? (
           <Button
             variant="outline"
             size="icon"
-            className="w-full h-10 rounded-xl border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
+            className="w-full h-11 rounded-xl border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
           >
             <Inbox className="w-5 h-5" />
           </Button>
         ) : (
           <Button
             variant="outline"
-            className="w-full h-10 rounded-xl text-[14px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
+            className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
           >
             <Inbox className="w-4 h-4 mr-2" />
             손편지 자동등록
