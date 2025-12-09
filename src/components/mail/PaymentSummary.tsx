@@ -194,10 +194,10 @@ export function PaymentSummary({
                 key={option.id}
                 onClick={() => onMailTypeChange(option.id, option.price)}
                 className={cn(
-                  "relative p-4 rounded-xl border-2 transition-all text-left",
+                  "relative p-4 rounded-xl transition-all text-left",
                   mailType === option.id
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/30"
+                    ? "border-2 border-primary bg-primary/5"
+                    : "border border-gray-200 dark:border-gray-700 hover:border-primary/30"
                 )}
               >
                 {/* 선택 체크 */}
