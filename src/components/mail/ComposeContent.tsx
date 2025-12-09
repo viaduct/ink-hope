@@ -23,6 +23,7 @@ import { AddressBookModal } from "./AddressBookModal";
 import { StationerySelector } from "./StationerySelector";
 import { LetterEditor } from "./LetterEditor";
 import { LetterPreview } from "./LetterPreview";
+import { PhotoUpload } from "./PhotoUpload";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
 
@@ -116,6 +117,9 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   
   // 편지 내용 상태
   const [letterContent, setLetterContent] = useState("");
+  
+  // 사진 상태
+  const [photos, setPhotos] = useState<Array<{ id: string; file: File; preview: string; rotation: number }>>([]);
   
   // 모달 상태
   const [isAddRecipientModalOpen, setIsAddRecipientModalOpen] = useState(false);
@@ -469,11 +473,11 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
             )}
 
             {currentStep === 5 && (
-              <div className="bg-card rounded-xl border border-border p-8 text-center">
-                <Image className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h2 className="text-lg font-semibold text-foreground mb-2">사진 추가</h2>
-                <p className="text-muted-foreground">사진 추가 기능이 곧 추가됩니다</p>
-              </div>
+              <PhotoUpload
+                photos={photos}
+                onPhotosChange={setPhotos}
+                maxPhotos={10}
+              />
             )}
 
             {currentStep === 6 && (
