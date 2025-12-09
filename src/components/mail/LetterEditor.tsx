@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { QuickEmojiBar } from "./QuickEmojiBar";
 import { AIWritingHelper } from "./AIWritingHelper";
-import { IntroWriterModal } from "./IntroWriterModal";
+import { AIWriterModal } from "./AIWriterModal";
 
 type TextAlign = "left" | "center" | "right";
 
@@ -35,42 +35,19 @@ const fonts = [
   { id: "gowun-dodum", name: "고운돋움" },
 ];
 
-const templateTexts = {
-  intro: `안녕하세요, 잘 지내고 계시죠?
-
-오랜만에 편지를 씁니다. 요즘 날씨가 많이 추워졌는데, 건강은 괜찮으신지 궁금합니다.
-
-`,
-  main: `요즘 저는 이런저런 일들이 있었어요.
-
-매일 열심히 지내고 있고, 좋은 일들도 많이 생겼습니다. 특히...
-
-`,
-  conclusion: `다음에 만나면 더 많은 이야기 나눠요.
-
-항상 건강하시고, 곧 뵐 수 있기를 바랍니다.
-
-사랑을 담아,
-드림`,
-};
-
 export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
   const [font, setFont] = useState("pretendard");
   const [fontSize, setFontSize] = useState(16);
   const [isBold, setIsBold] = useState(false);
   const [textAlign, setTextAlign] = useState<TextAlign>("left");
   const [isAIHelperOpen, setIsAIHelperOpen] = useState(false);
-  const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<"intro" | "middle" | "conclusion" | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const charCount = content.length;
 
   const handleFontSizeChange = (delta: number) => {
     setFontSize(prev => Math.min(24, Math.max(12, prev + delta)));
-  };
-
-  const insertTemplate = (type: "intro" | "main" | "conclusion") => {
-    onContentChange(content + templateTexts[type]);
   };
 
   const insertEmoji = (emoji: string) => {
@@ -86,6 +63,23 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
       }, 0);
     } else {
       onContentChange(content + emoji);
+    }
+  };
+
+  const handleInsertContent = (text: string, position: "start" | "end" | "cursor") => {
+    if (position === "start") {
+      onContentChange(text + "\n\n" + content);
+    } else if (position === "end") {
+      onContentChange(content + (content ? "\n\n" : "") + text);
+    } else {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        const start = textarea.selectionStart;
+        const newContent = content.substring(0, start) + text + content.substring(start);
+        onContentChange(newContent);
+      } else {
+        onContentChange(content + text);
+      }
     }
   };
 
@@ -111,21 +105,21 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
         {/* 템플릿 버튼 */}
         <div className="flex items-center gap-2 mb-4">
           <button
-            onClick={() => setIsIntroModalOpen(true)}
+            onClick={() => setActiveModal("intro")}
             className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-sm font-medium text-orange-700 dark:text-orange-300 hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-950/50 dark:hover:to-amber-950/50 transition-all shadow-sm"
           >
             <span>👋</span>
             처음
           </button>
           <button
-            onClick={() => insertTemplate("main")}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-200/50 dark:border-blue-800/30 rounded-full text-sm font-medium text-blue-700 dark:text-blue-300 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-950/50 dark:hover:to-indigo-950/50 transition-all shadow-sm"
+            onClick={() => setActiveModal("middle")}
+            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 border border-amber-200/50 dark:border-amber-800/30 rounded-full text-sm font-medium text-amber-700 dark:text-amber-300 hover:from-amber-100 hover:to-yellow-100 dark:hover:from-amber-950/50 dark:hover:to-yellow-950/50 transition-all shadow-sm"
           >
             <span>💬</span>
             중간
           </button>
           <button
-            onClick={() => insertTemplate("conclusion")}
+            onClick={() => setActiveModal("conclusion")}
             className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 border border-violet-200/50 dark:border-violet-800/30 rounded-full text-sm font-medium text-violet-700 dark:text-violet-300 hover:from-violet-100 hover:to-purple-100 dark:hover:from-violet-950/50 dark:hover:to-purple-950/50 transition-all shadow-sm"
           >
             <span>🌟</span>
@@ -287,13 +281,26 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
         currentContent={content}
       />
 
-      {/* 처음 작성 모달 */}
-      <IntroWriterModal
-        isOpen={isIntroModalOpen}
-        onClose={() => setIsIntroModalOpen(false)}
-        onInsert={(text) => {
-          onContentChange(text + "\n\n" + content);
-        }}
+      {/* AI 작성 모달들 */}
+      <AIWriterModal
+        type="intro"
+        isOpen={activeModal === "intro"}
+        onClose={() => setActiveModal(null)}
+        onInsert={(text) => handleInsertContent(text, "start")}
+        currentContent={content}
+      />
+      <AIWriterModal
+        type="middle"
+        isOpen={activeModal === "middle"}
+        onClose={() => setActiveModal(null)}
+        onInsert={(text) => handleInsertContent(text, "cursor")}
+        currentContent={content}
+      />
+      <AIWriterModal
+        type="conclusion"
+        isOpen={activeModal === "conclusion"}
+        onClose={() => setActiveModal(null)}
+        onInsert={(text) => handleInsertContent(text, "end")}
         currentContent={content}
       />
     </div>
