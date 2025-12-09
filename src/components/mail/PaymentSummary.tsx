@@ -189,46 +189,48 @@ export function PaymentSummary({
             <h3 className="font-semibold text-foreground mb-2">우편 종류</h3>
             <p className="text-sm text-muted-foreground mb-4">교정시설 우편은 내부 검수 절차로 인해 모든 방식의 실제 전달 속도는 비슷합니다.</p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            {mailTypeOptions.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => onMailTypeChange(option.id, option.price)}
-                className={cn(
-                  "relative p-4 rounded-xl transition-all text-left bg-card",
-                  mailType === option.id
-                    ? "border-2 border-primary"
-                    : "border border-border hover:border-primary/50"
-                )}
-              >
-                {/* 라디오 버튼 스타일 */}
-                <div className="flex items-start gap-3">
-                  <div className={cn(
-                    "w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 shrink-0",
+          <div className="bg-card rounded-xl p-3 border border-border/50">
+            <div className="grid grid-cols-2 gap-3">
+              {mailTypeOptions.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => onMailTypeChange(option.id, option.price)}
+                  className={cn(
+                    "relative p-4 rounded-xl transition-all text-left bg-muted/20",
                     mailType === option.id
-                      ? "border-primary bg-primary"
-                      : "border-muted-foreground/50"
-                  )}>
-                    {mailType === option.id && (
-                      <Check className="w-3 h-3 text-primary-foreground" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold text-foreground">{option.label}</p>
-                      {option.id === "준등기우편" && (
-                        <span className="text-xs bg-primary text-primary-foreground px-1.5 py-0.5 rounded">추천</span>
-                      )}
-                      {option.id === "등기우편" && (
-                        <span className="text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded">안심</span>
+                      ? "border-2 border-primary bg-primary/5"
+                      : "border border-border hover:border-primary/50"
+                  )}
+                >
+                  {/* 라디오 버튼 스타일 */}
+                  <div className="flex items-start gap-3">
+                    <div className={cn(
+                      "w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 shrink-0",
+                      mailType === option.id
+                        ? "border-primary bg-primary"
+                        : "border-muted-foreground/50"
+                    )}>
+                      {mailType === option.id && (
+                        <Check className="w-3 h-3 text-primary-foreground" />
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground">{option.deliveryTime}</p>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-foreground">{option.label}</p>
+                        {option.id === "준등기우편" && (
+                          <span className="text-xs bg-primary text-primary-foreground px-1.5 py-0.5 rounded">추천</span>
+                        )}
+                        {option.id === "등기우편" && (
+                          <span className="text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded">안심</span>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{option.deliveryTime}</p>
+                    </div>
+                    <p className="text-primary font-bold">{option.price.toLocaleString()}원</p>
                   </div>
-                  <p className="text-primary font-bold">{option.price.toLocaleString()}원</p>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
