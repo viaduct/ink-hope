@@ -10,7 +10,7 @@ import { DeadlineTimer } from "./DeadlineTimer";
 
 interface SidebarProps {
   familyMembers: FamilyMember[];
-  activeFolder: FolderType;
+  activeFolder: FolderType | null;
   onFolderChange: (folder: FolderType) => void;
   unreadCount: number;
   draftCount: number;

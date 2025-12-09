@@ -10,7 +10,7 @@ import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 
 const Index = () => {
-  const [activeFolder, setActiveFolder] = useState<FolderType>("inbox");
+  const [activeFolder, setActiveFolder] = useState<FolderType | null>(null);
   const [selectedMail, setSelectedMail] = useState<Mail | null>(null);
   const [isComposeOpen, setIsComposeOpen] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -62,7 +62,7 @@ const Index = () => {
   };
 
   // 현재 폴더에 맞는 메일 필터링
-  const folderMails = mails.filter((mail) => mail.folder === activeFolder);
+  const folderMails = activeFolder ? mails.filter((mail) => mail.folder === activeFolder) : mails.filter((mail) => mail.folder === "inbox");
 
   // 선택된 가족 구성원에 따라 편지 필터링
   const filteredMails = selectedMemberId
