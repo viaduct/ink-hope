@@ -118,8 +118,8 @@ export function Sidebar({
             <div className="relative mb-3">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 p-[2px]">
                 <div className="w-full h-full rounded-full bg-white p-1">
-                  <div className="w-full h-full rounded-full bg-orange-50 flex items-center justify-center">
-                    <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
+                  <div className="w-full h-full rounded-full bg-orange-50 flex items-center justify-center overflow-hidden">
+                    <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain rounded-full" />
                   </div>
                 </div>
               </div>
