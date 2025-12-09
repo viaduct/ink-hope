@@ -26,6 +26,7 @@ import { LetterPreview } from "./LetterPreview";
 import { PhotoUpload } from "./PhotoUpload";
 import { AdditionalOptions } from "./AdditionalOptions";
 import { DeadlineTimer } from "./DeadlineTimer";
+import { PaymentSummary } from "./PaymentSummary";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
 
@@ -493,11 +494,24 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
             )}
 
             {currentStep === 7 && (
-              <div className="bg-card rounded-xl border border-border p-8 text-center">
-                <CreditCard className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h2 className="text-lg font-semibold text-foreground mb-2">결제</h2>
-                <p className="text-muted-foreground">결제 기능이 곧 추가됩니다</p>
-              </div>
+              <PaymentSummary
+                recipientName={recipients.find(r => r.id === selectedRecipientId)?.name}
+                recipientFacility={recipients.find(r => r.id === selectedRecipientId)?.facility}
+                letterContent={letterContent}
+                stationeryName={selectedStationeryId === "cream" ? "크림" : 
+                               selectedStationeryId === "lined" ? "줄노트" : 
+                               selectedStationeryId === "sky" ? "하늘색" : 
+                               selectedStationeryId === "pink" ? "연분홍" : 
+                               selectedStationeryId === "mint" ? "민트" : "기본"}
+                photos={photos}
+                selectedAdditionalItems={selectedAdditionalItems}
+                mailType={selectedMailType}
+                mailPrice={mailTypeOptions.find(m => m.id === selectedMailType)?.price || 0}
+                onPayment={() => {
+                  // TODO: 결제 처리
+                  console.log("결제 진행");
+                }}
+              />
             )}
           </motion.div>
         </AnimatePresence>
