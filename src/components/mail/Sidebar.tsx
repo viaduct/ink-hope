@@ -381,15 +381,39 @@ export function Sidebar({
       {/* Profile */}
       <div className="p-3 border-t border-border">
         <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
-          <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm flex-shrink-0">
-            B
+          <div className="relative flex-shrink-0">
+            <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+              B
+            </div>
+            {/* Social Login Provider Badge */}
+            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border border-white">
+              {/* Kakao Icon */}
+              <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-[#3C1E1E]">
+                <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.76 1.84 5.18 4.6 6.58-.2.72-.76 2.6-.87 3-.14.5.18.5.38.36.16-.1 2.52-1.7 3.54-2.4.78.1 1.56.16 2.35.16 5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/>
+              </svg>
+            </div>
           </div>
           {!isCollapsed && (
             <>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  Bang Kyung
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    Bang Kyung
+                  </p>
+                  {/* Provider name tooltip */}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#FEE500] text-[#3C1E1E] font-medium">
+                          카카오
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        <p>카카오 계정으로 로그인됨</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
                 <p className="text-xs text-muted-foreground truncate">
                   서울시 강남구 테헤란로 123
                 </p>
