@@ -174,7 +174,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/20">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/40">
       {/* Header */}
       <header className="h-auto bg-card px-6 py-4 border-b border-border/60">
         <div className="mb-3">
@@ -260,10 +260,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         key={recipient.id}
                         onClick={() => setSelectedRecipientId(selectedRecipientId === recipient.id ? null : recipient.id)}
                         className={`
-                          relative rounded-xl p-3.5 cursor-pointer transition-all
+                          relative rounded-xl p-3.5 cursor-pointer transition-all bg-white
                           ${selectedRecipientId === recipient.id 
-                            ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-primary/30" 
-                            : "bg-muted/30 border border-transparent hover:bg-muted/50"
+                            ? "shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-primary/30" 
+                            : "border border-border/40 hover:shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
                           }
                         `}
                       >
@@ -390,10 +390,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         key={sender.id}
                         onClick={() => setSelectedSenderId(sender.id)}
                         className={`
-                          relative bg-card rounded-xl border p-3 cursor-pointer transition-all
+                          relative rounded-xl p-3 cursor-pointer transition-all bg-white
                           ${selectedSenderId === sender.id 
-                            ? "border-primary/40 bg-primary/5" 
-                            : "border-border/60 hover:border-border"
+                            ? "shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-primary/30" 
+                            : "border border-border/40 hover:shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
                           }
                         `}
                       >
