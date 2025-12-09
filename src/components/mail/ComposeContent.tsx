@@ -63,37 +63,6 @@ interface ComposeContentProps {
   onClose: () => void;
 }
 
-// 샘플 주소록 데이터
-const sampleRecipients = [
-  {
-    id: "1",
-    name: "이재원",
-    relation: "아들",
-    facility: "서울남부교도소",
-    address: "서울특별시 금천구 시흥대로 439",
-    prisonerNumber: "2024-1234",
-    color: "bg-orange-500",
-  },
-  {
-    id: "2", 
-    name: "서은우",
-    relation: "남편",
-    facility: "수원구치소",
-    address: "경기도 수원시 팔달구 동수원로 399",
-    prisonerNumber: "2024-5678",
-    color: "bg-blue-500",
-  },
-  {
-    id: "3",
-    name: "임성훈",
-    relation: "동생",
-    facility: "대전교도소",
-    address: "대전광역시 중구 보문로 285",
-    prisonerNumber: "",
-    color: "bg-blue-400",
-  },
-];
-
 // 샘플 보내는 사람 데이터
 const sampleSenders = [
   {
@@ -119,8 +88,21 @@ const sampleSenders = [
 export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) {
   const [currentStep, setCurrentStep] = useState<StepId>(1);
   
+  // familyMembers를 recipients 형태로 변환
+  const recipientsFromFamily = familyMembers.map(member => ({
+    id: member.id,
+    name: member.name,
+    relation: member.relation,
+    facility: member.facility,
+    address: member.facilityAddress,
+    prisonerNumber: member.prisonerNumber,
+    color: member.color.includes('orange') ? 'bg-orange-500' : 
+           member.color.includes('blue') ? 'bg-blue-500' : 
+           member.color.includes('purple') ? 'bg-purple-500' : 'bg-primary',
+  }));
+  
   // 받는 사람 선택 상태
-  const [selectedRecipientId, setSelectedRecipientId] = useState<string | null>("1");
+  const [selectedRecipientId, setSelectedRecipientId] = useState<string | null>(familyMembers[0]?.id || null);
   const [selectedMailType, setSelectedMailType] = useState<MailType>("준등기우편");
   
   // 보내는 사람 선택 상태
@@ -131,8 +113,8 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   const [isAddSenderModalOpen, setIsAddSenderModalOpen] = useState(false);
   const [isAddressBookModalOpen, setIsAddressBookModalOpen] = useState(false);
   
-  // 동적 데이터 (나중에 실제 데이터로 교체)
-  const [recipients, setRecipients] = useState(sampleRecipients);
+  // 동적 데이터
+  const [recipients, setRecipients] = useState(recipientsFromFamily);
   const [senders, setSenders] = useState(sampleSenders);
   
   // 선택된 보내는 사람 정보
