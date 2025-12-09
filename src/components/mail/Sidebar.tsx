@@ -117,9 +117,9 @@ export function Sidebar({
             {/* 프로필 이미지 - Instagram Story 스타일 */}
             <div className="relative mb-3">
               <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-tr from-[#FF8C00] via-[#FF6B00] to-[#FF4500] p-[2.5px]">
-                <div className="w-full h-full rounded-full bg-white p-[2px]">
-                  <div className="w-full h-full rounded-full ring-[1.5px] ring-[#FF8C00] flex items-center justify-center">
-                    <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
+                <div className="w-full h-full rounded-full bg-white p-[4px]">
+                  <div className="w-full h-full rounded-full ring-1 ring-[#FFB870] flex items-center justify-center">
+                    <img src={orangeSprout} alt="프로필" className="w-9 h-9 object-contain" />
                   </div>
                 </div>
               </div>
