@@ -5,14 +5,17 @@ import { MailContent } from "@/components/mail/MailContent";
 import { ComposeContent } from "@/components/mail/ComposeContent";
 import { FloatingComposeButton } from "@/components/mail/FloatingComposeButton";
 import { AddressBookModal } from "@/components/mail/AddressBookModal";
+import { HandwrittenUploadContent } from "@/components/mail/HandwrittenUploadContent";
 import { familyMembers as initialFamilyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 
+type ViewMode = "compose" | "mail" | "handwritten";
+
 const Index = () => {
   const [activeFolder, setActiveFolder] = useState<FolderType | null>(null);
   const [selectedMail, setSelectedMail] = useState<Mail | null>(null);
-  const [isComposeOpen, setIsComposeOpen] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>("compose");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   const [mails, setMails] = useState<Mail[]>(mockMails);
@@ -97,25 +100,35 @@ const Index = () => {
           onFolderChange={(folder) => {
             setActiveFolder(folder);
             setSelectedMemberId(null);
+            setViewMode("mail");
           }}
           unreadCount={unreadCount}
           draftCount={draftCount}
           archiveCount={archiveCount}
           trashCount={trashCount}
-          onCompose={() => setIsComposeOpen(true)}
-          isComposeOpen={isComposeOpen}
+          onCompose={() => setViewMode("compose")}
+          isComposeOpen={viewMode === "compose"}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           selectedMemberId={selectedMemberId}
           onSelectMember={setSelectedMemberId}
           onUpdateFamilyMembers={setFamilyMembers}
+          onHandwrittenUpload={() => setViewMode("handwritten")}
         />
 
-        {/* Main Content - 편지쓰기 모드 또는 메일 목록 */}
-        {isComposeOpen ? (
+        {/* Main Content - 뷰 모드에 따라 다른 화면 표시 */}
+        {viewMode === "compose" ? (
           <ComposeContent
             familyMembers={familyMembers}
-            onClose={() => setIsComposeOpen(false)}
+            onClose={() => setViewMode("mail")}
+          />
+        ) : viewMode === "handwritten" ? (
+          <HandwrittenUploadContent
+            onClose={() => setViewMode("mail")}
+            onComposeWithText={(text) => {
+              // TODO: Pass OCR text to compose
+              setViewMode("compose");
+            }}
           />
         ) : (
           <MailContent
@@ -123,7 +136,7 @@ const Index = () => {
             selectedMail={selectedMail}
             onSelectMail={setSelectedMail}
             activeFolder={activeFolder}
-            onReply={() => setIsComposeOpen(true)}
+            onReply={() => setViewMode("compose")}
             selectedMember={selectedMemberId ? familyMembers.find(m => m.id === selectedMemberId) : null}
             allMails={mails}
             onMoveToFolder={moveMailToFolder}
@@ -132,9 +145,9 @@ const Index = () => {
         )}
 
         {/* Floating Compose Button */}
-        {!isComposeOpen && (
+        {viewMode === "mail" && (
           <FloatingComposeButton 
-            onCompose={() => setIsComposeOpen(true)}
+            onCompose={() => setViewMode("compose")}
             daysSinceLastLetter={daysSinceLastLetter}
             draftCount={draftCount}
           />
