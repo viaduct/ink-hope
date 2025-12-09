@@ -116,9 +116,9 @@ export function Sidebar({
           <div className="flex flex-col items-center text-center">
             {/* 프로필 이미지 - Instagram Story 스타일 */}
             <div className="relative mb-3">
-              <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-tr from-[#FFB347] via-[#FF7F24] to-[#FF6B00] p-[2px]">
+              <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-tr from-[#FF8C00] via-[#FF6B00] to-[#FF4500] p-[2.5px]">
                 <div className="w-full h-full rounded-full bg-white p-[2px]">
-                  <div className="w-full h-full rounded-full bg-white ring-1 ring-gray-100 flex items-center justify-center">
+                  <div className="w-full h-full rounded-full ring-[1.5px] ring-[#FF8C00] flex items-center justify-center">
                     <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
                   </div>
                 </div>
@@ -173,14 +173,14 @@ export function Sidebar({
           <Button
             onClick={onCompose}
             size="icon"
-            className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#FFB347] to-[#FF7F24] hover:bg-[#FF9500] hover:from-[#FF9500] hover:to-[#FF9500] shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#FF9500] to-[#FF5E00] hover:from-[#FF7A00] hover:to-[#FF4500] shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             <Send className="w-5 h-5" />
           </Button>
         ) : (
           <Button
             onClick={onCompose}
-            className="w-full h-14 rounded-2xl text-base font-semibold bg-gradient-to-r from-[#FFB347] to-[#FF7F24] hover:bg-[#FF9500] hover:from-[#FF9500] hover:to-[#FF9500] shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 justify-center"
+            className="w-full h-14 rounded-2xl text-base font-semibold bg-gradient-to-r from-[#FF9500] to-[#FF5E00] hover:from-[#FF7A00] hover:to-[#FF4500] shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 justify-center"
           >
             <span>편지 쓰기</span>
             {isComposeOpen && (
