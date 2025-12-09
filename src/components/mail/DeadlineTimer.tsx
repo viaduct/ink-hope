@@ -45,11 +45,8 @@ export function DeadlineTimer({ deadlineHour = 17, isCollapsed = false }: Deadli
   if (isCollapsed) {
     return (
       <div className="flex justify-center">
-        <div className={cn(
-          "w-11 h-11 rounded-xl flex items-center justify-center",
-          isExpired ? "bg-gray-300" : "bg-gray-200"
-        )}>
-          <Clock className="w-5 h-5 text-gray-700" />
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center">
+          <Clock className={cn("w-5 h-5", isExpired ? "text-muted-foreground" : "text-orange-500")} />
         </div>
       </div>
     );
@@ -57,20 +54,20 @@ export function DeadlineTimer({ deadlineHour = 17, isCollapsed = false }: Deadli
 
   if (isExpired) {
     return (
-      <div className="bg-gray-200 text-gray-900 px-4 py-3 rounded-xl text-center">
-        <p className="text-xs text-gray-500 mb-1">편지 마감 시간까지</p>
-        <div className="border-t border-gray-400 pt-2 mt-2">
-          <p className="font-semibold text-sm">오늘 마감 종료</p>
+      <div className="px-4 py-3 text-center">
+        <p className="text-xs text-muted-foreground mb-1">편지 마감 시간까지</p>
+        <div className="border-t border-border pt-2 mt-2">
+          <p className="font-semibold text-sm text-muted-foreground">오늘 마감 종료</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-200 text-gray-900 px-4 py-3 rounded-xl text-center">
-      <p className="text-xs text-gray-500 mb-1">편지 마감 시간까지</p>
-      <div className="border-t border-gray-400 pt-2 mt-2">
-        <p className="font-bold text-lg tracking-wide">
+    <div className="px-4 py-3 text-center">
+      <p className="text-xs text-muted-foreground mb-1">편지 마감 시간까지</p>
+      <div className="border-t border-border pt-2 mt-2">
+        <p className="font-bold text-lg tracking-wide text-orange-500">
           {formatNumber(timeLeft.hours)}시 {formatNumber(timeLeft.minutes)}분 {formatNumber(timeLeft.seconds)}초
         </p>
       </div>
