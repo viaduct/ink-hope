@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Pencil, Users } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Pencil, Users, BookUser } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FamilyMember, FolderType } from "@/types/mail";
@@ -29,6 +29,13 @@ const folders = [
   { id: "archive" as FolderType, label: "중요편지함", icon: Star },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
 ];
+
+interface SidebarItem {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  onClick?: () => void;
+}
 
 export function Sidebar({
   familyMembers,
@@ -164,6 +171,24 @@ export function Sidebar({
               </li>
             );
           })}
+          
+          {/* 주소록 관리 */}
+          <li>
+            <button
+              onClick={() => setIsAddressBookOpen(true)}
+              title={isCollapsed ? "주소록 관리" : undefined}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all duration-150",
+                isCollapsed && "justify-center px-0",
+                "text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+              )}
+            >
+              <BookUser className="w-[18px] h-[18px] flex-shrink-0" />
+              {!isCollapsed && (
+                <span className="flex-1 text-left">주소록 관리</span>
+              )}
+            </button>
+          </li>
         </ul>
 
         {/* Divider */}
