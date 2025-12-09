@@ -302,7 +302,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         {selectedRecipientId === recipient.id && (
                           <div className="mt-4 pt-4 border-t-2 border-orange-300">
                             <p className="text-sm font-medium text-foreground mb-3">우편 종류</p>
-                            <div className="bg-amber-50 rounded-xl p-3">
+                            <div className="bg-amber-100/80 rounded-xl p-3">
                               <div className="grid grid-cols-2 gap-2">
                                 {mailTypeOptions.map((option, index) => (
                                   <button
