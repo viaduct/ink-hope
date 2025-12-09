@@ -21,7 +21,20 @@ serve(async (req) => {
     let systemPrompt = "";
     let userPrompt = "";
 
-    if (type === "suggestions") {
+    if (type === "intro") {
+      systemPrompt = `당신은 교도소에 수감된 가족에게 편지를 쓰는 것을 돕는 따뜻한 조력자입니다.
+편지의 서론(인사, 안부)을 작성해주세요.
+한국어로 응답하세요. 친근하고 따뜻한 톤을 유지하세요.
+2-3문장 정도로 자연스럽게 작성해주세요.`;
+      
+      const userHint = context?.userInput || "따뜻한 인사와 안부";
+      userPrompt = `다음 내용으로 편지 서론을 작성해주세요: "${userHint}"
+
+${context?.currentContent ? `현재 편지 내용: "${context.currentContent}"` : '새로운 편지입니다.'}
+
+자연스럽고 진심어린 서론을 2-3문장으로 작성해주세요.
+JSON 형식으로 응답: {"intro": "작성된 서론 내용"}`;
+    } else if (type === "suggestions") {
       systemPrompt = `당신은 교도소에 수감된 가족에게 편지를 쓰는 것을 돕는 따뜻한 조력자입니다.
 사용자가 편지를 쓰기 시작할 때 사용할 수 있는 다양한 문장 시작 예시를 제공합니다.
 한국어로 응답하세요. 친근하고 따뜻한 톤을 유지하세요.`;

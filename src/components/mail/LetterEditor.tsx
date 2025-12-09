@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { EmojiPicker } from "./EmojiPicker";
 import { AIWritingHelper } from "./AIWritingHelper";
+import { IntroWriterModal } from "./IntroWriterModal";
 
 type TextAlign = "left" | "center" | "right";
 
@@ -61,6 +62,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
   const [textAlign, setTextAlign] = useState<TextAlign>("left");
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const [isAIHelperOpen, setIsAIHelperOpen] = useState(false);
+  const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const charCount = content.length;
@@ -110,7 +112,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
       {/* 템플릿 버튼 */}
       <div className="flex items-center gap-2">
         <button
-          onClick={() => insertTemplate("intro")}
+          onClick={() => setIsIntroModalOpen(true)}
           className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-full text-sm font-medium text-foreground hover:bg-muted transition-colors"
         >
           <span>👋</span>
@@ -294,6 +296,16 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
         onClose={() => setIsAIHelperOpen(false)}
         onSelectSuggestion={(text) => {
           onContentChange(content + text + "\n\n");
+        }}
+        currentContent={content}
+      />
+
+      {/* 서론 작성 모달 */}
+      <IntroWriterModal
+        isOpen={isIntroModalOpen}
+        onClose={() => setIsIntroModalOpen(false)}
+        onInsert={(text) => {
+          onContentChange(text + "\n\n" + content);
         }}
         currentContent={content}
       />
