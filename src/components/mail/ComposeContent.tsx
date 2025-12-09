@@ -24,6 +24,7 @@ import { StationerySelector } from "./StationerySelector";
 import { LetterEditor } from "./LetterEditor";
 import { LetterPreview } from "./LetterPreview";
 import { PhotoUpload } from "./PhotoUpload";
+import { AdditionalOptions } from "./AdditionalOptions";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
 
@@ -120,6 +121,9 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   
   // 사진 상태
   const [photos, setPhotos] = useState<Array<{ id: string; file: File; preview: string; rotation: number }>>([]);
+  
+  // 추가 옵션 상태
+  const [selectedAdditionalItems, setSelectedAdditionalItems] = useState<string[]>([]);
   
   // 모달 상태
   const [isAddRecipientModalOpen, setIsAddRecipientModalOpen] = useState(false);
@@ -481,11 +485,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
             )}
 
             {currentStep === 6 && (
-              <div className="bg-card rounded-xl border border-border p-8 text-center">
-                <Settings className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h2 className="text-lg font-semibold text-foreground mb-2">추가 옵션</h2>
-                <p className="text-muted-foreground">추가 옵션 기능이 곧 추가됩니다</p>
-              </div>
+              <AdditionalOptions
+                selectedItems={selectedAdditionalItems}
+                onSelectedItemsChange={setSelectedAdditionalItems}
+              />
             )}
 
             {currentStep === 7 && (
