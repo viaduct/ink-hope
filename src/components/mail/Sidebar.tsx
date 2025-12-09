@@ -174,18 +174,18 @@ export function Sidebar({
             <TooltipTrigger asChild>
               {isCollapsed ? (
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
                   onClick={() => onFolderChange("inbox")}
-                  className="w-full h-11 rounded-xl text-orange-500 hover:bg-orange-50 hover:text-orange-600"
+                  className="w-full h-11 rounded-xl bg-white text-orange-500 shadow-md hover:shadow-lg hover:bg-white hover:text-orange-600 transition-all"
                 >
                   <Bell className="w-5 h-5" />
                 </Button>
               ) : (
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => onFolderChange("inbox")}
-                  className="w-full h-11 rounded-xl text-[15px] font-medium text-orange-500 hover:bg-orange-50 hover:text-orange-600 justify-start px-4"
+                  className="w-full h-11 rounded-xl text-[15px] font-medium bg-white text-orange-500 shadow-md hover:shadow-lg hover:bg-white hover:text-orange-600 justify-start px-4 transition-all"
                 >
                   <Bell className="w-4 h-4 mr-1 flex-shrink-0" />
                   <span className="flex-1 text-left">새로 들어온 편지</span>
@@ -206,18 +206,18 @@ export function Sidebar({
           <TooltipTrigger asChild>
             {isCollapsed ? (
               <Button
-                variant="outline"
+                variant="ghost"
                 size="icon"
                 onClick={onHandwrittenUpload}
-                className="w-full h-11 rounded-xl text-orange-500 hover:bg-orange-50 hover:text-orange-600"
+                className="w-full h-11 rounded-xl bg-white text-orange-500 shadow-md hover:shadow-lg hover:bg-white hover:text-orange-600 transition-all"
               >
                 <Inbox className="w-5 h-5" />
               </Button>
             ) : (
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={onHandwrittenUpload}
-                className="w-full h-11 rounded-xl text-[15px] font-medium text-orange-500 hover:bg-orange-50 hover:text-orange-600 justify-start px-4"
+                className="w-full h-11 rounded-xl text-[15px] font-medium bg-white text-orange-500 shadow-md hover:shadow-lg hover:bg-white hover:text-orange-600 justify-start px-4 transition-all"
               >
                 <Inbox className="w-4 h-4 mr-1 flex-shrink-0" />
                 <span>손편지 자동등록</span>
