@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Pencil, Users, BookUser } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FamilyMember, FolderType } from "@/types/mail";
@@ -172,23 +172,6 @@ export function Sidebar({
             );
           })}
           
-          {/* 주소록 관리 */}
-          <li>
-            <button
-              onClick={() => setIsAddressBookOpen(true)}
-              title={isCollapsed ? "주소록 관리" : undefined}
-              className={cn(
-                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all duration-150",
-                isCollapsed && "justify-center px-0",
-                "text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
-              )}
-            >
-              <BookUser className="w-[18px] h-[18px] flex-shrink-0" />
-              {!isCollapsed && (
-                <span className="flex-1 text-left">주소록 관리</span>
-              )}
-            </button>
-          </li>
         </ul>
 
         {/* Divider */}
@@ -200,53 +183,68 @@ export function Sidebar({
             <div className="flex items-center justify-between px-3 py-2">
               <button
                 onClick={() => setIsTreeExpanded(!isTreeExpanded)}
-                className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 {isTreeExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  <ChevronDown className="w-4 h-4" />
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  <ChevronRight className="w-4 h-4" />
                 )}
-                <Users className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium">주소록 관리</span>
+                <span className="text-sm font-medium">내 편지함</span>
               </button>
-              <button
-                onClick={() => setIsAddressBookOpen(true)}
-                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                title="주소록 관리"
-              >
-                <Pencil className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  title="새 편지함 추가"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setIsAddressBookOpen(true)}
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  title="편지함 관리"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
             
             {isTreeExpanded && (
-              <ul className="ml-4 border-l border-border/50 space-y-0.5">
+              <ul className="space-y-0.5 px-1">
                 {familyMembers.map((member) => {
                   const isSelected = selectedMemberId === member.id;
+                  const mailCount = Math.floor(Math.random() * 10); // 임시 카운트
                   return (
                     <li key={member.id}>
                       <button 
                         onClick={() => onSelectMember(isSelected ? null : member.id)}
                         className={cn(
-                          "w-full flex items-center gap-3 px-3 py-2 rounded-r-xl transition-colors",
+                          "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
                           isSelected
-                            ? "bg-primary/10 text-primary border-l-2 border-primary -ml-[1px]"
+                            ? "bg-primary/10 text-primary"
                             : "text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
                         )}
                       >
-                        <div
-                          className={cn(
-                            "w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0",
-                            member.color
-                          )}
-                        >
-                          {member.avatar}
-                        </div>
+                        {isSelected ? (
+                          <FolderOpen className="w-4 h-4 text-amber-500" />
+                        ) : (
+                          <Folder className="w-4 h-4 text-muted-foreground" />
+                        )}
                         <span className="text-sm flex-1 text-left truncate">{member.name}</span>
+                        <span className="text-xs text-muted-foreground">{mailCount}</span>
                       </button>
                     </li>
                   );
                 })}
+                {/* 새 편지함 추가 */}
+                <li>
+                  <button 
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span className="text-sm">새 편지함 추가</span>
+                  </button>
+                </li>
               </ul>
             )}
           </>
