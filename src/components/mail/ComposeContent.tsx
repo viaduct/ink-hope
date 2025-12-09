@@ -245,7 +245,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         {/* 우편 종류 - 선택된 수신자만 표시 */}
                         {selectedRecipientId === recipient.id && (
                           <div className="mt-4 pt-4 border-t border-border">
-                            <div className="mb-3">
+                            <div className="mb-5">
                               <p className="text-sm font-medium text-foreground mb-1">우편 종류</p>
                               <p className="text-xs text-muted-foreground">
                                 <span className="font-semibold text-foreground">교정시설 우편은 내부 검수 절차로 인해</span> 모든 방식의 실제 전달 속도는 비슷합니다.<br/>
