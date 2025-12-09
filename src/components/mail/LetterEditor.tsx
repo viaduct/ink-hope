@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { 
   Edit3, 
   Settings, 
@@ -9,8 +9,7 @@ import {
   AlignCenter, 
   AlignRight,
   ImageIcon,
-  Smile,
-  ChevronDown
+  Smile
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -20,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { EmojiPicker } from "./EmojiPicker";
 
 type TextAlign = "left" | "center" | "right";
 
@@ -59,6 +59,8 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
   const [fontSize, setFontSize] = useState(16);
   const [isBold, setIsBold] = useState(false);
   const [textAlign, setTextAlign] = useState<TextAlign>("left");
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const charCount = content.length;
 
@@ -68,6 +70,23 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
 
   const insertTemplate = (type: "intro" | "main" | "conclusion") => {
     onContentChange(content + templateTexts[type]);
+  };
+
+  const insertEmoji = (emoji: string) => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const newContent = content.substring(0, start) + emoji + content.substring(end);
+      onContentChange(newContent);
+      // 커서 위치 업데이트
+      setTimeout(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+        textarea.focus();
+      }, 0);
+    } else {
+      onContentChange(content + emoji);
+    }
   };
 
   return (
@@ -220,9 +239,24 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
         <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
           <ImageIcon className="w-4 h-4" />
         </button>
-        <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
-          <Smile className="w-4 h-4" />
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
+            className={cn(
+              "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
+              isEmojiPickerOpen ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+            )}
+          >
+            <Smile className="w-4 h-4" />
+          </button>
+          <EmojiPicker
+            isOpen={isEmojiPickerOpen}
+            onClose={() => setIsEmojiPickerOpen(false)}
+            onSelect={(emoji) => {
+              insertEmoji(emoji);
+            }}
+          />
+        </div>
 
         {/* 글자 수 */}
         <div className="ml-auto text-sm text-muted-foreground">
@@ -233,6 +267,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
       {/* 에디터 */}
       <div className="relative">
         <textarea
+          ref={textareaRef}
           value={content}
           onChange={(e) => onContentChange(e.target.value)}
           placeholder={`여기에 마음을 담아 편지를 써보세요...
