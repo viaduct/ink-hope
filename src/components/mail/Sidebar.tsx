@@ -400,7 +400,7 @@ export function Sidebar({
                   Bang Kyung
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  서울시 강남구 테헤란로 123
+                  bangkyung@kakao.com
                 </p>
               </div>
               <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
