@@ -242,7 +242,7 @@ export function Sidebar({
                         {count > 0 && (
                           <span
                             className={cn(
-                              "text-[10px] font-semibold px-1.5 py-0.5 rounded-full tabular-nums",
+                              "min-w-5 h-5 text-[10px] font-semibold rounded-full tabular-nums flex items-center justify-center",
                               isActive
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-muted text-muted-foreground"
