@@ -7,7 +7,8 @@ import {
   AlignLeft, 
   AlignCenter, 
   AlignRight,
-  ImageIcon
+  ImageIcon,
+  CornerDownLeft
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -51,19 +52,27 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
   };
 
   const insertEmoji = (emoji: string) => {
+    insertAtCursor(emoji);
+  };
+
+  const insertAtCursor = (text: string) => {
     const textarea = textareaRef.current;
     if (textarea) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      const newContent = content.substring(0, start) + emoji + content.substring(end);
+      const newContent = content.substring(0, start) + text + content.substring(end);
       onContentChange(newContent);
       setTimeout(() => {
-        textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+        textarea.selectionStart = textarea.selectionEnd = start + text.length;
         textarea.focus();
       }, 0);
     } else {
-      onContentChange(content + emoji);
+      onContentChange(content + text);
     }
+  };
+
+  const insertLineBreak = () => {
+    insertAtCursor("\n\n");
   };
 
   const handleInsertContent = (text: string, position: "start" | "end" | "cursor") => {
@@ -227,6 +236,15 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
           </div>
 
           <div className="w-px h-6 bg-border mx-1" />
+
+          {/* 줄바꿈 */}
+          <button 
+            onClick={insertLineBreak}
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+            title="줄바꿈"
+          >
+            <CornerDownLeft className="w-4 h-4" />
+          </button>
 
           {/* 이미지 */}
           <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
