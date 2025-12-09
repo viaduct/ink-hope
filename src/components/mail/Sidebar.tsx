@@ -116,9 +116,11 @@ export function Sidebar({
           <div className="flex flex-col items-center text-center">
             {/* 프로필 이미지 - Instagram Story 스타일 */}
             <div className="relative mb-3">
-              <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-tr from-[#FFB347] via-[#FF7F24] to-[#FF6B00] p-[3px]">
-                <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                  <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
+              <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-tr from-[#FFB347] via-[#FF7F24] to-[#FF6B00] p-[2px]">
+                <div className="w-full h-full rounded-full bg-white p-[2px]">
+                  <div className="w-full h-full rounded-full bg-white ring-1 ring-gray-100 flex items-center justify-center">
+                    <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
+                  </div>
                 </div>
               </div>
               {/* Kakao Badge */}
