@@ -126,7 +126,7 @@ export function Sidebar({
             <PenLine className="w-4 h-4 mr-1 flex-shrink-0" />
             <span className="flex-1 text-left">편지 쓰기</span>
             {isComposeOpen && (
-              <span className="bg-white/20 text-primary-foreground text-[11px] font-medium px-2 py-0.5 rounded-full">쓰는중</span>
+              <span className="bg-white/20 text-primary-foreground text-[11px] font-medium px-2 py-0.5 rounded-full">작성중</span>
             )}
           </Button>
         )}
