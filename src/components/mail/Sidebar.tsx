@@ -141,11 +141,13 @@ export function Sidebar({
               ) : (
                 <Button
                   variant="outline"
-                  className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600 justify-start px-4"
+                  className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600 justify-between px-4"
                 >
-                  <Bell className="w-4 h-4 mr-1 flex-shrink-0" />
-                  <span>새로 들어온 편지</span>
-                  <span className="bg-orange-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center ml-0.5">3</span>
+                  <div className="flex items-center">
+                    <Bell className="w-4 h-4 mr-1 flex-shrink-0" />
+                    <span>새로 들어온 편지</span>
+                  </div>
+                  <span className="bg-orange-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center mr-1.5">3</span>
                 </Button>
               )}
             </TooltipTrigger>
