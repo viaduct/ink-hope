@@ -261,7 +261,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                     setSelectedMailType(option.id);
                                   }}
                                   className={`
-                                    relative w-full p-4 rounded-xl border-2 transition-all text-left
+                                    w-full p-4 rounded-xl border-2 transition-all text-left
                                     ${selectedMailType === option.id 
                                       ? "border-primary bg-primary/5" 
                                       : "border-border hover:border-primary/30 bg-card"
@@ -269,18 +269,6 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                     ${index === 0 ? "ring-2 ring-orange-200 ring-offset-1" : ""}
                                   `}
                                 >
-                                  {/* 추천 배지 */}
-                                  {index === 0 && (
-                                    <div className="absolute -top-2.5 left-4 px-2 py-0.5 bg-orange-500 text-white text-xs font-semibold rounded">
-                                      추천
-                                    </div>
-                                  )}
-                                  {index === 1 && (
-                                    <div className="absolute -top-2.5 left-4 px-2 py-0.5 bg-blue-500 text-white text-xs font-semibold rounded">
-                                      안심
-                                    </div>
-                                  )}
-                                  
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
@@ -308,7 +296,17 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                         <span className="text-sm text-muted-foreground">{option.deliveryTime}</span>
                                       </div>
                                     </div>
-                                    <div className="text-right">
+                                    <div className="flex items-center gap-2">
+                                      {index === 0 && (
+                                        <span className="px-2 py-0.5 bg-orange-500 text-white text-xs font-semibold rounded">
+                                          추천
+                                        </span>
+                                      )}
+                                      {index === 1 && (
+                                        <span className="px-2 py-0.5 bg-blue-500 text-white text-xs font-semibold rounded">
+                                          안심
+                                        </span>
+                                      )}
                                       <p className="text-lg font-bold text-primary">{option.price.toLocaleString()}원</p>
                                     </div>
                                   </div>
