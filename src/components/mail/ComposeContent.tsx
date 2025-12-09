@@ -324,9 +324,9 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                     ${index === 0 ? "ring-1 ring-orange-200/60" : ""}
                                   `}
                                 >
-                                  <div className="flex items-start justify-between gap-1">
-                                    <div className="flex items-start gap-1.5">
-                                      <div className={`w-3.5 h-3.5 mt-0.5 rounded-full border flex items-center justify-center shrink-0 ${
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-1.5">
+                                      <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
                                         selectedMailType === option.id ? "border-primary bg-primary" : "border-muted-foreground/50"
                                       }`}>
                                         {selectedMailType === option.id && (
