@@ -151,17 +151,17 @@ export function Sidebar({
           <Button
             onClick={onCompose}
             size="icon"
-            className="w-full h-11 rounded-xl shadow-card hover:shadow-card-hover transition-all duration-200"
+            className="w-full h-14 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 shadow-lg hover:shadow-xl transition-all duration-200"
           >
-            <PenLine className="w-5 h-5" />
+            <Send className="w-5 h-5" />
           </Button>
         ) : (
           <Button
             onClick={onCompose}
-            className="w-full h-11 rounded-xl text-[15px] font-medium shadow-card hover:shadow-card-hover transition-all duration-200 justify-start px-4"
+            className="w-full h-14 rounded-2xl text-base font-semibold bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 shadow-lg hover:shadow-xl transition-all duration-200 justify-center gap-2"
           >
-            <PenLine className="w-4 h-4 mr-1 flex-shrink-0" />
-            <span className="flex-1 text-left">편지 쓰기</span>
+            <Send className="w-5 h-5 flex-shrink-0" />
+            <span>편지 쓰기</span>
             {isComposeOpen && (
               <span className="bg-white/20 text-primary-foreground text-[11px] font-medium px-2 py-0.5 rounded-full">작성중</span>
             )}
