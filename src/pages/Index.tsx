@@ -59,6 +59,7 @@ const Index = () => {
       sent: "보낸편지함",
       draft: "임시저장함",
       archive: "중요편지함",
+      mybox: "내편지함",
       spam: "스팸함",
       trash: "휴지통",
       orangetree: "오렌지나무",
