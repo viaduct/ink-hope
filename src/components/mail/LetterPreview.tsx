@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
-import { Eye, FileText, User, Send, Printer, Download, ZoomIn, ZoomOut } from "lucide-react";
+import { Eye, FileText, User, Send, ZoomIn, ZoomOut, Sparkles, RotateCcw, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface Stationery {
   id: string;
@@ -32,6 +34,18 @@ const stationeryStyles: Record<string, Stationery> = {
   "ai-cosmic": { id: "ai-cosmic", name: "코스믹", bgGradient: "bg-gradient-to-br from-indigo-300 via-purple-300 to-pink-300" },
 };
 
+// 말투 옵션
+const toneOptions = [
+  { id: "emotion", label: "감정 강화", icon: "💝", description: "감정을 더 풍부하게" },
+  { id: "formal", label: "격식체", icon: "📋", description: "정중하고 격식있게" },
+  { id: "friendly", label: "친근하게", icon: "😊", description: "친근하고 편하게" },
+  { id: "concise", label: "간결하게", icon: "📝", description: "핵심만 간결하게" },
+  { id: "mom", label: "엄마 말투", icon: "👩", description: "따뜻한 엄마처럼" },
+  { id: "sibling", label: "형/누나 말투", icon: "👫", description: "친한 형제처럼" },
+  { id: "friend", label: "친구 말투", icon: "🤝", description: "편한 친구처럼" },
+  { id: "serious", label: "진지하게", icon: "🎯", description: "진지하고 신중하게" },
+];
+
 interface LetterPreviewProps {
   content: string;
   stationeryId: string | null;
@@ -40,6 +54,7 @@ interface LetterPreviewProps {
   recipientAddress?: string;
   senderName?: string;
   senderAddress?: string;
+  onContentChange?: (content: string) => void;
 }
 
 export function LetterPreview({
@@ -50,21 +65,82 @@ export function LetterPreview({
   recipientAddress,
   senderName,
   senderAddress,
+  onContentChange,
 }: LetterPreviewProps) {
   const [zoom, setZoom] = useState(100);
   const [currentPage, setCurrentPage] = useState(1);
+  const [editableContent, setEditableContent] = useState(content);
+  const [originalContent] = useState(content);
+  const [isConverting, setIsConverting] = useState(false);
+  const [activeTone, setActiveTone] = useState<string | null>(null);
   
   const stationery = stationeryId ? stationeryStyles[stationeryId] : stationeryStyles.white;
   
   // 편지 내용을 페이지별로 나누기 (대략 500자 기준)
   const charsPerPage = 500;
   const pages = [];
-  for (let i = 0; i < content.length; i += charsPerPage) {
-    pages.push(content.slice(i, i + charsPerPage));
+  for (let i = 0; i < editableContent.length; i += charsPerPage) {
+    pages.push(editableContent.slice(i, i + charsPerPage));
   }
   if (pages.length === 0) pages.push("");
   
   const totalPages = pages.length;
+
+  const handleContentChange = (newContent: string) => {
+    setEditableContent(newContent);
+    onContentChange?.(newContent);
+  };
+
+  const handleReset = () => {
+    setEditableContent(originalContent);
+    onContentChange?.(originalContent);
+    setActiveTone(null);
+    toast.success("원본으로 초기화되었습니다");
+  };
+
+  const handleToneConvert = async (toneId: string) => {
+    if (!editableContent.trim()) {
+      toast.error("변환할 내용이 없습니다");
+      return;
+    }
+
+    setIsConverting(true);
+    setActiveTone(toneId);
+
+    const tonePrompts: Record<string, string> = {
+      emotion: "이 편지의 감정을 더 풍부하고 진심이 느껴지게 표현해줘. 따뜻하고 감동적으로.",
+      formal: "이 편지를 격식체로 바꿔줘. 정중하고 예의바른 표현으로.",
+      friendly: "이 편지를 친근하고 편안한 말투로 바꿔줘. 반말은 아니지만 부드럽게.",
+      concise: "이 편지의 핵심 내용만 간결하게 정리해줘. 불필요한 수식어는 줄이고.",
+      mom: "이 편지를 엄마가 자식에게 쓰는 것처럼 따뜻하고 걱정되는 마음이 담긴 말투로 바꿔줘.",
+      sibling: "이 편지를 형이나 누나가 동생에게 쓰는 것처럼 친근하면서도 챙겨주는 말투로 바꿔줘.",
+      friend: "이 편지를 친한 친구에게 쓰는 것처럼 편하고 솔직한 말투로 바꿔줘.",
+      serious: "이 편지를 진지하고 신중한 톤으로 바꿔줘. 무게감 있게.",
+    };
+
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-letter-helper", {
+        body: {
+          type: "rewrite",
+          content: editableContent,
+          prompt: tonePrompts[toneId] || "이 편지를 자연스럽게 다듬어줘.",
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.content) {
+        setEditableContent(data.content);
+        onContentChange?.(data.content);
+        toast.success("말투가 변환되었습니다");
+      }
+    } catch (error) {
+      console.error("Tone conversion error:", error);
+      toast.error("말투 변환에 실패했습니다");
+    } finally {
+      setIsConverting(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -99,7 +175,90 @@ export function LetterPreview({
         </div>
       </div>
 
-      {/* 미리보기 정보 요약 */}
+      {/* 편지지 미리보기 + 에디터 영역 */}
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
+        {/* 에디터 영역 */}
+        <div 
+          className={cn(
+            "relative min-h-[300px] p-6",
+            stationery?.bgGradient || stationery?.bgColor || "bg-white"
+          )}
+        >
+          {/* 패턴 */}
+          {stationery?.pattern === "lines" && (
+            <div className="absolute inset-0 flex flex-col pt-8 px-6 gap-6 pointer-events-none">
+              {[...Array(15)].map((_, i) => (
+                <div key={i} className="h-px bg-amber-200/60" />
+              ))}
+            </div>
+          )}
+          {stationery?.pattern === "grid" && (
+            <div 
+              className="absolute inset-0 opacity-30 pointer-events-none"
+              style={{
+                backgroundImage: 'linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)',
+                backgroundSize: '24px 24px'
+              }}
+            />
+          )}
+
+          {/* 텍스트 에디터 */}
+          <textarea
+            value={editableContent}
+            onChange={(e) => handleContentChange(e.target.value)}
+            placeholder="편지 내용을 입력하거나 수정하세요..."
+            className={cn(
+              "relative z-10 w-full min-h-[280px] bg-transparent border-0 resize-none focus:outline-none text-gray-800 leading-relaxed",
+              "placeholder:text-gray-400"
+            )}
+            style={{ fontSize: "16px" }}
+          />
+        </div>
+
+        {/* AI 말투 변환 툴바 */}
+        <div className="border-t border-border bg-muted/30 p-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Sparkles className="w-4 h-4" />
+              <span>AI로 전체 문장 다듬기</span>
+            </div>
+            
+            <div className="flex items-center gap-2 flex-wrap flex-1">
+              {toneOptions.map((tone) => (
+                <button
+                  key={tone.id}
+                  onClick={() => handleToneConvert(tone.id)}
+                  disabled={isConverting}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all border",
+                    activeTone === tone.id && isConverting
+                      ? "bg-primary/10 border-primary text-primary"
+                      : "bg-card border-border hover:border-primary/50 hover:bg-primary/5 text-foreground"
+                  )}
+                  title={tone.description}
+                >
+                  {activeTone === tone.id && isConverting ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <span>{tone.icon}</span>
+                  )}
+                  {tone.label}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={handleReset}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              초기화
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 받는 사람/보내는 사람 정보 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* 받는 사람 */}
         <div className="bg-card rounded-xl border border-border p-4">
@@ -111,7 +270,6 @@ export function LetterPreview({
             <div>
               <p className="font-semibold text-foreground">{recipientName}</p>
               {recipientFacility && <p className="text-sm text-primary">{recipientFacility}</p>}
-              {recipientAddress && <p className="text-sm text-muted-foreground">{recipientAddress}</p>}
             </div>
           ) : (
             <p className="text-muted-foreground text-sm">선택된 수신자가 없습니다</p>
@@ -135,123 +293,10 @@ export function LetterPreview({
         </div>
       </div>
 
-      {/* 편지지 정보 */}
-      <div className="flex items-center gap-2 bg-primary/5 rounded-lg px-4 py-2">
-        <FileText className="w-4 h-4 text-primary" />
-        <span className="text-sm text-foreground">
-          <span className="font-medium">{stationery?.name || "순백"}</span> 편지지
-        </span>
-      </div>
-
-      {/* 편지 미리보기 영역 */}
-      <div className="flex flex-col items-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{ transform: `scale(${zoom / 100})` }}
-          className="origin-top transition-transform"
-        >
-          {/* 편지지 */}
-          <div 
-            className={cn(
-              "relative w-[400px] min-h-[560px] rounded-lg shadow-2xl overflow-hidden border border-border/50",
-              stationery?.bgGradient || stationery?.bgColor || "bg-white"
-            )}
-          >
-            {/* 패턴 */}
-            {stationery?.pattern === "lines" && (
-              <div className="absolute inset-0 flex flex-col pt-16 px-8 gap-6">
-                {[...Array(20)].map((_, i) => (
-                  <div key={i} className="h-px bg-amber-200/60" />
-                ))}
-              </div>
-            )}
-            {stationery?.pattern === "grid" && (
-              <div 
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: 'linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)',
-                  backgroundSize: '24px 24px'
-                }}
-              />
-            )}
-            
-            {/* 편지 내용 */}
-            <div className="relative z-10 p-8 min-h-[560px] flex flex-col">
-              {/* 받는 사람 */}
-              {recipientName && (
-                <div className="mb-6">
-                  <p className="text-lg font-medium text-gray-800">
-                    {recipientName}님께
-                  </p>
-                </div>
-              )}
-              
-              {/* 본문 */}
-              <div className="flex-1">
-                {pages[currentPage - 1] ? (
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap break-words text-[15px]">
-                    {pages[currentPage - 1]}
-                  </p>
-                ) : (
-                  <p className="text-gray-400 italic">
-                    편지 내용이 없습니다. 편지를 작성해주세요.
-                  </p>
-                )}
-              </div>
-              
-              {/* 보내는 사람 */}
-              {senderName && (
-                <div className="mt-8 text-right">
-                  <p className="text-gray-600 text-sm mb-1">
-                    {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
-                  </p>
-                  <p className="text-gray-800 font-medium">
-                    {senderName} 드림
-                  </p>
-                </div>
-              )}
-              
-              {/* 페이지 번호 */}
-              {totalPages > 1 && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-gray-400">
-                  {currentPage} / {totalPages}
-                </div>
-              )}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* 페이지 네비게이션 */}
-        {totalPages > 1 && (
-          <div className="flex items-center gap-4 mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-            >
-              이전 페이지
-            </Button>
-            <span className="text-sm text-muted-foreground">
-              {currentPage} / {totalPages} 페이지
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-            >
-              다음 페이지
-            </Button>
-          </div>
-        )}
-      </div>
-
       {/* 안내 메시지 */}
       <div className="bg-muted/50 rounded-xl p-4 text-center">
         <p className="text-sm text-muted-foreground">
-          💡 실제 인쇄 시 편지지와 폰트가 약간 다르게 보일 수 있습니다.
+          💡 미리보기에서 직접 수정하거나, AI 버튼을 눌러 말투를 바꿀 수 있어요.
         </p>
       </div>
     </div>

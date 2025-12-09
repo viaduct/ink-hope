@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, context } = await req.json();
+    const { type, context, content, prompt } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
@@ -89,6 +89,18 @@ JSON 형식으로 응답하세요: {"suggestions": ["문장1", "문장2", "문�
 "${context?.content || ''}"
 
 개선된 문장 하나만 응답해주세요. JSON 형식: {"improved": "개선된 문장"}`;
+    } else if (type === "rewrite") {
+      systemPrompt = `당신은 편지 작성을 돕는 말투 변환 전문가입니다.
+사용자가 제공한 편지를 요청한 말투로 자연스럽게 변환합니다.
+내용의 핵심은 유지하면서 말투만 바꿔주세요.
+한국어로 응답하세요.`;
+      
+      userPrompt = `다음 편지 내용을 변환해주세요:
+"${content || ''}"
+
+요청사항: ${prompt || '자연스럽게 다듬어줘'}
+
+변환된 편지 내용만 응답해주세요. JSON 형식: {"content": "변환된 내용"}`;
     }
 
     console.log("Request type:", type);

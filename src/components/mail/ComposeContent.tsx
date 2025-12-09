@@ -459,6 +459,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                 recipientAddress={recipients.find(r => r.id === selectedRecipientId)?.address}
                 senderName={senders.find(s => s.id === selectedSenderId)?.name}
                 senderAddress={senders.find(s => s.id === selectedSenderId)?.address}
+                onContentChange={setLetterContent}
               />
             )}
 
