@@ -114,10 +114,12 @@ export function Sidebar({
       <div className="px-3 pt-3 pb-4">
         {!isCollapsed ? (
           <div className="flex flex-col items-center text-center">
-            {/* 프로필 이미지 */}
+            {/* 프로필 이미지 - Instagram Story 스타일 */}
             <div className="relative mb-3">
-              <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
-                <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
+              <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-tr from-[#FFB347] via-[#FF7F24] to-[#FF6B00] p-[3px]">
+                <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+                  <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
+                </div>
               </div>
               {/* Kakao Badge */}
               <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border-2 border-white">
