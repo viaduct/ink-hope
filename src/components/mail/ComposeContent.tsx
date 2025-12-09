@@ -244,7 +244,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-primary" />
-                      <h2 className="font-semibold text-foreground text-sm">받는 사람 선택</h2>
+                      <h2 className="font-semibold text-foreground text-base">받는 사람 선택</h2>
                     </div>
                     <button 
                       onClick={() => setIsAddressBookModalOpen(true)}
@@ -374,7 +374,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <Send className="w-4 h-4 text-primary" />
-                      <h2 className="font-semibold text-foreground text-sm">보내는 사람</h2>
+                      <h2 className="font-semibold text-foreground text-base">보내는 사람</h2>
                     </div>
                     <button 
                       onClick={() => setIsAddressBookModalOpen(true)}

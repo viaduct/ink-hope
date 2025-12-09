@@ -95,7 +95,7 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
       <div className="flex items-center gap-2.5">
         <Image className="w-5 h-5 text-primary" />
         <div>
-          <h2 className="text-sm font-semibold text-foreground">사진 출력 추가</h2>
+          <h2 className="text-base font-semibold text-foreground">사진 출력 추가</h2>
           <p className="text-muted-foreground text-xs">편지와 함께 사진을 동봉해보세요</p>
         </div>
       </div>
