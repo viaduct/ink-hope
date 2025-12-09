@@ -151,14 +151,14 @@ export function Sidebar({
           <Button
             onClick={onCompose}
             size="icon"
-            className="w-full h-14 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 hover:from-amber-600 hover:via-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#F5A623] to-[#E8740C] hover:bg-[#FF8C00] hover:from-[#FF8C00] hover:to-[#FF8C00] shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             <Send className="w-5 h-5" />
           </Button>
         ) : (
           <Button
             onClick={onCompose}
-            className="w-full h-14 rounded-2xl text-base font-semibold bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 hover:from-amber-600 hover:via-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 justify-center gap-2"
+            className="w-full h-14 rounded-2xl text-base font-semibold bg-gradient-to-r from-[#F5A623] to-[#E8740C] hover:bg-[#FF8C00] hover:from-[#FF8C00] hover:to-[#FF8C00] shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 justify-center gap-2"
           >
             <Send className="w-5 h-5 flex-shrink-0" />
             <span>편지 쓰기</span>
