@@ -240,7 +240,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
             {currentStep === 1 && (
               <div className="space-y-5">
                 {/* 받는 사람 선택 섹션 */}
-                <section>
+                <section className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <User className="w-5 h-5 text-primary" />
@@ -372,7 +372,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                 </section>
 
                 {/* 보내는 사람 섹션 */}
-                <section className="border-t border-border/40 pt-5">
+                <section className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <Send className="w-5 h-5 text-primary" />
