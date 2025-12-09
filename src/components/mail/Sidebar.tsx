@@ -125,7 +125,9 @@ export function Sidebar({
               </div>
               {/* Kakao Badge */}
               <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border-2 border-white">
-                <span className="text-xs font-bold text-[#3C1E1E]">K</span>
+                <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-[#3C1E1E]">
+                  <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.76 1.84 5.18 4.6 6.58-.2.72-.76 2.6-.87 3-.14.5.18.5.38.36.16-.1 2.52-1.7 3.54-2.4.78.1 1.56.16 2.35.16 5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/>
+                </svg>
               </div>
             </div>
             
