@@ -21,6 +21,7 @@ import { AddRecipientModal } from "./AddRecipientModal";
 import { AddSenderModal } from "./AddSenderModal";
 import { AddressBookModal } from "./AddressBookModal";
 import { StationerySelector } from "./StationerySelector";
+import { LetterEditor } from "./LetterEditor";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
 
@@ -111,6 +112,9 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   
   // 편지지 선택 상태
   const [selectedStationeryId, setSelectedStationeryId] = useState<string | null>("white");
+  
+  // 편지 내용 상태
+  const [letterContent, setLetterContent] = useState("");
   
   // 모달 상태
   const [isAddRecipientModalOpen, setIsAddRecipientModalOpen] = useState(false);
@@ -439,11 +443,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
             )}
 
             {currentStep === 3 && (
-              <div className="bg-card rounded-xl border border-border p-8 text-center">
-                <Edit3 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h2 className="text-lg font-semibold text-foreground mb-2">편지 작성</h2>
-                <p className="text-muted-foreground">편지 작성 기능이 곧 추가됩니다</p>
-              </div>
+              <LetterEditor
+                content={letterContent}
+                onContentChange={setLetterContent}
+              />
             )}
 
             {currentStep === 4 && (

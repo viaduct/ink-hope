@@ -1,0 +1,259 @@
+import { useState } from "react";
+import { 
+  Edit3, 
+  Settings, 
+  CircleAlert,
+  Minus, 
+  Plus, 
+  AlignLeft, 
+  AlignCenter, 
+  AlignRight,
+  ImageIcon,
+  Smile,
+  ChevronDown
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type TextAlign = "left" | "center" | "right";
+
+interface LetterEditorProps {
+  content: string;
+  onContentChange: (content: string) => void;
+}
+
+const fonts = [
+  { id: "pretendard", name: "Pretendard" },
+  { id: "nanum-gothic", name: "나눔고딕" },
+  { id: "nanum-myeongjo", name: "나눔명조" },
+  { id: "gowun-dodum", name: "고운돋움" },
+];
+
+const templateTexts = {
+  intro: `안녕하세요, 잘 지내고 계시죠?
+
+오랜만에 편지를 씁니다. 요즘 날씨가 많이 추워졌는데, 건강은 괜찮으신지 궁금합니다.
+
+`,
+  main: `요즘 저는 이런저런 일들이 있었어요.
+
+매일 열심히 지내고 있고, 좋은 일들도 많이 생겼습니다. 특히...
+
+`,
+  conclusion: `다음에 만나면 더 많은 이야기 나눠요.
+
+항상 건강하시고, 곧 뵐 수 있기를 바랍니다.
+
+사랑을 담아,
+드림`,
+};
+
+export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
+  const [font, setFont] = useState("pretendard");
+  const [fontSize, setFontSize] = useState(16);
+  const [isBold, setIsBold] = useState(false);
+  const [textAlign, setTextAlign] = useState<TextAlign>("left");
+
+  const charCount = content.length;
+
+  const handleFontSizeChange = (delta: number) => {
+    setFontSize(prev => Math.min(24, Math.max(12, prev + delta)));
+  };
+
+  const insertTemplate = (type: "intro" | "main" | "conclusion") => {
+    onContentChange(content + templateTexts[type]);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* 헤더 */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Edit3 className="w-5 h-5 text-primary" />
+          <h2 className="font-semibold text-foreground text-lg">편지 작성</h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 rounded-full text-sm font-medium hover:bg-amber-100 transition-colors">
+            <Settings className="w-4 h-4" />
+            API 키 설정
+          </button>
+          <button className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 rounded-full text-sm font-medium hover:bg-amber-100 transition-colors">
+            <CircleAlert className="w-4 h-4" />
+            API 키 설정
+          </button>
+        </div>
+      </div>
+
+      {/* 템플릿 버튼 */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => insertTemplate("intro")}
+          className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-full text-sm font-medium text-foreground hover:bg-muted transition-colors"
+        >
+          <span>👋</span>
+          서론
+        </button>
+        <button
+          onClick={() => insertTemplate("main")}
+          className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-full text-sm font-medium text-foreground hover:bg-muted transition-colors"
+        >
+          <span>💬</span>
+          본론
+        </button>
+        <button
+          onClick={() => insertTemplate("conclusion")}
+          className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-full text-sm font-medium text-foreground hover:bg-muted transition-colors"
+        >
+          <span>🌟</span>
+          결론
+        </button>
+      </div>
+
+      {/* 툴바 */}
+      <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-xl flex-wrap">
+        {/* 폰트 선택 */}
+        <Select value={font} onValueChange={setFont}>
+          <SelectTrigger className="w-[140px] h-9 bg-card border-border">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {fonts.map(f => (
+              <SelectItem key={f.id} value={f.id}>
+                {f.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <div className="w-px h-6 bg-border mx-1" />
+
+        {/* 폰트 크기 */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => handleFontSizeChange(-2)}
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+          <span className="w-8 text-center text-sm font-medium text-foreground">
+            {fontSize}
+          </span>
+          <button
+            onClick={() => handleFontSizeChange(2)}
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="w-px h-6 bg-border mx-1" />
+
+        {/* 굵기 */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setIsBold(false)}
+            className={cn(
+              "w-8 h-8 flex items-center justify-center rounded-lg transition-colors text-lg",
+              !isBold ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+            )}
+          >
+            가
+          </button>
+          <button
+            onClick={() => setIsBold(true)}
+            className={cn(
+              "w-8 h-8 flex items-center justify-center rounded-lg transition-colors text-lg font-bold",
+              isBold ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+            )}
+          >
+            가
+          </button>
+        </div>
+
+        <div className="w-px h-6 bg-border mx-1" />
+
+        {/* 텍스트 스타일 */}
+        <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
+          <span className="text-lg underline">가</span>
+        </button>
+
+        {/* 정렬 */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setTextAlign("left")}
+            className={cn(
+              "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
+              textAlign === "left" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+            )}
+          >
+            <AlignLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setTextAlign("center")}
+            className={cn(
+              "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
+              textAlign === "center" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+            )}
+          >
+            <AlignCenter className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setTextAlign("right")}
+            className={cn(
+              "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
+              textAlign === "right" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+            )}
+          >
+            <AlignRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="w-px h-6 bg-border mx-1" />
+
+        {/* 이미지 & 이모지 */}
+        <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
+          <ImageIcon className="w-4 h-4" />
+        </button>
+        <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
+          <Smile className="w-4 h-4" />
+        </button>
+
+        {/* 글자 수 */}
+        <div className="ml-auto text-sm text-muted-foreground">
+          {charCount}자
+        </div>
+      </div>
+
+      {/* 에디터 */}
+      <div className="relative">
+        <textarea
+          value={content}
+          onChange={(e) => onContentChange(e.target.value)}
+          placeholder={`여기에 마음을 담아 편지를 써보세요...
+
+뭐라고 써야 할지 모르겠으면
+위의 '서론/본론/결론' 버튼을 눌러보세요! 😊`}
+          className={cn(
+            "w-full min-h-[400px] p-6 bg-card border border-border rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all",
+            "placeholder:text-muted-foreground/60",
+            isBold && "font-bold"
+          )}
+          style={{
+            fontSize: `${fontSize}px`,
+            textAlign: textAlign,
+            fontFamily: font === "pretendard" ? "Pretendard, sans-serif" : 
+                       font === "nanum-gothic" ? "'Nanum Gothic', sans-serif" :
+                       font === "nanum-myeongjo" ? "'Nanum Myeongjo', serif" :
+                       "'Gowun Dodum', sans-serif"
+          }}
+        />
+      </div>
+    </div>
+  );
+}
