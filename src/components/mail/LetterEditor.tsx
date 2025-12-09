@@ -7,8 +7,7 @@ import {
   AlignLeft, 
   AlignCenter, 
   AlignRight,
-  ImageIcon,
-  Smile
+  ImageIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -18,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EmojiPicker } from "./EmojiPicker";
+import { QuickEmojiBar } from "./QuickEmojiBar";
 import { AIWritingHelper } from "./AIWritingHelper";
 import { IntroWriterModal } from "./IntroWriterModal";
 
@@ -60,7 +59,6 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
   const [fontSize, setFontSize] = useState(16);
   const [isBold, setIsBold] = useState(false);
   const [textAlign, setTextAlign] = useState<TextAlign>("left");
-  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const [isAIHelperOpen, setIsAIHelperOpen] = useState(false);
   const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -236,33 +234,20 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
 
           <div className="w-px h-6 bg-border mx-1" />
 
-          {/* 이미지 & 이모지 */}
+          {/* 이미지 */}
           <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground">
             <ImageIcon className="w-4 h-4" />
           </button>
-          <div className="relative">
-            <button 
-              onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
-              className={cn(
-                "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
-                isEmojiPickerOpen ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
-              )}
-            >
-              <Smile className="w-4 h-4" />
-            </button>
-            <EmojiPicker
-              isOpen={isEmojiPickerOpen}
-              onClose={() => setIsEmojiPickerOpen(false)}
-              onSelect={(emoji) => {
-                insertEmoji(emoji);
-              }}
-            />
-          </div>
 
           {/* 글자 수 */}
           <div className="ml-auto text-sm text-muted-foreground">
             {charCount}자
           </div>
+        </div>
+
+        {/* 빠른 이모지 바 */}
+        <div className="mb-4">
+          <QuickEmojiBar onSelect={insertEmoji} />
         </div>
 
         {/* 에디터 */}
@@ -276,7 +261,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
 뭐라고 써야 할지 모르겠으면
 위의 '처음/중간/마무리' 버튼을 눌러보세요! 😊`}
             className={cn(
-              "w-full min-h-[400px] p-6 bg-muted/30 border-0 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all",
+              "w-full min-h-[350px] p-6 bg-muted/30 border-0 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all",
               "placeholder:text-muted-foreground/60",
               isBold && "font-bold"
             )}
