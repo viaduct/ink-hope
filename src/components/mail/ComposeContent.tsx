@@ -174,38 +174,38 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/30">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/20">
       {/* Header */}
-      <header className="h-auto bg-card px-6 py-4 border-b border-border">
-        <div className="mb-4">
-          <h1 className="text-xl font-semibold text-foreground">편지 쓰기</h1>
-          <p className="text-sm text-muted-foreground">소중한 마음을 담아 편지를 써보세요</p>
+      <header className="h-auto bg-card px-6 py-4 border-b border-border/60">
+        <div className="mb-3">
+          <h1 className="text-lg font-semibold text-foreground tracking-tight">편지 쓰기</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">소중한 마음을 담아 편지를 써보세요</p>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border my-4" />
+        <div className="border-t border-border/40 my-3" />
 
         {/* Step Progress - Chips */}
-        <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex items-center gap-1 flex-wrap">
           {steps.map((step, index) => (
-            <div key={step.id} className="flex items-center gap-1.5">
+            <div key={step.id} className="flex items-center gap-1">
               <button
                 onClick={() => currentStep > step.id && setCurrentStep(step.id)}
                 disabled={currentStep < step.id}
                 className={`
-                  flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium
+                  flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium
                   transition-all duration-200 whitespace-nowrap border
                   ${currentStep === step.id 
-                    ? "bg-primary text-primary-foreground border-primary shadow-md" 
+                    ? "bg-primary text-primary-foreground border-primary" 
                     : currentStep > step.id 
-                      ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20 cursor-pointer" 
-                      : "bg-muted text-muted-foreground border-border cursor-not-allowed"
+                      ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/15 cursor-pointer" 
+                      : "bg-muted/60 text-muted-foreground border-transparent cursor-not-allowed"
                   }
                 `}
               >
-                <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold">
+                <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-semibold">
                   {currentStep > step.id ? (
-                    <Check className="w-3.5 h-3.5" />
+                    <Check className="w-3 h-3" />
                   ) : (
                     step.id
                   )}
@@ -214,7 +214,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
               </button>
               {/* 화살표 (마지막 스텝 제외) */}
               {index < steps.length - 1 && (
-                <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+                <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" />
               )}
             </div>
           ))}
@@ -222,7 +222,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
       </header>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 lg:px-6">
+      <div className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -233,76 +233,76 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
             className="max-w-4xl mx-auto"
           >
             {currentStep === 1 && (
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {/* 받는 사람 선택 섹션 */}
                 <section>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-primary" />
-                      <h2 className="font-semibold text-foreground text-lg">받는 사람 선택</h2>
+                      <User className="w-4 h-4 text-primary" />
+                      <h2 className="font-semibold text-foreground text-sm">받는 사람 선택</h2>
                     </div>
                     <button 
                       onClick={() => setIsAddressBookModalOpen(true)}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                     >
                       주소록관리
                     </button>
                   </div>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {recipients.map((recipient) => (
                       <div
                         key={recipient.id}
                         onClick={() => setSelectedRecipientId(selectedRecipientId === recipient.id ? null : recipient.id)}
                         className={`
-                          relative bg-white rounded-xl border p-4 cursor-pointer transition-all
+                          relative bg-card rounded-xl border p-3.5 cursor-pointer transition-all
                           ${selectedRecipientId === recipient.id 
-                            ? "border-gray-300 shadow-md" 
-                            : "border-border hover:bg-gray-50"
+                            ? "border-primary/40 shadow-sm" 
+                            : "border-border/60 hover:border-border"
                           }
                         `}
                       >
                         {/* 선택 체크 표시 */}
-                        <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center ${
+                        <div className={`absolute top-3.5 right-3.5 w-5 h-5 rounded-full flex items-center justify-center ${
                           selectedRecipientId === recipient.id 
                             ? "bg-primary" 
-                            : "bg-card border-2 border-border"
+                            : "bg-card border border-border"
                         }`}>
                           {selectedRecipientId === recipient.id && (
-                            <Check className="w-4 h-4 text-primary-foreground" />
+                            <Check className="w-3 h-3 text-primary-foreground" />
                           )}
                         </div>
                         
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           {/* 아바타 */}
-                          <div className="w-12 h-12 rounded-full bg-white ring-2 ring-gray-200 flex items-center justify-center shrink-0">
-                            <img src={orangeEmoticons[recipients.indexOf(recipient) % orangeEmoticons.length]} alt="프로필" className="w-8 h-8 object-contain" />
+                          <div className="w-10 h-10 rounded-full bg-orange-50 ring-1 ring-orange-200/50 flex items-center justify-center shrink-0">
+                            <img src={orangeEmoticons[recipients.indexOf(recipient) % orangeEmoticons.length]} alt="프로필" className="w-7 h-7 object-contain" />
                           </div>
                           
                           {/* 정보 */}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-semibold text-foreground">{recipient.name}</span>
-                              <Badge variant="secondary" className="text-xs">{recipient.relation}</Badge>
+                            <div className="flex items-center gap-1.5 mb-0.5">
+                              <span className="font-semibold text-foreground text-sm">{recipient.name}</span>
+                              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{recipient.relation}</Badge>
                             </div>
-                            <p className="text-primary text-sm font-medium">{recipient.facility}</p>
-                            <p className="text-muted-foreground text-sm">{recipient.address}</p>
+                            <p className="text-primary text-xs font-medium">{recipient.facility}</p>
+                            <p className="text-muted-foreground text-xs">{recipient.address}</p>
                             {recipient.prisonerNumber && (
-                              <p className="text-muted-foreground text-sm">수용번호: {recipient.prisonerNumber}</p>
+                              <p className="text-muted-foreground text-xs">수용번호: {recipient.prisonerNumber}</p>
                             )}
                           </div>
                         </div>
 
                         {/* 우편 종류 - 선택된 수신자만 표시 */}
                         {selectedRecipientId === recipient.id && (
-                          <div className="mt-4 pt-4 border-t border-border">
-                            <div className="mb-5">
-                              <p className="text-sm font-medium text-foreground mb-1">우편 종류</p>
-                              <p className="text-xs text-muted-foreground">
-                                <span className="font-semibold text-foreground">교정시설 우편은 내부 검수 절차로 인해</span> 모든 방식의 실제 전달 속도는 비슷합니다. 안전성과 가격을 기준으로 선택해 주세요.
+                          <div className="mt-3 pt-3 border-t border-border/50">
+                            <div className="mb-4">
+                              <p className="text-xs font-medium text-foreground mb-0.5">우편 종류</p>
+                              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                <span className="font-medium text-foreground">교정시설 우편은 내부 검수 절차로 인해</span> 모든 방식의 실제 전달 속도는 비슷합니다.
                               </p>
                             </div>
-                            <div className="space-y-2">
+                            <div className="grid grid-cols-2 gap-2">
                               {mailTypeOptions.map((option, index) => (
                                 <button
                                   key={option.id}
@@ -310,60 +310,45 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                     e.stopPropagation();
                                     setSelectedMailType(option.id);
                                   }}
-                                                  className={`
-                                                    w-full p-3 rounded-lg transition-all text-left
-                                                    ${selectedMailType === option.id 
-                                                      ? "border-2 border-primary bg-primary/5" 
-                                                      : "border border-gray-200/60 dark:border-gray-700/40 hover:border-primary/30 bg-card"
-                                                    }
-                                    ${index === 0 ? "ring-1 ring-orange-200 ring-offset-1" : ""}
+                                  className={`
+                                    w-full p-2.5 rounded-lg transition-all text-left
+                                    ${selectedMailType === option.id 
+                                      ? "border border-primary bg-primary/5" 
+                                      : "border border-border/40 hover:border-primary/30 bg-card"
+                                    }
+                                    ${index === 0 ? "ring-1 ring-orange-200/60" : ""}
                                   `}
                                 >
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                                        selectedMailType === option.id ? "border-primary bg-primary" : "border-muted-foreground"
+                                  <div className="flex items-start justify-between gap-1">
+                                    <div className="flex items-start gap-1.5">
+                                      <div className={`w-3.5 h-3.5 mt-0.5 rounded-full border flex items-center justify-center shrink-0 ${
+                                        selectedMailType === option.id ? "border-primary bg-primary" : "border-muted-foreground/50"
                                       }`}>
                                         {selectedMailType === option.id && (
-                                          <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                                          <Check className="w-2 h-2 text-primary-foreground" />
                                         )}
                                       </div>
                                       <div>
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="text-sm font-semibold text-foreground">{option.label}</span>
-                                          {option.hasTracking && index !== 0 && (
-                                            <span className="text-[11px] text-primary">추적 가능</span>
+                                        <div className="flex items-center gap-1 flex-wrap">
+                                          <span className="text-xs font-semibold text-foreground">{option.label}</span>
+                                          {index === 0 && (
+                                            <span className="px-1 py-0.5 bg-primary text-primary-foreground text-[8px] font-semibold rounded">추천</span>
                                           )}
-                                          {!option.hasTracking && index === 2 && (
-                                            <span className="text-[11px] text-muted-foreground">기본 전송</span>
-                                          )}
-                                          {!option.hasTracking && index === 3 && (
-                                            <span className="text-[11px] text-muted-foreground">일반우편과 동일</span>
+                                          {index === 1 && (
+                                            <span className="px-1 py-0.5 bg-blue-500 text-white text-[8px] font-semibold rounded">안심</span>
                                           )}
                                         </div>
-                                        <span className="text-xs text-muted-foreground">{option.deliveryTime}</span>
+                                        <span className="text-[10px] text-muted-foreground">{option.deliveryTime}</span>
                                       </div>
                                     </div>
-                                    <div className="flex items-center gap-1.5">
-                                      {index === 0 && (
-                                        <span className="px-1.5 py-0.5 bg-orange-500 text-white text-[10px] font-semibold rounded">
-                                          추천
-                                        </span>
-                                      )}
-                                      {index === 1 && (
-                                        <span className="px-1.5 py-0.5 bg-blue-500 text-white text-[10px] font-semibold rounded">
-                                          안심
-                                        </span>
-                                      )}
-                                      <p className="text-sm font-bold text-primary">{option.price.toLocaleString()}원</p>
-                                    </div>
+                                    <p className="text-xs font-bold text-primary">{option.price.toLocaleString()}원</p>
                                   </div>
                                   
                                   {/* 가장 많이 선택하는 방식 노트 */}
                                   {index === 0 && (
-                                    <div className="mt-1.5 flex items-center gap-1 text-orange-600 text-[11px] font-medium">
-                                      <span className="w-2.5 h-2.5 bg-orange-500 rounded-sm flex items-center justify-center text-white text-[7px]">🔥</span>
-                                      가장 많이 선택하는 방식
+                                    <div className="mt-1 flex items-center gap-1 text-primary text-[9px] font-medium">
+                                      <span>🔥</span>
+                                      가장 많이 선택
                                     </div>
                                   )}
                                 </button>
@@ -377,72 +362,71 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                     {/* 새 수신자 추가 버튼 */}
                     <button 
                       onClick={() => setIsAddRecipientModalOpen(true)}
-                      className="w-full p-4 border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors flex items-center justify-center gap-2"
+                      className="w-full p-3 border border-dashed border-border/60 rounded-xl text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors flex items-center justify-center gap-1.5 text-sm"
                     >
-                      <Plus className="w-5 h-5" />
+                      <Plus className="w-4 h-4" />
                       <span>새 수신자 추가</span>
                     </button>
                   </div>
                 </section>
 
                 {/* 보내는 사람 섹션 */}
-                <section className="border-t border-border pt-6">
-                  <div className="flex items-center justify-between mb-4">
+                <section className="border-t border-border/40 pt-5">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <Send className="w-5 h-5 text-primary" />
-                      <h2 className="font-semibold text-foreground text-lg">보내는 사람</h2>
+                      <Send className="w-4 h-4 text-primary" />
+                      <h2 className="font-semibold text-foreground text-sm">보내는 사람</h2>
                     </div>
                     <button 
                       onClick={() => setIsAddressBookModalOpen(true)}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                     >
                       주소록관리
                     </button>
                   </div>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {senders.map((sender) => (
                       <div
                         key={sender.id}
                         onClick={() => setSelectedSenderId(sender.id)}
                         className={`
-                          relative bg-card rounded-xl border p-4 cursor-pointer transition-all
+                          relative bg-card rounded-xl border p-3 cursor-pointer transition-all
                           ${selectedSenderId === sender.id 
-                            ? "border-gray-300 bg-orange-50/30 shadow-md" 
-                            : "border-border hover:bg-muted/50"
+                            ? "border-primary/40 bg-primary/5" 
+                            : "border-border/60 hover:border-border"
                           }
                         `}
                       >
                         {/* 선택 체크 표시 */}
-                        <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center ${
+                        <div className={`absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center ${
                           selectedSenderId === sender.id 
                             ? "bg-primary" 
-                            : "bg-card border-2 border-border"
+                            : "bg-card border border-border"
                         }`}>
                           {selectedSenderId === sender.id && (
-                            <Check className="w-4 h-4 text-primary-foreground" />
+                            <Check className="w-3 h-3 text-primary-foreground" />
                           )}
                         </div>
                         
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-white ring-2 ring-gray-200 flex items-center justify-center">
-                            <img src={orangeEmoticons[(senders.indexOf(sender) + 2) % orangeEmoticons.length]} alt="프로필" className="w-6 h-6 object-contain" />
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-full bg-orange-50 ring-1 ring-orange-200/50 flex items-center justify-center">
+                            <img src={orangeEmoticons[(senders.indexOf(sender) + 2) % orangeEmoticons.length]} alt="프로필" className="w-5 h-5 object-contain" />
                           </div>
-                          <div className="flex-1 min-w-0 pr-8">
-                            <p className="font-medium text-foreground">{sender.name}</p>
-                            <p className="text-sm text-muted-foreground">{sender.address}</p>
+                          <div className="flex-1 min-w-0 pr-6">
+                            <p className="font-medium text-foreground text-sm">{sender.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">{sender.address}</p>
                           </div>
                         </div>
                       </div>
                     ))}
                     
                     {/* 새 주소 추가 버튼 */}
-                    {/* 새 주소 추가 버튼 */}
                     <button 
                       onClick={() => setIsAddSenderModalOpen(true)}
-                      className="w-full p-4 border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors flex items-center justify-center gap-2"
+                      className="w-full p-3 border border-dashed border-border/60 rounded-xl text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors flex items-center justify-center gap-1.5 text-sm"
                     >
-                      <Plus className="w-5 h-5" />
+                      <Plus className="w-4 h-4" />
                       <span>새 주소 추가</span>
                     </button>
                   </div>
@@ -520,13 +504,13 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
       </div>
 
       {/* Footer Navigation */}
-      <div className="border-t border-border bg-card px-6 py-4 flex items-center justify-between">
+      <div className="border-t border-border/50 bg-card px-6 py-3 flex items-center justify-between">
         <Button
           variant="outline"
           onClick={handlePrev}
-          className="h-10 px-6"
+          className="h-9 px-4 text-sm"
         >
-          <ChevronLeft className="w-4 h-4 mr-1" />
+          <ChevronLeft className="w-3.5 h-3.5 mr-1" />
           이전
         </Button>
         
@@ -534,14 +518,14 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
-            className="h-10 px-6 bg-primary hover:bg-primary/90"
+            className="h-9 px-5 text-sm bg-primary hover:bg-primary/90"
           >
             다음
-            <ChevronRight className="w-4 h-4 ml-1" />
+            <ChevronRight className="w-3.5 h-3.5 ml-1" />
           </Button>
         )}
         {currentStep === 7 && (
-          <div className="w-24" />
+          <div className="w-20" />
         )}
       </div>
 

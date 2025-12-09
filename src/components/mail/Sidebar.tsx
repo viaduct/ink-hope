@@ -67,23 +67,23 @@ export function Sidebar({
       initial={false}
       animate={{ width: isCollapsed ? 72 : 256 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="bg-card border-r border-border flex flex-col h-full overflow-hidden"
+      className="bg-card border-r border-border/60 flex flex-col h-full overflow-hidden"
     >
       {/* Logo & Toggle */}
-      <div className="h-16 flex items-center px-4 border-b border-border/50 justify-between">
+      <div className="h-14 flex items-center px-4 border-b border-border/40 justify-between">
         <div className="flex items-center overflow-hidden">
           {!isCollapsed && (
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-lg font-bold text-foreground tracking-tight whitespace-nowrap"
+              className="text-base font-bold text-foreground tracking-tight whitespace-nowrap"
             >
               To.<span className="text-primary">orange letter</span>
             </motion.span>
           )}
           {isCollapsed && (
-            <span className="text-lg font-bold text-primary">To.</span>
+            <span className="text-base font-bold text-primary">To.</span>
           )}
         </div>
         <motion.button
@@ -91,10 +91,10 @@ export function Sidebar({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className={cn(
-            "p-2 rounded-full transition-all duration-200 flex-shrink-0",
+            "p-1.5 rounded-lg transition-all duration-200 flex-shrink-0",
             isCollapsed 
-              ? "bg-primary text-primary-foreground shadow-md" 
-              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              ? "bg-primary text-primary-foreground" 
+              : "bg-muted/60 text-muted-foreground hover:bg-muted"
           )}
         >
           <motion.div
@@ -111,49 +111,49 @@ export function Sidebar({
       </div>
 
       {/* Profile Card */}
-      <div className="px-3 pt-3 pb-4">
+      <div className="px-3 pt-4 pb-4">
         {!isCollapsed ? (
           <div className="flex flex-col items-center text-center">
-            {/* 프로필 이미지 - Instagram Story 스타일 */}
+            {/* 프로필 이미지 - 심플 스타일 */}
             <div className="relative mb-3">
-              <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-tr from-[#FF8C00] via-[#FF6B00] to-[#FF4500] p-[2.5px]">
-                <div className="w-full h-full rounded-full bg-white p-[4px]">
-                  <div className="w-full h-full rounded-full ring-1 ring-[#FFB870] flex items-center justify-center">
-                    <img src={orangeSprout} alt="프로필" className="w-12 h-12 object-contain rounded-full" />
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 p-[2px]">
+                <div className="w-full h-full rounded-full bg-white p-1">
+                  <div className="w-full h-full rounded-full bg-orange-50 flex items-center justify-center">
+                    <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
                   </div>
                 </div>
               </div>
               {/* Kakao Badge */}
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border-2 border-white">
-                <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-[#3C1E1E]">
+              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#FEE500] flex items-center justify-center border-2 border-white">
+                <svg viewBox="0 0 24 24" className="w-3 h-3 fill-[#3C1E1E]">
                   <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.76 1.84 5.18 4.6 6.58-.2.72-.76 2.6-.87 3-.14.5.18.5.38.36.16-.1 2.52-1.7 3.54-2.4.78.1 1.56.16 2.35.16 5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/>
                 </svg>
               </div>
             </div>
             
             {/* 이름 & 이메일 */}
-            <p className="text-lg font-bold text-foreground mb-0.5">Bang Kyung Chang</p>
-            <p className="text-sm text-muted-foreground mb-4 truncate max-w-full">webbreak@kakao...</p>
+            <p className="text-sm font-semibold text-foreground mb-0.5">Bang Kyung Chang</p>
+            <p className="text-xs text-muted-foreground mb-3 truncate max-w-full">webbreak@kakao...</p>
             
             {/* 통계 카드 - 가로 배치 */}
             <div className="flex gap-2 w-full">
               <button 
                 onClick={() => onFolderChange("inbox")}
-                className="flex-1 bg-gray-100 rounded-xl py-3 px-2 hover:bg-gray-200 transition-colors"
+                className="flex-1 bg-muted/50 rounded-xl py-2.5 px-2 hover:bg-muted transition-colors"
               >
-                <svg viewBox="0 0 24 24" className="w-6 h-6 mx-auto mb-1 fill-orange-500">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 mx-auto mb-1 fill-primary">
                   <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
-                <p className="text-xs text-muted-foreground">새로운편지</p>
+                <p className="text-[10px] text-muted-foreground">새로운편지</p>
               </button>
               <button 
                 onClick={onHandwrittenUpload}
-                className="flex-1 bg-gray-100 rounded-xl py-3 px-2 hover:bg-gray-200 transition-colors"
+                className="flex-1 bg-muted/50 rounded-xl py-2.5 px-2 hover:bg-muted transition-colors"
               >
-                <svg viewBox="0 0 24 24" className="w-6 h-6 mx-auto mb-1 fill-orange-500">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 mx-auto mb-1 fill-primary">
                   <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM19 13h-1.5v1.5H19V13z"/>
                 </svg>
-                <p className="text-xs text-muted-foreground">손편지 스캔</p>
+                <p className="text-[10px] text-muted-foreground">손편지 스캔</p>
               </button>
             </div>
           </div>
@@ -163,7 +163,7 @@ export function Sidebar({
               <img 
                 src={orangeRipe} 
                 alt="프로필" 
-                className="w-10 h-10 rounded-full object-cover ring-2 ring-primary ring-offset-1"
+                className="w-9 h-9 rounded-full object-cover ring-2 ring-primary/30"
               />
             </div>
           </div>
@@ -171,24 +171,24 @@ export function Sidebar({
       </div>
 
       {/* Top Action Buttons */}
-      <div className="px-3 pb-5 flex flex-col gap-1.5">
+      <div className="px-3 pb-4 flex flex-col gap-1.5">
         {/* Compose Button - 편지 쓰기 */}
         {isCollapsed ? (
           <Button
             onClick={onCompose}
             size="icon"
-            className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#FF9500] to-[#FF5E00] hover:from-[#FF7A00] hover:to-[#FF4500] shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            className="w-full h-12 rounded-xl bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 shadow-md hover:shadow-lg transition-all duration-200"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4" />
           </Button>
         ) : (
           <Button
             onClick={onCompose}
-            className="w-full h-14 rounded-2xl text-base font-semibold bg-gradient-to-r from-[#FF9500] to-[#FF5E00] hover:from-[#FF7A00] hover:to-[#FF4500] shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 justify-center"
+            className="w-full h-12 rounded-xl text-sm font-semibold bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 shadow-md hover:shadow-lg transition-all duration-200 justify-center"
           >
             <span>편지 쓰기</span>
             {isComposeOpen && (
-              <span className="bg-white/20 text-primary-foreground text-[11px] font-medium px-2 py-0.5 rounded-full ml-2">작성중</span>
+              <span className="bg-white/20 text-primary-foreground text-[10px] font-medium px-2 py-0.5 rounded-full ml-2">작성중</span>
             )}
           </Button>
         )}
@@ -199,23 +199,23 @@ export function Sidebar({
       <nav className="flex-1 px-3 overflow-y-auto scrollbar-thin">
         {/* 전체 편지함 */}
         {!isCollapsed && (
-          <div className="flex items-center justify-between px-3 py-2">
+          <div className="flex items-center justify-between px-2 py-2">
             <button
               onClick={() => setIsFolderExpanded(!isFolderExpanded)}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
             >
               {isFolderExpanded ? (
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className="w-3.5 h-3.5" />
               ) : (
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               )}
-              <span className="text-sm font-medium">전체 편지함</span>
+              <span className="text-xs font-medium uppercase tracking-wide">전체 편지함</span>
             </button>
           </div>
         )}
         
         {(isCollapsed || isFolderExpanded) && (
-          <ul className="space-y-1">
+          <ul className="space-y-0.5">
             {folders.map((folder) => {
               const Icon = folder.icon;
               const isActive = activeFolder === folder.id;
@@ -227,25 +227,25 @@ export function Sidebar({
                     onClick={() => onFolderChange(folder.id)}
                     title={isCollapsed ? folder.label : undefined}
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all duration-150",
+                      "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-all duration-150",
                       isCollapsed && "justify-center px-0",
-                      !isCollapsed && "ml-2",
+                      !isCollapsed && "ml-1",
                       isActive
-                        ? "bg-[#FFF5EB] text-orange-600 font-medium"
-                        : "text-muted-foreground hover:bg-gray-100 hover:text-foreground"
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                     )}
                   >
-                    <Icon className={cn("w-[18px] h-[18px] flex-shrink-0", isActive && "text-orange-500")} />
+                    <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary")} />
                     {!isCollapsed && (
                       <>
                         <span className="flex-1 text-left">{folder.label}</span>
                         {count > 0 && (
                           <span
                             className={cn(
-                              "text-xs font-bold px-2.5 py-0.5 rounded-full",
+                              "text-[10px] font-semibold px-1.5 py-0.5 rounded-full tabular-nums",
                               isActive
-                                ? "bg-orange-500 text-white"
-                                : "bg-gray-200 text-muted-foreground"
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted text-muted-foreground"
                             )}
                           >
                             {count}
@@ -254,7 +254,7 @@ export function Sidebar({
                       </>
                     )}
                     {isCollapsed && count > 0 && (
-                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary text-primary-foreground text-[9px] rounded-full flex items-center justify-center">
                         {count}
                       </span>
                     )}
@@ -266,7 +266,7 @@ export function Sidebar({
         )}
 
         {/* Divider */}
-        <div className="my-4 border-t border-border" />
+        <div className="my-3 border-t border-border/50" />
 
         {/* 내 편지함 - 사용자 분류 */}
         {!isCollapsed && (
