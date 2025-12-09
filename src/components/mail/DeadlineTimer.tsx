@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import orangeRipe from "@/assets/emoticons/orange-ripe.png";
 
 interface DeadlineTimerProps {
   deadlineHour?: number;
@@ -59,27 +60,35 @@ export function DeadlineTimer({ deadlineHour = 17, isCollapsed = false }: Deadli
     );
   }
 
-  if (isExpired) {
-    return (
-      <div className="px-4 py-3 text-center">
-        <p className="text-xs text-muted-foreground mb-1">편지 마감 시간까지</p>
-        <div className="border-t border-border pt-2 mt-2">
-          <p className="font-semibold text-sm text-muted-foreground">오늘 마감 종료</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="px-4 py-3 text-center">
-      <p className="text-xs text-muted-foreground mb-1">편지 마감 시간까지</p>
-      <div className="border-t border-border pt-2 mt-2">
-        <p className={cn(
-          "font-bold text-lg tracking-wide text-orange-500",
-          isUrgent && "animate-pulse"
+    <div className="flex items-end gap-2 px-3 py-2">
+      {/* 오렌지 이모티콘 */}
+      <div className="flex-shrink-0">
+        <img src={orangeRipe} alt="오렌지" className="w-10 h-10 object-contain" />
+      </div>
+      
+      {/* 말풍선 */}
+      <div className="flex-1 relative">
+        {/* 말풍선 꼬리 */}
+        <div className="absolute left-0 bottom-2 w-0 h-0 border-t-[6px] border-t-transparent border-r-[8px] border-r-orange-100 border-b-[6px] border-b-transparent -ml-2" />
+        
+        {/* 말풍선 내용 */}
+        <div className={cn(
+          "bg-orange-100 rounded-xl px-3 py-2",
+          isUrgent && "bg-orange-200"
         )}>
-          {formatNumber(timeLeft.hours)}시 {formatNumber(timeLeft.minutes)}분 {formatNumber(timeLeft.seconds)}초
-        </p>
+          <p className="text-[11px] text-orange-600 mb-0.5">편지 마감 시간까지</p>
+          {isExpired ? (
+            <p className="font-bold text-sm text-orange-500">오늘 마감 종료!</p>
+          ) : (
+            <p className={cn(
+              "font-bold text-sm text-orange-600",
+              isUrgent && "animate-pulse"
+            )}>
+              {formatNumber(timeLeft.hours)}:{formatNumber(timeLeft.minutes)}:{formatNumber(timeLeft.seconds)}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
