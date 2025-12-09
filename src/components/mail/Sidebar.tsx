@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { AddressBookModal } from "./AddressBookModal";
 import { DeadlineTimer } from "./DeadlineTimer";
 import orangeRipe from "@/assets/emoticons/orange-ripe.png";
+import orangeSprout from "@/assets/emoticons/orange-sprout.png";
 interface SidebarProps {
   familyMembers: FamilyMember[];
   activeFolder: FolderType | null;
@@ -115,8 +116,8 @@ export function Sidebar({
           <div className="flex flex-col items-center text-center">
             {/* 프로필 이미지 */}
             <div className="relative mb-3">
-              <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center text-2xl font-bold text-orange-600">
-                B
+              <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
+                <img src={orangeSprout} alt="프로필" className="w-10 h-10 object-contain" />
               </div>
               {/* Kakao Badge */}
               <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border-2 border-white">
