@@ -116,7 +116,7 @@ export function Sidebar({
             <img 
               src={orangeRipe} 
               alt="프로필" 
-              className="w-9 h-9 rounded-full object-cover"
+              className="w-9 h-9 rounded-full object-cover ring-2 ring-primary ring-offset-1"
             />
             {/* Social Login Provider Badge */}
             <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border border-white">
