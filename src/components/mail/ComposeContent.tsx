@@ -137,14 +137,19 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/30">
       {/* Header */}
-      <header className="h-auto border-b border-border bg-card px-6 py-4">
+      <header className="h-auto bg-card px-6 py-4">
         <div className="flex items-center gap-3 mb-4">
-          <Mail className="w-6 h-6 text-primary" />
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Mail className="w-5 h-5 text-primary" />
+          </div>
           <div>
             <h1 className="text-xl font-semibold text-foreground">편지 쓰기</h1>
             <p className="text-sm text-muted-foreground">소중한 마음을 담아 편지를 써보세요</p>
           </div>
         </div>
+
+        {/* Divider */}
+        <div className="border-t border-border my-4" />
 
         {/* Step Progress - Chips */}
         <div className="flex items-center gap-2 flex-wrap">
@@ -155,22 +160,22 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
               disabled={currentStep < step.id}
               className={`
                 flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium
-                transition-all duration-200 whitespace-nowrap
+                transition-all duration-200 whitespace-nowrap border
                 ${currentStep === step.id 
-                  ? "bg-primary text-primary-foreground shadow-md" 
+                  ? "bg-primary text-primary-foreground border-primary shadow-md" 
                   : currentStep > step.id 
-                    ? "bg-primary/15 text-primary hover:bg-primary/25 cursor-pointer" 
-                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                    ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20 cursor-pointer" 
+                    : "bg-muted text-muted-foreground border-border cursor-not-allowed"
                 }
               `}
             >
-              {currentStep > step.id ? (
-                <Check className="w-3.5 h-3.5" />
-              ) : (
-                <span className="w-5 h-5 rounded-full bg-current/20 flex items-center justify-center text-xs">
-                  {step.id}
-                </span>
-              )}
+              <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold">
+                {currentStep > step.id ? (
+                  <Check className="w-3.5 h-3.5" />
+                ) : (
+                  step.id
+                )}
+              </span>
               {step.label}
             </button>
           ))}
