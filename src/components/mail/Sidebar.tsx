@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, FileSignature } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -105,8 +105,9 @@ export function Sidebar({
         </motion.button>
       </div>
 
-      {/* New Mail Notification */}
-      <div className="px-3 pt-3">
+      {/* Top Action Buttons */}
+      <div className="px-3 pt-3 flex flex-col gap-1.5">
+        {/* New Mail Notification */}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -127,10 +128,8 @@ export function Sidebar({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </div>
 
-      {/* Compose Button */}
-      <div className="px-3 pb-1.5">
+        {/* Compose Button */}
         {isCollapsed ? (
           <Button
             onClick={onCompose}
@@ -148,24 +147,22 @@ export function Sidebar({
             편지 쓰기
           </Button>
         )}
-      </div>
 
-      {/* Handwritten Letter Auto-Registration */}
-      <div className="px-3 pb-3">
+        {/* Handwritten Letter Auto-Registration */}
         {isCollapsed ? (
           <Button
             variant="outline"
             size="icon"
-            className="w-full h-10 rounded-xl"
+            className="w-full h-10 rounded-xl border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
           >
-            <FileSignature className="w-5 h-5" />
+            <Inbox className="w-5 h-5" />
           </Button>
         ) : (
           <Button
             variant="outline"
-            className="w-full h-10 rounded-xl text-[14px] font-medium"
+            className="w-full h-10 rounded-xl text-[14px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
           >
-            <FileSignature className="w-4 h-4 mr-2" />
+            <Inbox className="w-4 h-4 mr-2" />
             손편지 자동등록
           </Button>
         )}
