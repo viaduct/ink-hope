@@ -167,66 +167,86 @@ export function Sidebar({
           </Button>
         )}
 
-        {/* New Mail Notification - 받은편지함으로 이동 */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {isCollapsed ? (
+        {/* 새로 들어온 편지 & 손편지 자동등록 - 가로 배치 */}
+        {!isCollapsed && (
+          <div className="flex gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    onClick={() => onFolderChange("inbox")}
+                    className="flex-1 h-10 rounded-lg text-[13px] font-medium bg-white text-orange-500 shadow-[0_0_8px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_rgba(0,0,0,0.2)] hover:bg-white hover:text-orange-600 justify-center px-3 transition-all"
+                  >
+                    <Bell className="w-4 h-4 mr-1.5 flex-shrink-0" />
+                    <span>새로 들어온 편지</span>
+                    {unreadCount > 0 && (
+                      <span className="bg-orange-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ml-1.5">{unreadCount}</span>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-orange-50 border-orange-200 text-orange-800">
+                  <p>새로 들어온 편지 {unreadCount}건이 있어요🧡</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  onClick={onHandwrittenUpload}
+                  className="flex-1 h-10 rounded-lg text-[13px] font-medium bg-white text-orange-500 shadow-[0_0_8px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_rgba(0,0,0,0.2)] hover:bg-white hover:text-orange-600 justify-center px-3 transition-all"
+                >
+                  <Inbox className="w-4 h-4 mr-1.5 flex-shrink-0" />
+                  <span>손편지 자동등록</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[240px] text-center">
+                <p>손편지를 여러 장 업로드하면, OCR로 자동 변환되어 발송용 문장으로 정리됩니다.</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        )}
+
+        {/* Collapsed state buttons */}
+        {isCollapsed && (
+          <>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onFolderChange("inbox")}
+                    className="w-full h-10 rounded-lg bg-white text-orange-500 shadow-[0_0_8px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_rgba(0,0,0,0.2)] hover:bg-white hover:text-orange-600 transition-all"
+                  >
+                    <Bell className="w-5 h-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="bg-orange-50 border-orange-200 text-orange-800">
+                  <p>새로 들어온 편지 {unreadCount}건이 있어요🧡</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => onFolderChange("inbox")}
-                  className="w-full h-11 rounded-xl bg-white text-orange-500 shadow-md hover:shadow-lg hover:bg-white hover:text-orange-600 transition-all"
+                  onClick={onHandwrittenUpload}
+                  className="w-full h-10 rounded-lg bg-white text-orange-500 shadow-[0_0_8px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_rgba(0,0,0,0.2)] hover:bg-white hover:text-orange-600 transition-all"
                 >
-                  <Bell className="w-5 h-5" />
+                  <Inbox className="w-5 h-5" />
                 </Button>
-              ) : (
-                <Button
-                  variant="ghost"
-                  onClick={() => onFolderChange("inbox")}
-                  className="w-full h-11 rounded-xl text-[15px] font-medium bg-white text-orange-500 shadow-md hover:shadow-lg hover:bg-white hover:text-orange-600 justify-start px-4 transition-all"
-                >
-                  <Bell className="w-4 h-4 mr-1 flex-shrink-0" />
-                  <span className="flex-1 text-left">새로 들어온 편지</span>
-                  {unreadCount > 0 && (
-                    <span className="bg-orange-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{unreadCount}</span>
-                  )}
-                </Button>
-              )}
-            </TooltipTrigger>
-            <TooltipContent side="right" className="bg-orange-50 border-orange-200 text-orange-800">
-              <p>새로 들어온 편지 {unreadCount}건이 있어요🧡</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        {/* Handwritten Letter Auto-Registration */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            {isCollapsed ? (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onHandwrittenUpload}
-                className="w-full h-11 rounded-xl bg-white text-orange-500 shadow-md hover:shadow-lg hover:bg-white hover:text-orange-600 transition-all"
-              >
-                <Inbox className="w-5 h-5" />
-              </Button>
-            ) : (
-              <Button
-                variant="ghost"
-                onClick={onHandwrittenUpload}
-                className="w-full h-11 rounded-xl text-[15px] font-medium bg-white text-orange-500 shadow-md hover:shadow-lg hover:bg-white hover:text-orange-600 justify-start px-4 transition-all"
-              >
-                <Inbox className="w-4 h-4 mr-1 flex-shrink-0" />
-                <span>손편지 자동등록</span>
-              </Button>
-            )}
-          </TooltipTrigger>
-          <TooltipContent side="right" className="max-w-[240px] text-center">
-            <p>손편지를 여러 장 업로드하면, OCR로 자동 변환되어 발송용 문장으로 정리됩니다.</p>
-          </TooltipContent>
-        </Tooltip>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="max-w-[240px] text-center">
+                <p>손편지를 여러 장 업로드하면, OCR로 자동 변환되어 발송용 문장으로 정리됩니다.</p>
+              </TooltipContent>
+            </Tooltip>
+          </>
+        )}
       </div>
 
       {/* Folders */}
