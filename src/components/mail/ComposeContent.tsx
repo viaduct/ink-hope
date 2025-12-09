@@ -214,7 +214,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
       </header>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto px-4 py-6 lg:px-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -222,7 +222,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto"
           >
             {currentStep === 1 && (
               <div className="space-y-6">
