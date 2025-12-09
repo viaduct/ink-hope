@@ -227,7 +227,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                     {sampleRecipients.map((recipient) => (
                       <div
                         key={recipient.id}
-                        onClick={() => setSelectedRecipientId(recipient.id)}
+                        onClick={() => setSelectedRecipientId(selectedRecipientId === recipient.id ? null : recipient.id)}
                         className={`
                           relative bg-card rounded-xl border-2 p-4 cursor-pointer transition-all
                           ${selectedRecipientId === recipient.id 
