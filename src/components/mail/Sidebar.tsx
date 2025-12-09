@@ -131,15 +131,22 @@ export function Sidebar({
           <Tooltip>
             <TooltipTrigger asChild>
               {isCollapsed ? (
-                <div className="w-full h-11 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-center">
-                  <Bell className="w-4 h-4 text-amber-600" />
-                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-full h-11 rounded-xl border-amber-400 text-amber-500 hover:bg-amber-50 hover:text-amber-600"
+                >
+                  <Bell className="w-5 h-5" />
+                </Button>
               ) : (
-                <div className="w-full h-11 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:bg-amber-200 transition-colors">
-                  <Bell className="w-4 h-4 text-amber-600" />
-                  <span className="text-[15px] font-medium text-amber-700">새로 들어온 편지</span>
-                  <span className="bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">3</span>
-                </div>
+                <Button
+                  variant="outline"
+                  className="w-full h-11 rounded-xl text-[15px] font-medium border-amber-400 text-amber-500 hover:bg-amber-50 hover:text-amber-600"
+                >
+                  <Bell className="w-4 h-4 mr-2" />
+                  새로 들어온 편지
+                  <span className="bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full ml-2">3</span>
+                </Button>
               )}
             </TooltipTrigger>
             <TooltipContent side="right" className="bg-amber-50 border-amber-200 text-amber-800">
