@@ -28,6 +28,7 @@ import { AdditionalOptions } from "./AdditionalOptions";
 import { PaymentSummary } from "./PaymentSummary";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
+import orangeRipe from "@/assets/emoticons/orange-ripe.png";
 
 type StepId = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -273,8 +274,8 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         
                         <div className="flex gap-4">
                           {/* 아바타 */}
-                          <div className={`w-12 h-12 rounded-full ${recipient.color} flex items-center justify-center text-white font-semibold text-lg shrink-0`}>
-                            {recipient.name.charAt(0)}
+                          <div className="w-12 h-12 rounded-full bg-orange-50 ring-2 ring-gray-200 flex items-center justify-center shrink-0">
+                            <img src={orangeRipe} alt="프로필" className="w-8 h-8 object-contain" />
                           </div>
                           
                           {/* 정보 */}
@@ -404,10 +405,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         key={sender.id}
                         onClick={() => setSelectedSenderId(sender.id)}
                         className={`
-                          relative bg-card rounded-xl border-2 p-4 cursor-pointer transition-all
+                          relative bg-card rounded-xl border p-4 cursor-pointer transition-all
                           ${selectedSenderId === sender.id 
-                            ? "border-primary shadow-md" 
-                            : "border-border hover:border-primary/30"
+                            ? "border-gray-300 bg-orange-50/30 shadow-md" 
+                            : "border-border hover:bg-muted/50"
                           }
                         `}
                       >
@@ -423,8 +424,8 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         </div>
                         
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                            <User className="w-5 h-5 text-muted-foreground" />
+                          <div className="w-10 h-10 rounded-full bg-orange-50 ring-2 ring-gray-200 flex items-center justify-center">
+                            <img src={orangeRipe} alt="프로필" className="w-6 h-6 object-contain" />
                           </div>
                           <div className="flex-1 min-w-0 pr-8">
                             <p className="font-medium text-foreground">{sender.name}</p>
