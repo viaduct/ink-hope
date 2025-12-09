@@ -14,7 +14,8 @@ import {
   Plus,
   User,
   Send,
-  Pencil
+  Pencil,
+  Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -246,12 +247,31 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                           }
                         `}
                       >
-                        {/* 선택 체크 표시 */}
-                        {selectedRecipientId === recipient.id && (
-                          <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-4 h-4 text-primary-foreground" />
-                          </div>
-                        )}
+                        {/* 우측 상단 버튼들 */}
+                        <div className="absolute top-4 right-4 flex items-center gap-2">
+                          {/* 삭제 버튼 */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (recipients.length > 1) {
+                                setRecipients(recipients.filter(r => r.id !== recipient.id));
+                                if (selectedRecipientId === recipient.id) {
+                                  setSelectedRecipientId(null);
+                                }
+                              }
+                            }}
+                            className="w-6 h-6 rounded-full bg-muted hover:bg-destructive/10 flex items-center justify-center transition-colors group"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-muted-foreground group-hover:text-destructive" />
+                          </button>
+                          
+                          {/* 선택 체크 표시 */}
+                          {selectedRecipientId === recipient.id && (
+                            <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                              <Check className="w-4 h-4 text-primary-foreground" />
+                            </div>
+                          )}
+                        </div>
                         
                         <div className="flex gap-4">
                           {/* 아바타 */}
