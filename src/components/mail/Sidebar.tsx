@@ -147,7 +147,7 @@ export function Sidebar({
                     <Bell className="w-4 h-4 mr-1 flex-shrink-0" />
                     <span>새로 들어온 편지</span>
                   </div>
-                  <span className="bg-orange-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center mr-1.5">3</span>
+                  <span className="bg-orange-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">3</span>
                 </Button>
               )}
             </TooltipTrigger>
