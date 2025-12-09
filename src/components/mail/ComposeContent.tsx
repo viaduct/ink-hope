@@ -13,8 +13,7 @@ import {
   Check,
   Plus,
   User,
-  Send,
-  Pencil
+  Send
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -228,9 +227,14 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
               <div className="space-y-6">
                 {/* 받는 사람 선택 섹션 */}
                 <section>
-                  <div className="flex items-center gap-2 mb-4">
-                    <User className="w-5 h-5 text-primary" />
-                    <h2 className="font-semibold text-foreground text-lg">받는 사람 선택</h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <User className="w-5 h-5 text-primary" />
+                      <h2 className="font-semibold text-foreground text-lg">받는 사람 선택</h2>
+                    </div>
+                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      주소록관리
+                    </button>
                   </div>
                   
                   <div className="space-y-3">
@@ -247,11 +251,15 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         `}
                       >
                         {/* 선택 체크 표시 */}
-                        {selectedRecipientId === recipient.id && (
-                          <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                        <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center ${
+                          selectedRecipientId === recipient.id 
+                            ? "bg-primary" 
+                            : "bg-muted border-2 border-border"
+                        }`}>
+                          {selectedRecipientId === recipient.id && (
                             <Check className="w-4 h-4 text-primary-foreground" />
-                          </div>
-                        )}
+                          )}
+                        </div>
                         
                         <div className="flex gap-4">
                           {/* 아바타 */}
@@ -374,9 +382,8 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                       <Send className="w-5 h-5 text-primary" />
                       <h2 className="font-semibold text-foreground text-lg">보내는 사람</h2>
                     </div>
-                    <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors">
-                      <Pencil className="w-4 h-4" />
-                      수정
+                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      주소록관리
                     </button>
                   </div>
                   
@@ -394,11 +401,15 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         `}
                       >
                         {/* 선택 체크 표시 */}
-                        {selectedSenderId === sender.id && (
-                          <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                        <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center ${
+                          selectedSenderId === sender.id 
+                            ? "bg-primary" 
+                            : "bg-muted border-2 border-border"
+                        }`}>
+                          {selectedSenderId === sender.id && (
                             <Check className="w-4 h-4 text-primary-foreground" />
-                          </div>
-                        )}
+                          )}
+                        </div>
                         
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
