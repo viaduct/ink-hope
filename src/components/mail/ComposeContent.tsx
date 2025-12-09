@@ -247,7 +247,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                 안전성과 가격을 기준으로 선택해 주세요.
                               </p>
                             </div>
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                               {mailTypeOptions.map((option, index) => (
                                 <button
                                   key={option.id}
