@@ -22,6 +22,7 @@ import { AddSenderModal } from "./AddSenderModal";
 import { AddressBookModal } from "./AddressBookModal";
 import { StationerySelector } from "./StationerySelector";
 import { LetterEditor } from "./LetterEditor";
+import { LetterPreview } from "./LetterPreview";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
 
@@ -450,11 +451,15 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
             )}
 
             {currentStep === 4 && (
-              <div className="bg-card rounded-xl border border-border p-8 text-center">
-                <Eye className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h2 className="text-lg font-semibold text-foreground mb-2">미리보기</h2>
-                <p className="text-muted-foreground">미리보기 기능이 곧 추가됩니다</p>
-              </div>
+              <LetterPreview
+                content={letterContent}
+                stationeryId={selectedStationeryId}
+                recipientName={recipients.find(r => r.id === selectedRecipientId)?.name}
+                recipientFacility={recipients.find(r => r.id === selectedRecipientId)?.facility}
+                recipientAddress={recipients.find(r => r.id === selectedRecipientId)?.address}
+                senderName={senders.find(s => s.id === selectedSenderId)?.name}
+                senderAddress={senders.find(s => s.id === selectedSenderId)?.address}
+              />
             )}
 
             {currentStep === 5 && (
