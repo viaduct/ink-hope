@@ -106,7 +106,7 @@ export function Sidebar({
       </div>
 
       {/* Top Action Buttons */}
-      <div className="px-3 pt-3 flex flex-col gap-1.5">
+      <div className="px-3 pt-3 pb-5 flex flex-col gap-1.5">
         {/* Compose Button - 편지 쓰기 */}
         {isCollapsed ? (
           <Button
