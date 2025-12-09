@@ -141,11 +141,11 @@ export function Sidebar({
               ) : (
                 <Button
                   variant="outline"
-                  className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
+                  className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600 justify-start px-4"
                 >
-                  <Bell className="w-4 h-4 mr-2" />
-                  새로 들어온 편지
-                  <span className="bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full ml-2">3</span>
+                  <Bell className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span>새로 들어온 편지</span>
+                  <span className="bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full ml-1">3</span>
                 </Button>
               )}
             </TooltipTrigger>
@@ -169,10 +169,10 @@ export function Sidebar({
             ) : (
               <Button
                 variant="outline"
-                className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
+                className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600 justify-start px-4"
               >
-                <Inbox className="w-4 h-4 mr-2" />
-                손편지 자동등록
+                <Inbox className="w-4 h-4 mr-2 flex-shrink-0" />
+                <span>손편지 자동등록</span>
               </Button>
             )}
           </TooltipTrigger>
