@@ -29,6 +29,12 @@ import { PaymentSummary } from "./PaymentSummary";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
 import orangeRipe from "@/assets/emoticons/orange-ripe.png";
+import orangeSeed from "@/assets/emoticons/orange-seed.png";
+import orangeSprout from "@/assets/emoticons/orange-sprout.png";
+import orangeYoungTree from "@/assets/emoticons/orange-young-tree.png";
+import orangeFullTree from "@/assets/emoticons/orange-full-tree.png";
+
+const orangeEmoticons = [orangeRipe, orangeSeed, orangeSprout, orangeYoungTree, orangeFullTree];
 
 type StepId = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -274,8 +280,8 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         
                         <div className="flex gap-4">
                           {/* 아바타 */}
-                          <div className="w-12 h-12 rounded-full bg-orange-50 ring-2 ring-gray-200 flex items-center justify-center shrink-0">
-                            <img src={orangeRipe} alt="프로필" className="w-8 h-8 object-contain" />
+                          <div className="w-12 h-12 rounded-full bg-white ring-2 ring-gray-200 flex items-center justify-center shrink-0">
+                            <img src={orangeEmoticons[recipients.indexOf(recipient) % orangeEmoticons.length]} alt="프로필" className="w-8 h-8 object-contain" />
                           </div>
                           
                           {/* 정보 */}
@@ -424,8 +430,8 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         </div>
                         
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-orange-50 ring-2 ring-gray-200 flex items-center justify-center">
-                            <img src={orangeRipe} alt="프로필" className="w-6 h-6 object-contain" />
+                          <div className="w-10 h-10 rounded-full bg-white ring-2 ring-gray-200 flex items-center justify-center">
+                            <img src={orangeEmoticons[(senders.indexOf(sender) + 2) % orangeEmoticons.length]} alt="프로필" className="w-6 h-6 object-contain" />
                           </div>
                           <div className="flex-1 min-w-0 pr-8">
                             <p className="font-medium text-foreground">{sender.name}</p>
