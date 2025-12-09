@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { CreditCard, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { CreditCard, Check, X, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 interface PhotoFile {
   id: string;
@@ -37,6 +39,7 @@ interface PaymentSummaryProps {
   mailPrice: number;
   onMailTypeChange: (mailType: string, price: number) => void;
   onPayment: () => void;
+  userPoints?: number; // 사용자 보유 포인트
 }
 
 // 추가 옵션 아이템 정보
@@ -62,7 +65,10 @@ export function PaymentSummary({
   mailPrice,
   onMailTypeChange,
   onPayment,
+  userPoints = 10000, // 기본값: 10,000 포인트
 }: PaymentSummaryProps) {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
   // 편지 분량 계산
   const charCount = letterContent.length;
   const pageCount = Math.ceil(charCount / 500) || 1;
@@ -74,10 +80,30 @@ export function PaymentSummary({
   // 총 비용 계산
   const totalPrice = mailPrice + photoPrice;
 
+  // 포인트 충분 여부
+  const hasEnoughPoints = userPoints >= totalPrice;
+
+  // 차감 후 포인트
+  const remainingPoints = userPoints - totalPrice;
+
   // 선택된 추가 옵션 목록
   const selectedItemNames = selectedAdditionalItems
     .map((id) => additionalItemsInfo[id]?.title)
     .filter(Boolean);
+
+  const handlePaymentClick = () => {
+    setShowPaymentModal(true);
+  };
+
+  const handleConfirmPayment = () => {
+    if (!hasEnoughPoints) {
+      toast.error("포인트가 부족합니다. 충전 후 다시 시도해주세요.");
+      return;
+    }
+    setShowPaymentModal(false);
+    onPayment();
+    toast.success("결제가 완료되었습니다!");
+  };
 
   return (
     <div className="space-y-4">
@@ -223,7 +249,7 @@ export function PaymentSummary({
 
         {/* 결제 버튼 */}
         <Button
-          onClick={onPayment}
+          onClick={handlePaymentClick}
           className="w-full py-6 text-lg font-semibold rounded-2xl bg-primary hover:bg-primary/90"
         >
           <CreditCard className="w-5 h-5 mr-2" />
@@ -237,6 +263,78 @@ export function PaymentSummary({
           </p>
         </div>
       </div>
+
+      {/* 포인트 차감 확인 모달 */}
+      <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+          <div className="p-6 space-y-6">
+            {/* 헤더 */}
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 flex items-center justify-center">
+                <Coins className="w-8 h-8 text-orange-500" />
+              </div>
+              <h2 className="text-xl font-semibold text-foreground">포인트 차감 안내</h2>
+              <p className="text-sm text-muted-foreground mt-1">결제 금액만큼 포인트가 차감됩니다</p>
+            </div>
+
+            {/* 포인트 계산 */}
+            <div className="bg-gray-900 rounded-2xl p-5 space-y-4">
+              {/* 현재 보유 포인트 */}
+              <div className="flex items-center justify-between">
+                <span className="text-gray-300">현재 보유 포인트</span>
+                <span className="text-xl font-bold text-white">{userPoints.toLocaleString()}P</span>
+              </div>
+
+              {/* 차감 포인트 */}
+              <div className="flex items-center justify-between">
+                <span className="text-gray-300">차감 포인트</span>
+                <span className="text-xl font-bold text-red-400">-{totalPrice.toLocaleString()}P</span>
+              </div>
+
+              {/* 구분선 */}
+              <div className="border-t border-gray-700" />
+
+              {/* 결제 후 잔여 포인트 */}
+              <div className="flex items-center justify-between">
+                <span className="text-white font-medium">결제 후 잔여 포인트</span>
+                <span className={cn(
+                  "text-2xl font-bold",
+                  hasEnoughPoints ? "text-green-400" : "text-red-400"
+                )}>
+                  {remainingPoints.toLocaleString()}P
+                </span>
+              </div>
+            </div>
+
+            {/* 포인트 부족 경고 */}
+            {!hasEnoughPoints && (
+              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded-xl p-4 text-center">
+                <p className="text-red-600 dark:text-red-400 font-medium">
+                  포인트가 부족합니다. 충전 후 다시 시도해주세요.
+                </p>
+              </div>
+            )}
+
+            {/* 버튼 */}
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowPaymentModal(false)}
+                className="flex-1 py-5 rounded-xl"
+              >
+                취소
+              </Button>
+              <Button
+                onClick={handleConfirmPayment}
+                disabled={!hasEnoughPoints}
+                className="flex-1 py-5 rounded-xl bg-primary hover:bg-primary/90"
+              >
+                결제 확인
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

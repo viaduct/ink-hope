@@ -531,14 +531,19 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
           이전
         </Button>
         
-        <Button
-          onClick={handleNext}
-          disabled={!canProceed()}
-          className="h-10 px-6 bg-primary hover:bg-primary/90"
-        >
-          다음
-          <ChevronRight className="w-4 h-4 ml-1" />
-        </Button>
+        {currentStep !== 7 && (
+          <Button
+            onClick={handleNext}
+            disabled={!canProceed()}
+            className="h-10 px-6 bg-primary hover:bg-primary/90"
+          >
+            다음
+            <ChevronRight className="w-4 h-4 ml-1" />
+          </Button>
+        )}
+        {currentStep === 7 && (
+          <div className="w-24" />
+        )}
       </div>
 
       {/* 모달들 */}
