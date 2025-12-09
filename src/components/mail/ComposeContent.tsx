@@ -300,59 +300,50 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
 
                         {/* 우편 종류 - 선택된 수신자만 표시 */}
                         {selectedRecipientId === recipient.id && (
-                          <div className="mt-3 pt-3 border-t border-border/50">
-                            <div className="bg-white rounded-xl p-3">
-                              <div className="mb-3">
-                                <p className="text-xs font-medium text-foreground mb-0.5">우편 종류</p>
-                                <p className="text-[11px] text-muted-foreground leading-relaxed">
-                                  <span className="font-medium text-foreground">교정시설 우편은 내부 검수 절차로 인해</span> 모든 방식의 실제 전달 속도는 비슷합니다.
-                                </p>
-                              </div>
-                              <div className="bg-card rounded-lg p-2 border border-border/50">
-                                <div className="grid grid-cols-2 gap-2">
-                                  {mailTypeOptions.map((option, index) => (
-                                    <button
-                                      key={option.id}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedMailType(option.id);
-                                      }}
-                                      className={`
-                                        w-full p-2.5 rounded-lg transition-all text-left
-                                        ${selectedMailType === option.id 
-                                          ? "border border-primary bg-primary/5" 
-                                          : "border border-border/40 hover:border-primary/30 bg-muted/20"
-                                        }
-                                        ${index === 0 ? "ring-1 ring-orange-200/60" : ""}
-                                      `}
-                                    >
-                                      <div className="flex items-start justify-between gap-1">
-                                        <div className="flex items-start gap-1.5">
-                                          <div className={`w-3.5 h-3.5 mt-0.5 rounded-full border flex items-center justify-center shrink-0 ${
-                                            selectedMailType === option.id ? "border-primary bg-primary" : "border-muted-foreground/50"
-                                          }`}>
-                                            {selectedMailType === option.id && (
-                                              <Check className="w-2 h-2 text-primary-foreground" />
+                          <div className="mt-4 pt-4 border-t border-orange-200/60">
+                            <p className="text-sm font-medium text-foreground mb-3">우편 종류</p>
+                            <div className="bg-slate-50 rounded-xl p-3">
+                              <div className="grid grid-cols-2 gap-2">
+                                {mailTypeOptions.map((option, index) => (
+                                  <button
+                                    key={option.id}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedMailType(option.id);
+                                    }}
+                                    className={`
+                                      w-full p-3 rounded-lg transition-all text-left bg-white
+                                      ${selectedMailType === option.id 
+                                        ? "border-2 border-primary shadow-sm" 
+                                        : "border border-gray-200 hover:border-gray-300"
+                                      }
+                                    `}
+                                  >
+                                    <div className="flex items-start justify-between gap-2">
+                                      <div className="flex items-start gap-2">
+                                        <div className={`w-4 h-4 mt-0.5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                                          selectedMailType === option.id ? "border-primary bg-primary" : "border-gray-300"
+                                        }`}>
+                                          {selectedMailType === option.id && (
+                                            <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                                          )}
+                                        </div>
+                                        <div>
+                                          <div className="flex items-center gap-1.5 flex-wrap">
+                                            <span className="text-sm font-semibold text-foreground">{option.label}</span>
+                                            {option.hasTracking && (
+                                              <span className="px-1.5 py-0.5 bg-blue-100 text-blue-600 text-[10px] font-medium rounded">등기추적</span>
                                             )}
                                           </div>
-                                          <div>
-                                            <div className="flex items-center gap-1 flex-wrap">
-                                              <span className="text-xs font-semibold text-foreground">{option.label}</span>
-                                              {index === 0 && (
-                                                <span className="px-1 py-0.5 bg-primary text-primary-foreground text-[8px] font-semibold rounded">추천</span>
-                                              )}
-                                              {index === 1 && (
-                                                <span className="px-1 py-0.5 bg-blue-500 text-white text-[8px] font-semibold rounded">안심</span>
-                                              )}
-                                            </div>
-                                            <span className="text-[10px] text-muted-foreground">{option.deliveryTime}</span>
-                                          </div>
                                         </div>
-                                        <p className="text-xs font-bold text-primary">{option.price.toLocaleString()}원</p>
                                       </div>
-                                    </button>
-                                  ))}
-                                </div>
+                                      <div className="text-right">
+                                        <span className="text-[11px] text-muted-foreground">발송 후 {option.deliveryTime}</span>
+                                        <p className="text-sm font-bold text-primary">{option.price.toLocaleString()}원</p>
+                                      </div>
+                                    </div>
+                                  </button>
+                                ))}
                               </div>
                             </div>
                           </div>
