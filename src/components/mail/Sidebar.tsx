@@ -149,23 +149,30 @@ export function Sidebar({
         </TooltipProvider>
 
         {/* Handwritten Letter Auto-Registration */}
-        {isCollapsed ? (
-          <Button
-            variant="outline"
-            size="icon"
-            className="w-full h-11 rounded-xl border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
-          >
-            <Inbox className="w-5 h-5" />
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
-          >
-            <Inbox className="w-4 h-4 mr-2" />
-            손편지 자동등록
-          </Button>
-        )}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            {isCollapsed ? (
+              <Button
+                variant="outline"
+                size="icon"
+                className="w-full h-11 rounded-xl border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
+              >
+                <Inbox className="w-5 h-5" />
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                className="w-full h-11 rounded-xl text-[15px] font-medium border-orange-400 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
+              >
+                <Inbox className="w-4 h-4 mr-2" />
+                손편지 자동등록
+              </Button>
+            )}
+          </TooltipTrigger>
+          <TooltipContent side="right" className="max-w-[240px] text-center">
+            <p>손편지를 여러 장 업로드하면, OCR로 자동 변환되어 발송용 문장으로 정리됩니다.</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
 
       {/* Folders */}
