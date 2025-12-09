@@ -290,7 +290,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                               <span className="font-semibold text-foreground text-sm">{recipient.name}</span>
                               <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{recipient.relation}</Badge>
                             </div>
-                            <p className="text-primary text-xs font-medium">{recipient.facility}</p>
+                            <p className="text-primary text-sm font-semibold">{recipient.facility}</p>
                             <p className="text-muted-foreground text-xs">{recipient.address}</p>
                             {recipient.prisonerNumber && (
                               <p className="text-muted-foreground text-xs">수용번호: {recipient.prisonerNumber}</p>
