@@ -260,10 +260,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         key={recipient.id}
                         onClick={() => setSelectedRecipientId(selectedRecipientId === recipient.id ? null : recipient.id)}
                         className={`
-                          relative bg-card rounded-xl border p-3.5 cursor-pointer transition-all
+                          relative rounded-xl p-3.5 cursor-pointer transition-all
                           ${selectedRecipientId === recipient.id 
-                            ? "border-primary/40 shadow-sm" 
-                            : "border-border/60 hover:border-border"
+                            ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-primary/30" 
+                            : "bg-muted/30 border border-transparent hover:bg-muted/50"
                           }
                         `}
                       >
