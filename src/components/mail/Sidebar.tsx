@@ -209,7 +209,7 @@ export function Sidebar({
               ) : (
                 <ChevronRight className="w-3.5 h-3.5" />
               )}
-              <span className="text-xs font-medium uppercase tracking-wide">전체 편지함</span>
+              <span className="text-sm font-medium">전체 편지함</span>
             </button>
           </div>
         )}
@@ -232,7 +232,7 @@ export function Sidebar({
                       !isCollapsed && "ml-1",
                       isActive
                         ? "bg-primary/10 text-primary font-medium"
-                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                        : "text-foreground hover:bg-muted/60"
                     )}
                   >
                     <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary")} />
@@ -313,7 +313,7 @@ export function Sidebar({
                           "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
                           isSelected
                             ? "bg-primary/10 text-primary"
-                            : "text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+                            : "text-foreground hover:bg-secondary"
                         )}
                       >
                         {isSelected ? (
@@ -330,7 +330,7 @@ export function Sidebar({
                 {/* 새 편지함 추가 */}
                 <li>
                   <button 
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-foreground hover:bg-secondary"
                   >
                     <Plus className="w-4 h-4" />
                     <span className="text-sm">새 편지함 추가</span>
