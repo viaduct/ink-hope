@@ -1,4 +1,5 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { FamilyMember, FolderType } from "@/types/mail";
@@ -24,7 +25,7 @@ interface SidebarProps {
 }
 
 const folders = [
-  { id: "inbox" as FolderType, label: "받은편지함", icon: Mail },
+  { id: "inbox" as FolderType, label: "전체받은편지함", icon: Mail },
   { id: "sent" as FolderType, label: "보낸편지함", icon: Send },
   { id: "draft" as FolderType, label: "임시저장함", icon: FileText },
   { id: "archive" as FolderType, label: "중요편지함", icon: Star },
@@ -101,6 +102,30 @@ export function Sidebar({
             )}
           </motion.div>
         </motion.button>
+      </div>
+
+      {/* New Mail Notification */}
+      <div className="px-3 pt-3">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              {isCollapsed ? (
+                <div className="w-full h-10 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-amber-600" />
+                </div>
+              ) : (
+                <div className="w-full h-10 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:bg-amber-200 transition-colors">
+                  <Bell className="w-4 h-4 text-amber-600" />
+                  <span className="text-sm font-medium text-amber-700">새로 들어온 편지</span>
+                  <span className="bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">3</span>
+                </div>
+              )}
+            </TooltipTrigger>
+            <TooltipContent side="right" className="bg-amber-50 border-amber-200 text-amber-800">
+              <p>새로 들어온 편지 3건이 있어요🧡</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Compose Button */}
