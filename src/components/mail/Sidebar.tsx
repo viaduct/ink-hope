@@ -141,7 +141,6 @@ export function Sidebar({
                 onClick={() => onFolderChange("inbox")}
                 className="flex-1 bg-gray-100 rounded-xl py-3 px-2 hover:bg-gray-200 transition-colors"
               >
-                <Mail className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
                 <p className="text-xl font-bold text-foreground">{unreadCount}</p>
                 <p className="text-xs text-muted-foreground">새로운편지</p>
               </button>
@@ -149,8 +148,7 @@ export function Sidebar({
                 onClick={onHandwrittenUpload}
                 className="flex-1 bg-gray-100 rounded-xl py-3 px-2 hover:bg-gray-200 transition-colors"
               >
-                <FileText className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
-                <span className="text-lg">✍️</span>
+                <p className="text-xl font-bold text-foreground">+</p>
                 <p className="text-xs text-muted-foreground">손편지 스캔</p>
               </button>
             </div>
