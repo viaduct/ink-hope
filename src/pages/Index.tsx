@@ -13,7 +13,7 @@ import { toast } from "sonner";
 type ViewMode = "compose" | "mail" | "handwritten";
 
 const Index = () => {
-  const [activeFolder, setActiveFolder] = useState<FolderType | null>(null);
+  const [activeFolder, setActiveFolder] = useState<FolderType | null>("inbox");
   const [selectedMail, setSelectedMail] = useState<Mail | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("compose");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
