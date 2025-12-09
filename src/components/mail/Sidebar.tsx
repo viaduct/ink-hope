@@ -108,8 +108,41 @@ export function Sidebar({
         </motion.button>
       </div>
 
+      {/* Profile - 편지 쓰기 버튼 위에 배치 */}
+      <div className="px-3 pt-3 pb-2">
+        <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
+          <div className="relative flex-shrink-0">
+            <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+              B
+            </div>
+            {/* Social Login Provider Badge */}
+            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border border-white">
+              {/* Kakao Icon */}
+              <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-[#3C1E1E]">
+                <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.76 1.84 5.18 4.6 6.58-.2.72-.76 2.6-.87 3-.14.5.18.5.38.36.16-.1 2.52-1.7 3.54-2.4.78.1 1.56.16 2.35.16 5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/>
+              </svg>
+            </div>
+          </div>
+          {!isCollapsed && (
+            <>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground truncate">
+                  Bang Kyung
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  bangkyung@kakao.com
+                </p>
+              </div>
+              <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+                <Settings className="w-4 h-4" />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
       {/* Top Action Buttons */}
-      <div className="px-3 pt-3 pb-5 flex flex-col gap-1.5">
+      <div className="px-3 pb-5 flex flex-col gap-1.5">
         {/* Compose Button - 편지 쓰기 */}
         {isCollapsed ? (
           <Button
@@ -377,40 +410,6 @@ export function Sidebar({
       <div className="px-3 pb-3">
         <DeadlineTimer deadlineHour={17} isCollapsed={isCollapsed} />
       </div>
-
-      {/* Profile */}
-      <div className="p-3 border-t border-border">
-        <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
-          <div className="relative flex-shrink-0">
-            <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
-              B
-            </div>
-            {/* Social Login Provider Badge */}
-            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm border border-white">
-              {/* Kakao Icon */}
-              <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-[#3C1E1E]">
-                <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.76 1.84 5.18 4.6 6.58-.2.72-.76 2.6-.87 3-.14.5.18.5.38.36.16-.1 2.52-1.7 3.54-2.4.78.1 1.56.16 2.35.16 5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/>
-              </svg>
-            </div>
-          </div>
-          {!isCollapsed && (
-            <>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  Bang Kyung
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  bangkyung@kakao.com
-                </p>
-              </div>
-              <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-                <Settings className="w-4 h-4" />
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-
       {/* Address Book Modal */}
       <AddressBookModal
         isOpen={isAddressBookOpen}
