@@ -92,6 +92,28 @@ const sampleRecipients = [
   },
 ];
 
+// 샘플 보내는 사람 데이터
+const sampleSenders = [
+  {
+    id: "1",
+    name: "Bang Kyung Chang",
+    phone: "010-1234-5678",
+    address: "서울시 강남구 테헤란로 123",
+  },
+  {
+    id: "2",
+    name: "Bang Kyung Chang",
+    phone: "010-1234-5678",
+    address: "경기도 성남시 분당구 판교로 256",
+  },
+  {
+    id: "3",
+    name: "방경창",
+    phone: "010-9876-5432",
+    address: "서울시 마포구 홍대입구역 12",
+  },
+];
+
 export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) {
   const [currentStep, setCurrentStep] = useState<StepId>(1);
   
@@ -99,12 +121,11 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   const [selectedRecipientId, setSelectedRecipientId] = useState<string | null>("1");
   const [selectedMailType, setSelectedMailType] = useState<MailType>("준등기우편");
   
-  // 보내는 분 정보 상태
-  const [senderInfo, setSenderInfo] = useState({
-    name: "Bang Kyung Chang",
-    phone: "010-1234-5678",
-    address: "서울시 강남구 테헤란로 123",
-  });
+  // 보내는 사람 선택 상태
+  const [selectedSenderId, setSelectedSenderId] = useState<string | null>("1");
+  
+  // 선택된 보내는 사람 정보
+  const selectedSender = sampleSenders.find(s => s.id === selectedSenderId);
 
   // 단계 완료 여부 확인
   const isStep1Complete = () => {
@@ -112,7 +133,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
   };
 
   const isStep2Complete = () => {
-    return senderInfo.name.trim() !== "" && senderInfo.phone.trim() !== "" && senderInfo.address.trim() !== "";
+    return selectedSenderId !== null;
   };
 
   const canProceed = () => {
@@ -340,22 +361,55 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                       <Send className="w-5 h-5 text-primary" />
                       <h2 className="font-semibold text-foreground text-lg">보내는 사람</h2>
                     </div>
-                    <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors">
-                      <Pencil className="w-4 h-4" />
-                      수정
-                    </button>
                   </div>
                   
-                  <div className="bg-card rounded-xl border border-border p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                        <User className="w-5 h-5 text-muted-foreground" />
+                  <div className="space-y-3">
+                    {sampleSenders.map((sender) => (
+                      <div
+                        key={sender.id}
+                        onClick={() => setSelectedSenderId(sender.id)}
+                        className={`
+                          relative bg-card rounded-xl border-2 p-4 cursor-pointer transition-all
+                          ${selectedSenderId === sender.id 
+                            ? "border-primary shadow-md" 
+                            : "border-border hover:border-primary/30"
+                          }
+                        `}
+                      >
+                        {/* 선택 체크 표시 */}
+                        {selectedSenderId === sender.id && (
+                          <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                            <Check className="w-4 h-4 text-primary-foreground" />
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                            <User className="w-5 h-5 text-muted-foreground" />
+                          </div>
+                          <div className="flex-1 min-w-0 pr-8">
+                            <p className="font-medium text-foreground">{sender.name}</p>
+                            <p className="text-sm text-muted-foreground">{sender.address}</p>
+                          </div>
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // TODO: 수정 모달 열기
+                            }}
+                            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
+                          >
+                            <Pencil className="w-4 h-4" />
+                            수정
+                          </button>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-foreground">{senderInfo.name}</p>
-                        <p className="text-sm text-muted-foreground">{senderInfo.address}</p>
-                      </div>
-                    </div>
+                    ))}
+                    
+                    {/* 새 주소 추가 버튼 */}
+                    <button className="w-full p-4 border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors flex items-center justify-center gap-2">
+                      <Plus className="w-5 h-5" />
+                      <span>새 주소 추가</span>
+                    </button>
                   </div>
                 </section>
               </div>
