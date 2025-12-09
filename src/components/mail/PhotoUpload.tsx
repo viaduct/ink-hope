@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Image, Sparkles, Plus, X, ZoomIn, RotateCw } from "lucide-react";
+import { Image, Plus, X, ZoomIn, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -93,8 +93,8 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/30 dark:to-rose-900/30 flex items-center justify-center">
-          <Image className="w-7 h-7 text-pink-500" />
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 flex items-center justify-center">
+          <Image className="w-7 h-7 text-orange-500" />
         </div>
         <div>
           <h2 className="text-xl font-semibold text-foreground">사진 출력 추가</h2>
@@ -103,15 +103,15 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
       </div>
 
       {/* 사진 인화 서비스 안내 */}
-      <div className="bg-gradient-to-r from-pink-50 to-rose-50 dark:from-pink-950/30 dark:to-rose-950/30 rounded-2xl p-5">
+      <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-5">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center shrink-0">
-            <Sparkles className="w-5 h-5 text-pink-500" />
+          <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center shrink-0 text-2xl">
+            📸
           </div>
           <div>
             <h3 className="font-semibold text-foreground mb-1">사진 인화 서비스</h3>
             <p className="text-sm text-muted-foreground">
-              업로드하신 사진은 <span className="text-pink-600 dark:text-pink-400 font-medium">고품질 사진 인화지에 인화</span>되어 편지와 함께 동봉됩니다. 소중한 추억을 선물하세요!
+              업로드하신 사진은 <span className="text-orange-600 dark:text-orange-400 font-medium">고품질 사진 인화지에 인화</span>되어 편지와 함께 동봉됩니다. 소중한 추억을 선물하세요!
             </p>
           </div>
         </div>
@@ -206,21 +206,27 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
         />
       </div>
 
-      {/* 가격 안내 */}
-      <div className="bg-muted/50 rounded-xl p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-medium text-foreground">사진 인화 비용</p>
-            <p className="text-sm text-muted-foreground">1장당 500원 (4x6 사이즈)</p>
+      {/* 가격 안내 - 사진이 있을 때만 표시 */}
+      {photos.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-xl p-4 border border-orange-200/50 dark:border-orange-800/30"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-foreground">사진 인화 비용</p>
+              <p className="text-sm text-muted-foreground">1장당 500원 (4x6 사이즈)</p>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                +{(photos.length * 500).toLocaleString()}원
+              </p>
+              <p className="text-xs text-muted-foreground">{photos.length}장 선택</p>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-2xl font-bold text-primary">
-              {(photos.length * 500).toLocaleString()}원
-            </p>
-            <p className="text-xs text-muted-foreground">{photos.length}장 선택</p>
-          </div>
-        </div>
-      </div>
+        </motion.div>
+      )}
 
       {/* 사진 확대 모달 */}
       <AnimatePresence>
