@@ -108,13 +108,11 @@ export function PaymentSummary({
   return (
     <div className="space-y-4">
       {/* 헤더 */}
-      <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 flex items-center justify-center">
-          <CreditCard className="w-7 h-7 text-green-600" />
-        </div>
+      <div className="flex items-center gap-2.5">
+        <CreditCard className="w-5 h-5 text-primary" />
         <div>
-          <h2 className="text-xl font-semibold text-foreground">결제 요금서</h2>
-          <p className="text-muted-foreground text-sm">선택하신 내용을 확인하고 결제를 진행해주세요</p>
+          <h2 className="text-base font-semibold text-foreground">결제 요금서</h2>
+          <p className="text-muted-foreground text-xs">선택하신 내용을 확인하고 결제를 진행해주세요</p>
         </div>
       </div>
 
