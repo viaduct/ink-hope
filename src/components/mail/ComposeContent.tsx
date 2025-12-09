@@ -185,36 +185,45 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
         {/* Divider */}
         <div className="border-t border-border/40 my-3" />
 
-        {/* Step Progress - Chips */}
-        <div className="flex items-center gap-1 flex-wrap">
+        {/* Step Progress - 간격 24px 고정 */}
+        <div className="flex items-center gap-6">
           {steps.map((step, index) => (
-            <div key={step.id} className="flex items-center gap-1">
+            <div key={step.id} className="flex items-center gap-6">
               <button
                 onClick={() => currentStep > step.id && setCurrentStep(step.id)}
                 disabled={currentStep < step.id}
                 className={`
-                  flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium
-                  transition-all duration-200 whitespace-nowrap border
+                  flex items-center gap-2 py-1.5 text-sm font-medium
+                  transition-all duration-200 whitespace-nowrap
                   ${currentStep === step.id 
-                    ? "bg-primary text-primary-foreground border-primary" 
+                    ? "text-primary" 
                     : currentStep > step.id 
-                      ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/15 cursor-pointer" 
-                      : "bg-muted/60 text-muted-foreground border-transparent cursor-not-allowed"
+                      ? "text-muted-foreground hover:text-foreground cursor-pointer" 
+                      : "text-muted-foreground/50 cursor-not-allowed"
                   }
                 `}
               >
-                <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-semibold">
+                <span className={`
+                  w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
+                  transition-all duration-200
+                  ${currentStep === step.id 
+                    ? "bg-primary text-primary-foreground shadow-md" 
+                    : currentStep > step.id 
+                      ? "bg-primary/15 text-primary" 
+                      : "bg-muted/60 text-muted-foreground/60"
+                  }
+                `}>
                   {currentStep > step.id ? (
-                    <Check className="w-3 h-3" />
+                    <Check className="w-3.5 h-3.5" />
                   ) : (
                     step.id
                   )}
                 </span>
-                {step.label}
+                <span className={currentStep === step.id ? "font-semibold" : ""}>{step.label}</span>
               </button>
-              {/* 화살표 (마지막 스텝 제외) */}
+              {/* 연결선 (마지막 스텝 제외) */}
               {index < steps.length - 1 && (
-                <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" />
+                <div className={`w-8 h-px ${currentStep > step.id ? "bg-primary/30" : "bg-border/50"}`} />
               )}
             </div>
           ))}
