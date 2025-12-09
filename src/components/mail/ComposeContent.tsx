@@ -263,7 +263,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                           relative rounded-xl p-3.5 cursor-pointer transition-all
                           ${selectedRecipientId === recipient.id 
                             ? "shadow-[0_2px_8px_rgba(0,0,0,0.08)] border-2 border-primary bg-orange-50/50" 
-                            : "border border-border/40 hover:shadow-[0_2px_6px_rgba(0,0,0,0.05)] bg-white"
+                            : "border border-gray-300 hover:shadow-[0_2px_6px_rgba(0,0,0,0.08)] hover:border-gray-400 bg-white"
                           }
                         `}
                       >
@@ -271,7 +271,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         <div className={`absolute top-3.5 right-3.5 w-5 h-5 rounded-full flex items-center justify-center ${
                           selectedRecipientId === recipient.id 
                             ? "bg-primary" 
-                            : "bg-card border border-border"
+                            : "bg-white border-2 border-gray-300"
                         }`}>
                           {selectedRecipientId === recipient.id && (
                             <Check className="w-3 h-3 text-primary-foreground" />
@@ -394,8 +394,8 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         className={`
                           relative rounded-xl p-3 cursor-pointer transition-all bg-white
                           ${selectedSenderId === sender.id 
-                            ? "shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-primary/30" 
-                            : "border border-border/40 hover:shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
+                            ? "shadow-[0_2px_8px_rgba(0,0,0,0.08)] border-2 border-primary" 
+                            : "border border-gray-300 hover:shadow-[0_2px_6px_rgba(0,0,0,0.08)] hover:border-gray-400"
                           }
                         `}
                       >
@@ -403,7 +403,7 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         <div className={`absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center ${
                           selectedSenderId === sender.id 
                             ? "bg-primary" 
-                            : "bg-card border border-border"
+                            : "bg-white border-2 border-gray-300"
                         }`}>
                           {selectedSenderId === sender.id && (
                             <Check className="w-3 h-3 text-primary-foreground" />
