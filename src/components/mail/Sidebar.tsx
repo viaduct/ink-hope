@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock, FolderHeart } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -27,12 +27,16 @@ interface SidebarProps {
   onHandwrittenUpload?: () => void;
 }
 
-const folders = [
+// 중요편지함까지 (내 편지함 위에 표시)
+const foldersTop = [
   { id: "inbox" as FolderType, label: "받은편지함", icon: Mail },
   { id: "sent" as FolderType, label: "보낸편지함", icon: Send },
   { id: "draft" as FolderType, label: "임시저장함", icon: FileText },
   { id: "archive" as FolderType, label: "중요편지함", icon: Star },
-  { id: "mybox" as FolderType, label: "내편지함", icon: FolderHeart },
+];
+
+// 스팸함부터 (내 편지함 아래에 표시)
+const foldersBottom = [
   { id: "spam" as FolderType, label: "스팸함", icon: AlertCircle },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
   { id: "orangetree" as FolderType, label: "오렌지나무", icon: TreeDeciduous },
@@ -220,7 +224,7 @@ export function Sidebar({
         
         {(isCollapsed || isFolderExpanded) && (
           <ul className="space-y-1.5">
-            {folders.map((folder) => {
+            {foldersTop.map((folder) => {
               const Icon = folder.icon;
               const isActive = activeFolder === folder.id;
               const count = folder.id === "inbox" ? unreadCount : folder.id === "draft" ? draftCount : folder.id === "archive" ? archiveCount : folder.id === "trash" ? trashCount : 0;
@@ -269,13 +273,10 @@ export function Sidebar({
           </ul>
         )}
 
-        {/* Divider */}
-        <div className="my-3 border-t border-border/50" />
-
-        {/* 내 편지함 - 사용자 분류 */}
+        {/* 내 편지함 - 중요편지함과 스팸함 사이 */}
         {!isCollapsed && (
           <>
-            <div className="flex items-center justify-between px-3 py-2">
+            <div className="flex items-center justify-between px-3 py-2 mt-1">
               <button
                 onClick={() => setIsTreeExpanded(!isTreeExpanded)}
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -343,6 +344,58 @@ export function Sidebar({
               </ul>
             )}
           </>
+        )}
+
+        {/* 하단 폴더들 (스팸함, 휴지통 등) */}
+        {(isCollapsed || isFolderExpanded) && (
+          <ul className="space-y-1.5 mt-1">
+            {foldersBottom.map((folder) => {
+              const Icon = folder.icon;
+              const isActive = activeFolder === folder.id;
+              const count = folder.id === "trash" ? trashCount : 0;
+
+              return (
+                <li key={folder.id}>
+                  <button
+                    onClick={() => onFolderChange(folder.id)}
+                    title={isCollapsed ? folder.label : undefined}
+                    className={cn(
+                      "w-full flex items-center gap-2.5 px-2.5 py-3 rounded-lg text-sm transition-all duration-150",
+                      isCollapsed && "justify-center px-0",
+                      !isCollapsed && "ml-1",
+                      isActive
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-foreground hover:bg-muted/60"
+                    )}
+                  >
+                    <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary")} />
+                    {!isCollapsed && (
+                      <>
+                        <span className="flex-1 text-left">{folder.label}</span>
+                        {count > 0 && (
+                          <span
+                            className={cn(
+                              "min-w-5 h-5 text-[10px] font-semibold rounded-full tabular-nums flex items-center justify-center",
+                              isActive
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted text-muted-foreground"
+                            )}
+                          >
+                            {count}
+                          </span>
+                        )}
+                      </>
+                    )}
+                    {isCollapsed && count > 0 && (
+                      <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary text-primary-foreground text-[9px] rounded-full flex items-center justify-center">
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         )}
 
         {/* Collapsed Family Avatars */}
