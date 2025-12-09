@@ -300,10 +300,9 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
 
                         {/* 우편 종류 - 선택된 수신자만 표시 */}
                         {selectedRecipientId === recipient.id && (
-                          <div className="mt-4 pt-4 border-t-2 border-orange-300">
+                          <div className="mt-4 -mx-3.5 -mb-3.5 px-3.5 py-4 bg-amber-50/70 rounded-b-xl">
                             <p className="text-sm font-medium text-foreground mb-3">우편 종류</p>
-                            <div className="bg-amber-100/80 rounded-xl p-3">
-                              <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-2 gap-2">
                                 {mailTypeOptions.map((option, index) => (
                                   <button
                                     key={option.id}
@@ -346,10 +345,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                                 ))}
                               </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                          )}
+                        </div>
+                      ))}
+                    
                     
                     {/* 새 수신자 추가 버튼 */}
                     <button 
