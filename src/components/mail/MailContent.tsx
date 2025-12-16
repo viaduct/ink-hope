@@ -26,6 +26,7 @@ const folderTitles: Record<FolderType, string> = {
   trash: "휴지통",
   orangetree: "오렌지나무",
   timecapsule: "타임캡슐",
+  mailbox: "사서함서비스",
 };
 
 type TabType = "all" | "unread" | "important";
