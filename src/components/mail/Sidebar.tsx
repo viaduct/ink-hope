@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -39,8 +39,6 @@ const foldersTop = [
 const foldersBottom = [
   { id: "spam" as FolderType, label: "스팸함", icon: AlertCircle },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
-  { id: "orangetree" as FolderType, label: "오렌지나무", icon: TreeDeciduous },
-  { id: "timecapsule" as FolderType, label: "타임캡슐", icon: Clock },
 ];
 
 interface SidebarItem {
@@ -143,27 +141,6 @@ export function Sidebar({
             <p className="text-sm font-semibold text-foreground mb-0.5">Bang Kyung Chang</p>
             <p className="text-xs text-muted-foreground mb-3 truncate max-w-full">webbreak@kakao...</p>
             
-            {/* 통계 카드 - 가로 배치 */}
-            <div className="flex gap-2 w-full">
-              <button 
-                onClick={() => onFolderChange("inbox")}
-                className="flex-1 bg-muted/50 rounded-xl py-2.5 px-2 hover:bg-muted transition-colors"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5 mx-auto mb-1 fill-primary">
-                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                </svg>
-                <p className="text-[10px] text-muted-foreground">새로운편지</p>
-              </button>
-              <button 
-                onClick={onHandwrittenUpload}
-                className="flex-1 bg-muted/50 rounded-xl py-2.5 px-2 hover:bg-muted transition-colors"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5 mx-auto mb-1 fill-primary">
-                  <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM19 13h-1.5v1.5H19V13z"/>
-                </svg>
-                <p className="text-[10px] text-muted-foreground">손편지 스캔</p>
-              </button>
-            </div>
           </div>
         ) : (
           <div className="flex flex-col items-center">
