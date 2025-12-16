@@ -6,13 +6,14 @@ import { ComposeContent } from "@/components/mail/ComposeContent";
 import { FloatingComposeButton } from "@/components/mail/FloatingComposeButton";
 import { AddressBookModal } from "@/components/mail/AddressBookModal";
 import { HandwrittenUploadContent } from "@/components/mail/HandwrittenUploadContent";
+import { MailboxServiceContent } from "@/components/mail/MailboxServiceContent";
 import { familyMembers as initialFamilyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Coins } from "lucide-react";
 
-type ViewMode = "compose" | "mail" | "handwritten";
+type ViewMode = "compose" | "mail" | "handwritten" | "mailbox";
 
 const Index = () => {
   const [activeFolder, setActiveFolder] = useState<FolderType | null>("inbox");
@@ -107,7 +108,7 @@ const Index = () => {
           onFolderChange={(folder) => {
             setActiveFolder(folder);
             setSelectedMemberId(null);
-            setViewMode("mail");
+            setViewMode(folder === "mailbox" ? "mailbox" : "mail");
           }}
           unreadCount={unreadCount}
           draftCount={draftCount}
@@ -148,31 +149,33 @@ const Index = () => {
 
           {/* Main Content - 뷰 모드에 따라 다른 화면 표시 */}
           {viewMode === "compose" ? (
-          <ComposeContent
-            familyMembers={familyMembers}
-            onClose={() => setViewMode("mail")}
-          />
-        ) : viewMode === "handwritten" ? (
-          <HandwrittenUploadContent
-            onClose={() => setViewMode("mail")}
-            onComposeWithText={(text) => {
-              // TODO: Pass OCR text to compose
-              setViewMode("compose");
-            }}
-          />
-        ) : (
-          <MailContent
-            mails={filteredMails}
-            selectedMail={selectedMail}
-            onSelectMail={setSelectedMail}
-            activeFolder={activeFolder}
-            onReply={() => setViewMode("compose")}
-            selectedMember={selectedMemberId ? familyMembers.find(m => m.id === selectedMemberId) : null}
-            allMails={mails}
-            onMoveToFolder={moveMailToFolder}
-            onEditAddressBook={() => setIsAddressBookOpen(true)}
-          />
-        )}
+            <ComposeContent
+              familyMembers={familyMembers}
+              onClose={() => setViewMode("mail")}
+            />
+          ) : viewMode === "handwritten" ? (
+            <HandwrittenUploadContent
+              onClose={() => setViewMode("mail")}
+              onComposeWithText={(text) => {
+                // TODO: Pass OCR text to compose
+                setViewMode("compose");
+              }}
+            />
+          ) : viewMode === "mailbox" ? (
+            <MailboxServiceContent />
+          ) : (
+            <MailContent
+              mails={filteredMails}
+              selectedMail={selectedMail}
+              onSelectMail={setSelectedMail}
+              activeFolder={activeFolder}
+              onReply={() => setViewMode("compose")}
+              selectedMember={selectedMemberId ? familyMembers.find(m => m.id === selectedMemberId) : null}
+              allMails={mails}
+              onMoveToFolder={moveMailToFolder}
+              onEditAddressBook={() => setIsAddressBookOpen(true)}
+            />
+          )}
         </div>
 
         {/* Floating Compose Button */}
