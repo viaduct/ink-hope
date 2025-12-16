@@ -33,13 +33,13 @@ const foldersTop = [
   { id: "sent" as FolderType, label: "보낸편지함", icon: Send },
   { id: "draft" as FolderType, label: "임시저장함", icon: FileText },
   { id: "archive" as FolderType, label: "중요편지함", icon: Star },
+  { id: "mailbox" as FolderType, label: "사서함서비스", icon: Archive },
 ];
 
 // 스팸함부터 (내 편지함 아래에 표시)
 const foldersBottom = [
   { id: "spam" as FolderType, label: "스팸함", icon: AlertCircle },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
-  { id: "mailbox" as FolderType, label: "사서함서비스", icon: Archive },
 ];
 
 interface SidebarItem {
