@@ -9,11 +9,12 @@ import { HandwrittenUploadContent } from "@/components/mail/HandwrittenUploadCon
 import { OrangeTreeContent } from "@/components/mail/OrangeTreeContent";
 import { TimeCapsuleContent } from "@/components/mail/TimeCapsuleContent";
 import { GalleryContent } from "@/components/mail/GalleryContent";
+import { ScheduleContent } from "@/components/mail/ScheduleContent";
 import { familyMembers as initialFamilyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 
-type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery";
+type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery" | "schedule";
 
 const Index = () => {
   const [activeFolder, setActiveFolder] = useState<FolderType | null>("inbox");
@@ -112,13 +113,15 @@ const Index = () => {
           onFolderChange={(folder) => {
             setActiveFolder(folder);
             setSelectedMemberId(null);
-            // 오렌지나무, 타임캡슐, 갤러리 폴더 선택 시 해당 화면으로 전환
+            // 오렌지나무, 타임캡슐, 갤러리, 스케줄 폴더 선택 시 해당 화면으로 전환
             if (folder === "orangetree") {
               setViewMode("orangetree");
             } else if (folder === "timecapsule") {
               setViewMode("timecapsule");
             } else if (folder === "gallery") {
               setViewMode("gallery");
+            } else if (folder === "schedule") {
+              setViewMode("schedule");
             } else {
               setViewMode("mail");
             }
@@ -167,6 +170,8 @@ const Index = () => {
           />
         ) : viewMode === "gallery" ? (
           <GalleryContent />
+        ) : viewMode === "schedule" ? (
+          <ScheduleContent />
         ) : (
           <MailContent
             mails={filteredMails}
