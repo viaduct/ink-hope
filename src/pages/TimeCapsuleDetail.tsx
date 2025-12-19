@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import timeCapsuleGif from "@/assets/emoticons/time-capsule.gif";
+// timeCapsuleGif import removed - using icon-based design
 import { toast } from "sonner";
 
 // 선물 옵션 (오렌지 제거)
@@ -139,66 +139,66 @@ export default function TimeCapsuleDetail() {
       </header>
 
       <div className="max-w-4xl mx-auto p-6 space-y-6">
-        {/* 히어로 섹션 */}
+        {/* 히어로 섹션 - 정리된 레이아웃 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 rounded-3xl p-8 text-white shadow-xl"
+          className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 rounded-3xl p-6 text-white shadow-xl"
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
           
-          <div className="relative flex items-start gap-6">
-            <motion.div 
-              className="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center p-2 ring-4 ring-white/30 shrink-0"
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <img src={timeCapsuleGif} alt="타임캡슐" className="w-20 h-20 object-contain" />
-            </motion.div>
-            
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full">
-                  {capsule.status === "collecting" ? "🔓 모집중" : "📬 전달완료"}
-                </span>
-                <span className="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full">
-                  D-{capsule.daysLeft}
-                </span>
-              </div>
-              <h1 className="text-2xl font-bold mb-2">{capsule.title}</h1>
-              <p className="text-white/80 text-sm mb-1">To. {capsule.recipient}</p>
-              <p className="text-white/60 text-xs">{capsule.recipientFacility}</p>
+          {/* 상단: 상태 배지 + 제목 */}
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                {capsule.status === "collecting" ? <Unlock className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+                {capsule.status === "collecting" ? "모집중" : "전달완료"}
+              </span>
+              <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                D-{capsule.daysLeft}
+              </span>
+            </div>
+            <h1 className="text-xl font-bold mb-1">{capsule.title}</h1>
+            <div className="flex items-center gap-2 text-white/80 text-sm">
+              <span>To. {capsule.recipient}</span>
+              <span className="text-white/40">•</span>
+              <span className="text-white/60">{capsule.recipientFacility}</span>
             </div>
           </div>
 
-          {/* 통계 카드 */}
-          <div className="relative grid grid-cols-4 gap-3 mt-6">
+          {/* 통계 - 아이콘과 함께 정리된 그리드 */}
+          <div className="relative grid grid-cols-4 gap-2 mt-5">
             <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold">{capsule.letterCount}/{capsule.targetLetters}</p>
-              <p className="text-xs text-white/80">모은 편지</p>
+              <Mail className="w-4 h-4 mx-auto mb-1 text-white/80" />
+              <p className="text-lg font-bold">{capsule.letterCount}/{capsule.targetLetters}</p>
+              <p className="text-[10px] text-white/70">모은 편지</p>
             </div>
             <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold">{contributedCount}/{capsule.contributors.length}</p>
-              <p className="text-xs text-white/80">참여 현황</p>
+              <Users className="w-4 h-4 mx-auto mb-1 text-white/80" />
+              <p className="text-lg font-bold">{contributedCount}/{capsule.contributors.length}</p>
+              <p className="text-[10px] text-white/70">참여 현황</p>
             </div>
             <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold">{capsule.gifts.length}</p>
-              <p className="text-xs text-white/80">함께 보낸 선물</p>
+              <Gift className="w-4 h-4 mx-auto mb-1 text-white/80" />
+              <p className="text-lg font-bold">{capsule.gifts.length}</p>
+              <p className="text-[10px] text-white/70">함께 보낸 선물</p>
             </div>
             <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold">{capsule.targetDate.split("-")[1]}/{capsule.targetDate.split("-")[2]}</p>
-              <p className="text-xs text-white/80">전달 예정일</p>
+              <Calendar className="w-4 h-4 mx-auto mb-1 text-white/80" />
+              <p className="text-lg font-bold">{capsule.targetDate.split("-")[1]}/{capsule.targetDate.split("-")[2]}</p>
+              <p className="text-[10px] text-white/70">전달 예정일</p>
             </div>
           </div>
 
           {/* 진행률 */}
           <div className="relative mt-4">
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-white/80">편지 모음 진행률</span>
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-white/70">편지 모음 진행률</span>
               <span className="font-bold">{progressPercent}%</span>
             </div>
-            <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
               <motion.div 
                 className="h-full bg-white rounded-full"
                 initial={{ width: 0 }}
