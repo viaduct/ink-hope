@@ -136,7 +136,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               <div className="flex items-start gap-6">
                 {/* 나무 이미지 */}
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center">
                     <motion.img 
                       src={currentStage.icon} 
                       alt={currentStage.name}
