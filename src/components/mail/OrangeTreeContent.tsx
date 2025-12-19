@@ -1,8 +1,15 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TreeDeciduous, Leaf, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Gift, Check, Mail, Send, Image, FileText, Settings, ExternalLink, Heart } from "lucide-react";
+import { TreeDeciduous, Leaf, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Gift, Check, Mail, Send, Image, FileText, Settings, ExternalLink, Heart, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import orangeSeed from "@/assets/emoticons/orange-seed-icon.png";
 import orangeSprout from "@/assets/emoticons/orange-sprout-icon.png";
 import orangeYoungTree from "@/assets/emoticons/orange-young-tree-icon.png";
@@ -118,8 +125,11 @@ function RollingText({ messages }: { messages: string[] }) {
   );
 }
 
+const recipients = ["이재원", "서은우", "임성훈"];
+
 export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
   const [selectedGifts, setSelectedGifts] = useState<{id: string, quantity: number}[]>([]);
+  const [selectedRecipient, setSelectedRecipient] = useState(recipients[0]);
   const currentStage = growthStages[mockData.currentGrowthLevel - 1];
   const nextStage = growthStages[mockData.currentGrowthLevel];
 
@@ -156,6 +166,16 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
         <div className="flex items-center gap-3">
           <TreeDeciduous className="w-5 h-5 text-primary" />
           <h1 className="text-lg font-semibold text-foreground">오렌지나무</h1>
+          <Select value={selectedRecipient} onValueChange={setSelectedRecipient}>
+            <SelectTrigger className="w-auto h-8 gap-1 border-none bg-orange-100 text-primary font-medium px-3 rounded-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              {recipients.map((name) => (
+                <SelectItem key={name} value={name}>{name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Button variant="ghost" size="sm" onClick={onClose}>
           편지함으로 돌아가기
@@ -227,26 +247,6 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             </div>
           </motion.div>
 
-          {/* 수신자 탭 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="flex gap-2"
-          >
-            {["이재원", "서은우", "임성훈"].map((name, idx) => (
-              <button
-                key={name}
-                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all ${
-                  idx === 0 
-                    ? "bg-primary text-primary-foreground shadow-md" 
-                    : "bg-white text-muted-foreground border border-border/60 hover:border-primary/40 hover:bg-orange-50"
-                }`}
-              >
-                {name}
-              </button>
-            ))}
-          </motion.div>
 
           {/* 수신자 정보 + 성장 진행률 좌우 배치 */}
           <motion.div
