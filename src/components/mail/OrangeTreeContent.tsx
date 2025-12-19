@@ -136,14 +136,16 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               <div className="flex items-start gap-6">
                 {/* 나무 이미지 */}
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center">
-                    <motion.img 
-                      src={currentStage.icon} 
-                      alt={currentStage.name}
-                      className="w-24 h-24 object-contain"
-                      animate={{ scale: [1, 1.02, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center p-2">
+                    <div className="w-full h-full rounded-full bg-white/80 flex items-center justify-center overflow-hidden">
+                      <motion.img 
+                        src={currentStage.icon} 
+                        alt={currentStage.name}
+                        className="w-14 h-14 object-contain"
+                        animate={{ scale: [1, 1.02, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    </div>
                   </div>
                   <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-full">
                     Lv.{mockData.currentGrowthLevel}
