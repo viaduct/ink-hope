@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Users, Mail, Plus, ChevronRight, Heart, Calendar, Share2, Lock, Unlock, Sparkles } from "lucide-react";
+import { Clock, Users, Mail, Plus, ChevronRight, Heart, Calendar, Share2, Lock, Unlock, Sparkles, X, Check, Send, Copy, PenLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import orangeRipe from "@/assets/emoticons/orange-ripe.png";
 import timeCapsuleGif from "@/assets/emoticons/time-capsule.gif";
+import { toast } from "sonner";
 
 interface TimeCapsuleContentProps {
   onClose: () => void;
@@ -370,6 +372,168 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 <Button className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500">
                   타임캡슐 만들기
                 </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 타임캡슐 상세 모달 */}
+      <AnimatePresence>
+        {selectedCapsule && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedCapsule(null)}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+            >
+              {/* 헤더 */}
+              <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white relative">
+                <button 
+                  onClick={() => setSelectedCapsule(null)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center">
+                    <img src={timeCapsuleGif} alt="" className="w-12 h-12 object-contain" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">{selectedCapsule.title}</h2>
+                    <p className="text-purple-100 text-sm">To. {selectedCapsule.recipient}</p>
+                    <p className="text-purple-200 text-xs">{selectedCapsule.recipientFacility}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 mt-4">
+                  <div className="bg-white/20 rounded-lg px-3 py-2">
+                    <p className="text-xs text-purple-100">전달 예정일</p>
+                    <p className="font-semibold">{selectedCapsule.targetDate}</p>
+                  </div>
+                  <div className="bg-white/20 rounded-lg px-3 py-2">
+                    <p className="text-xs text-purple-100">남은 일수</p>
+                    <p className="font-semibold">D-{selectedCapsule.daysLeft}</p>
+                  </div>
+                  <div className="bg-white/20 rounded-lg px-3 py-2">
+                    <p className="text-xs text-purple-100">편지 현황</p>
+                    <p className="font-semibold">{selectedCapsule.letterCount}/{selectedCapsule.targetLetters}통</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 콘텐츠 */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {/* 설명 */}
+                <div className="bg-purple-50 rounded-xl p-4">
+                  <p className="text-sm text-muted-foreground">{selectedCapsule.description}</p>
+                </div>
+
+                {/* 진행률 */}
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="font-medium text-foreground">편지 모음 진행률</span>
+                    <span className="text-purple-600 font-semibold">
+                      {Math.round((selectedCapsule.letterCount / selectedCapsule.targetLetters) * 100)}%
+                    </span>
+                  </div>
+                  <Progress value={(selectedCapsule.letterCount / selectedCapsule.targetLetters) * 100} className="h-3" />
+                </div>
+
+                {/* 참여자 목록 */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+                      <Users className="w-4 h-4 text-purple-600" />
+                      참여자 현황
+                    </h3>
+                    <Button variant="outline" size="sm" onClick={() => {
+                      navigator.clipboard.writeText("CAPSULE-" + selectedCapsule.id);
+                      toast.success("초대 코드가 복사되었습니다!");
+                    }}>
+                      <Copy className="w-3 h-3 mr-1" />
+                      초대 코드 복사
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    {selectedCapsule.contributors.map((contributor) => (
+                      <div 
+                        key={contributor.id}
+                        className={`flex items-center justify-between p-3 rounded-xl border ${
+                          contributor.contributed 
+                            ? "bg-green-50 border-green-200" 
+                            : "bg-gray-50 border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+                            contributor.contributed ? "bg-green-100" : "bg-gray-100"
+                          }`}>
+                            {contributor.avatar}
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">{contributor.name}</p>
+                            <p className="text-xs text-muted-foreground">{contributor.relation}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          {contributor.contributed ? (
+                            <div className="flex items-center gap-1 text-green-600">
+                              <Check className="w-4 h-4" />
+                              <span className="text-sm font-medium">참여완료</span>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">대기중</span>
+                          )}
+                          {contributor.letterDate && (
+                            <p className="text-xs text-muted-foreground">{contributor.letterDate}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 내 편지 작성 영역 */}
+                <div className="border-t border-border pt-6">
+                  <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                    <PenLine className="w-4 h-4 text-purple-600" />
+                    내 편지 작성하기
+                  </h3>
+                  <Textarea 
+                    placeholder="마음을 담아 편지를 작성해주세요..."
+                    className="min-h-[120px] resize-none"
+                  />
+                  <div className="flex gap-2 mt-3">
+                    <Button variant="outline" className="flex-1">
+                      임시저장
+                    </Button>
+                    <Button className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500">
+                      <Send className="w-4 h-4 mr-1" />
+                      편지 제출하기
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 푸터 */}
+              <div className="border-t border-border p-4 bg-gray-50 flex justify-between items-center">
+                <Button variant="ghost" size="sm" onClick={() => setSelectedCapsule(null)}>
+                  닫기
+                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    <Share2 className="w-4 h-4 mr-1" />
+                    공유하기
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
