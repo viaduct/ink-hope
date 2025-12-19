@@ -11,11 +11,14 @@ import { TimeCapsuleContent } from "@/components/mail/TimeCapsuleContent";
 import { GalleryContent } from "@/components/mail/GalleryContent";
 import { ScheduleContent } from "@/components/mail/ScheduleContent";
 import { RewardsContent } from "@/components/mail/RewardsContent";
+import { FaqContent } from "@/components/mail/FaqContent";
+import { FeedbackContent } from "@/components/mail/FeedbackContent";
+import { DealsContent } from "@/components/mail/DealsContent";
 import { familyMembers as initialFamilyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 
-type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery" | "schedule" | "rewards";
+type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery" | "schedule" | "rewards" | "faq" | "feedback" | "deals";
 
 const Index = () => {
   const [activeFolder, setActiveFolder] = useState<FolderType | null>("inbox");
@@ -114,7 +117,7 @@ const Index = () => {
           onFolderChange={(folder) => {
             setActiveFolder(folder);
             setSelectedMemberId(null);
-            // 오렌지나무, 타임캡슐, 갤러리, 스케줄, 경품 폴더 선택 시 해당 화면으로 전환
+            // 오렌지나무, 타임캡슐, 갤러리, 스케줄, 경품, FAQ, 고객의소리, 특가 폴더 선택 시 해당 화면으로 전환
             if (folder === "orangetree") {
               setViewMode("orangetree");
             } else if (folder === "timecapsule") {
@@ -125,6 +128,12 @@ const Index = () => {
               setViewMode("schedule");
             } else if (folder === "rewards") {
               setViewMode("rewards");
+            } else if (folder === "faq") {
+              setViewMode("faq");
+            } else if (folder === "feedback") {
+              setViewMode("feedback");
+            } else if (folder === "deals") {
+              setViewMode("deals");
             } else {
               setViewMode("mail");
             }
@@ -203,6 +212,27 @@ const Index = () => {
           <ScheduleContent />
         ) : viewMode === "rewards" ? (
           <RewardsContent
+            onClose={() => {
+              setActiveFolder("inbox");
+              setViewMode("mail");
+            }}
+          />
+        ) : viewMode === "faq" ? (
+          <FaqContent
+            onClose={() => {
+              setActiveFolder("inbox");
+              setViewMode("mail");
+            }}
+          />
+        ) : viewMode === "feedback" ? (
+          <FeedbackContent
+            onClose={() => {
+              setActiveFolder("inbox");
+              setViewMode("mail");
+            }}
+          />
+        ) : viewMode === "deals" ? (
+          <DealsContent
             onClose={() => {
               setActiveFolder("inbox");
               setViewMode("mail");
