@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Users, Mail, Plus, ChevronRight, Heart, Calendar, Share2, Lock, Unlock, Sparkles, X, Check, Send, Copy, PenLine } from "lucide-react";
+import { Clock, Users, Mail, Plus, ChevronRight, Heart, Calendar, Share2, Lock, Unlock, Sparkles, X, Check, Send, Copy, PenLine, Gift, Coffee, MessageSquare, UserPlus, SendHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
@@ -13,15 +13,25 @@ interface TimeCapsuleContentProps {
   onClose: () => void;
 }
 
+// 선물 옵션
+const giftOptions = [
+  { id: "orange", name: "오렌지 선물하기", icon: "🍊", price: 5000, description: "마음을 담은 오렌지를 함께 전달해요" },
+  { id: "starbucks", name: "스타벅스 커피", icon: "☕", price: 6000, description: "따뜻한 커피 한 잔의 마음을 전해요" },
+  { id: "flower", name: "꽃다발", icon: "💐", price: 15000, description: "아름다운 꽃과 함께 마음을 전해요" },
+  { id: "cake", name: "케이크", icon: "🎂", price: 25000, description: "특별한 날을 위한 달콤한 선물" },
+];
+
 // 목업 데이터: 타임캡슐 목록
 const mockCapsules = [
   {
     id: 1,
     title: "아버지 출소 축하 편지 모음",
     recipient: "아버지 (홍길동)",
+    recipients: [{ name: "아버지 (홍길동)", facility: "서울구치소" }],
     recipientFacility: "서울구치소",
     targetDate: "2025-06-15",
-    status: "collecting", // collecting, sealed, opened
+    status: "collecting", // collecting, sealed, opened, sent
+    isMultiRecipient: false,
     contributors: [
       { id: 1, name: "어머니", relation: "배우자", avatar: "👩", contributed: true, letterDate: "2025-01-02" },
       { id: 2, name: "나", relation: "자녀", avatar: "🧑", contributed: true, letterDate: "2025-01-05" },
@@ -33,14 +43,18 @@ const mockCapsules = [
     targetLetters: 5,
     daysLeft: 178,
     description: "아버지의 출소를 축하하며 가족 모두가 마음을 담아 편지를 모으고 있어요. 출소 당일 전달됩니다.",
+    gifts: [{ id: "orange", quantity: 2 }],
+    createdBy: "나",
   },
   {
     id: 2,
     title: "엄마 면회 때 전할 응원 메시지",
     recipient: "어머니 (김영희)",
+    recipients: [{ name: "어머니 (김영희)", facility: "청주여자교도소" }],
     recipientFacility: "청주여자교도소",
     targetDate: "2025-01-20",
     status: "collecting",
+    isMultiRecipient: false,
     contributors: [
       { id: 1, name: "아버지", relation: "배우자", avatar: "👨", contributed: true, letterDate: "2025-01-10" },
       { id: 2, name: "큰딸", relation: "자녀", avatar: "👩", contributed: true, letterDate: "2025-01-12" },
@@ -50,14 +64,18 @@ const mockCapsules = [
     targetLetters: 3,
     daysLeft: 32,
     description: "면회 때 전할 가족들의 응원 메시지를 모으고 있어요.",
+    gifts: [],
+    createdBy: "나",
   },
   {
     id: 3,
     title: "오빠 가석방 축하",
     recipient: "오빠 (박민수)",
+    recipients: [{ name: "오빠 (박민수)", facility: "의정부교도소" }],
     recipientFacility: "의정부교도소",
     targetDate: "2024-12-20",
     status: "opened",
+    isMultiRecipient: false,
     contributors: [
       { id: 1, name: "부모님", relation: "부모", avatar: "👨‍👩‍👧", contributed: true, letterDate: "2024-12-01" },
       { id: 2, name: "나", relation: "동생", avatar: "👧", contributed: true, letterDate: "2024-12-05" },
@@ -67,6 +85,59 @@ const mockCapsules = [
     targetLetters: 3,
     daysLeft: 0,
     description: "오빠의 가석방을 축하하며 모은 편지들이에요. 사회에서 새 출발을 응원해요!",
+    gifts: [{ id: "starbucks", quantity: 1 }],
+    createdBy: "나",
+  },
+  {
+    id: 4,
+    title: "복지시설 어르신들께 보내는 응원 편지",
+    recipient: "복지시설 어르신들",
+    recipients: [
+      { name: "김철수 어르신", facility: "서울구치소" },
+      { name: "이영희 어르신", facility: "부산교도소" },
+      { name: "박정호 어르신", facility: "대전교도소" },
+    ],
+    recipientFacility: "전국 교정시설",
+    targetDate: "2025-02-01",
+    status: "collecting",
+    isMultiRecipient: true,
+    contributors: [
+      { id: 1, name: "봉사자A", relation: "봉사자", avatar: "🙋", contributed: true, letterDate: "2025-01-05" },
+      { id: 2, name: "봉사자B", relation: "봉사자", avatar: "🙋‍♀️", contributed: true, letterDate: "2025-01-07" },
+      { id: 3, name: "봉사자C", relation: "봉사자", avatar: "🙋‍♂️", contributed: false, letterDate: null },
+    ],
+    letterCount: 2,
+    targetLetters: 10,
+    daysLeft: 44,
+    description: "복지시설의 여러 어르신들께 함께 응원의 편지를 보내요.",
+    gifts: [{ id: "orange", quantity: 3 }],
+    createdBy: "봉사단체",
+  },
+];
+
+// 보낸 타임캡슐 (sent status)
+const sentCapsules = [
+  {
+    id: 101,
+    title: "삼촌 출소 축하 편지",
+    recipient: "삼촌 (김민호)",
+    recipientFacility: "대구교도소",
+    targetDate: "2024-11-15",
+    sentDate: "2024-11-14",
+    status: "sent",
+    letterCount: 4,
+    gifts: [{ id: "orange", quantity: 1 }, { id: "starbucks", quantity: 1 }],
+  },
+  {
+    id: 102,
+    title: "고모 생일 축하 메시지",
+    recipient: "고모 (박영미)",
+    recipientFacility: "청주여자교도소",
+    targetDate: "2024-10-20",
+    sentDate: "2024-10-19",
+    status: "sent",
+    letterCount: 6,
+    gifts: [{ id: "cake", quantity: 1 }],
   },
 ];
 
@@ -81,6 +152,12 @@ const capsuleTypes = [
 export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
   const [selectedCapsule, setSelectedCapsule] = useState<typeof mockCapsules[0] | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showGiftModal, setShowGiftModal] = useState(false);
+  const [selectedGifts, setSelectedGifts] = useState<{id: string, quantity: number}[]>([]);
+  const [inviteMessage, setInviteMessage] = useState("함께 타임캡슐에 마음을 담아주세요! 🧡");
+  const [isMultiRecipient, setIsMultiRecipient] = useState(false);
+  const [multiRecipients, setMultiRecipients] = useState<{name: string, facility: string}[]>([]);
 
   const collectingCapsules = mockCapsules.filter(c => c.status === "collecting");
   const completedCapsules = mockCapsules.filter(c => c.status === "sealed" || c.status === "opened");
@@ -279,6 +356,53 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
             </section>
           )}
 
+          {/* 보낸 타임캡슐 */}
+          {sentCapsules.length > 0 && (
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <SendHorizontal className="w-5 h-5 text-blue-500" />
+                  보낸 타임캡슐
+                </h2>
+                <span className="text-sm text-muted-foreground">{sentCapsules.length}개</span>
+              </div>
+              
+              <div className="space-y-3">
+                {sentCapsules.map((capsule, index) => (
+                  <motion.div
+                    key={capsule.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-xl border border-border/60 p-4 flex items-center gap-4 hover:shadow-sm transition-all cursor-pointer"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                      <Send className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-foreground">{capsule.title}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        To. {capsule.recipient} · {capsule.recipientFacility}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {capsule.sentDate} 발송 · {capsule.letterCount}통의 편지
+                        {capsule.gifts.length > 0 && (
+                          <span className="ml-1">
+                            · {capsule.gifts.map(g => giftOptions.find(go => go.id === g.id)?.icon).join("")}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    <div className="bg-blue-100 text-blue-700 text-xs font-medium px-2.5 py-1 rounded-full">
+                      발송완료
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* 초대받은 타임캡슐 섹션 */}
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -342,14 +466,92 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                   <label className="text-sm font-medium text-foreground block mb-1.5">타임캡슐 이름</label>
                   <Input placeholder="예: 아버지 출소 축하 편지 모음" />
                 </div>
+
+                {/* 대상 유형 선택 */}
                 <div>
-                  <label className="text-sm font-medium text-foreground block mb-1.5">받는 사람 (수감자)</label>
-                  <Input placeholder="예: 홍길동 (아버지)" />
+                  <label className="text-sm font-medium text-foreground block mb-1.5">대상 유형</label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setIsMultiRecipient(false)}
+                      className={`flex-1 p-3 border rounded-xl text-center transition-all ${
+                        !isMultiRecipient ? "border-purple-400 bg-purple-50" : "border-border hover:border-purple-200"
+                      }`}
+                    >
+                      <span className="text-lg">👤</span>
+                      <p className="text-sm font-medium mt-1">1명에게</p>
+                    </button>
+                    <button
+                      onClick={() => setIsMultiRecipient(true)}
+                      className={`flex-1 p-3 border rounded-xl text-center transition-all ${
+                        isMultiRecipient ? "border-purple-400 bg-purple-50" : "border-border hover:border-purple-200"
+                      }`}
+                    >
+                      <span className="text-lg">👥</span>
+                      <p className="text-sm font-medium mt-1">여러 명에게</p>
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground block mb-1.5">수감 시설</label>
-                  <Input placeholder="예: 서울구치소" />
-                </div>
+
+                {!isMultiRecipient ? (
+                  <>
+                    <div>
+                      <label className="text-sm font-medium text-foreground block mb-1.5">받는 사람 (수감자)</label>
+                      <Input placeholder="예: 홍길동 (아버지)" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground block mb-1.5">수감 시설</label>
+                      <Input placeholder="예: 서울구치소" />
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <label className="text-sm font-medium text-foreground block mb-1.5">받는 사람들 (다수 대상)</label>
+                    <p className="text-xs text-muted-foreground mb-2">여러 수감자에게 동시에 편지를 보낼 수 있어요</p>
+                    <div className="space-y-2">
+                      {multiRecipients.map((r, idx) => (
+                        <div key={idx} className="flex gap-2 items-center">
+                          <Input 
+                            placeholder="이름" 
+                            value={r.name}
+                            onChange={(e) => {
+                              const updated = [...multiRecipients];
+                              updated[idx].name = e.target.value;
+                              setMultiRecipients(updated);
+                            }}
+                            className="flex-1"
+                          />
+                          <Input 
+                            placeholder="시설" 
+                            value={r.facility}
+                            onChange={(e) => {
+                              const updated = [...multiRecipients];
+                              updated[idx].facility = e.target.value;
+                              setMultiRecipients(updated);
+                            }}
+                            className="flex-1"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setMultiRecipients(multiRecipients.filter((_, i) => i !== idx))}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setMultiRecipients([...multiRecipients, { name: "", facility: "" }])}
+                        className="w-full"
+                      >
+                        <Plus className="w-4 h-4 mr-1" />
+                        대상 추가
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <label className="text-sm font-medium text-foreground block mb-1.5">전달 예정일</label>
                   <Input type="date" />
@@ -442,6 +644,61 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                   <Progress value={(selectedCapsule.letterCount / selectedCapsule.targetLetters) * 100} className="h-3" />
                 </div>
 
+                {/* 함께 선물하기 */}
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+                      <Gift className="w-4 h-4 text-amber-600" />
+                      함께 선물하기
+                    </h3>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setShowGiftModal(true)}
+                      className="border-amber-300 hover:bg-amber-100"
+                    >
+                      <Plus className="w-3 h-3 mr-1" />
+                      선물 추가
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">편지와 함께 마음을 담은 선물을 전달해보세요</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {giftOptions.map((gift) => (
+                      <button
+                        key={gift.id}
+                        onClick={() => {
+                          const existing = selectedGifts.find(g => g.id === gift.id);
+                          if (existing) {
+                            setSelectedGifts(selectedGifts.map(g => 
+                              g.id === gift.id ? {...g, quantity: g.quantity + 1} : g
+                            ));
+                          } else {
+                            setSelectedGifts([...selectedGifts, { id: gift.id, quantity: 1 }]);
+                          }
+                          toast.success(`${gift.name} 선물이 추가되었습니다!`);
+                        }}
+                        className="flex items-center gap-2 p-3 bg-white rounded-lg border border-amber-100 hover:border-amber-300 transition-all text-left"
+                      >
+                        <span className="text-2xl">{gift.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{gift.name}</p>
+                          <p className="text-xs text-muted-foreground">{gift.price.toLocaleString()}원</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  {selectedGifts.length > 0 && (
+                    <div className="mt-3 p-2 bg-amber-100/50 rounded-lg">
+                      <p className="text-xs font-medium text-amber-800">
+                        선택한 선물: {selectedGifts.map(g => {
+                          const gift = giftOptions.find(go => go.id === g.id);
+                          return `${gift?.icon} ${gift?.name} x${g.quantity}`;
+                        }).join(", ")}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
                 {/* 참여자 목록 */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -449,13 +706,19 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                       <Users className="w-4 h-4 text-purple-600" />
                       참여자 현황
                     </h3>
-                    <Button variant="outline" size="sm" onClick={() => {
-                      navigator.clipboard.writeText("CAPSULE-" + selectedCapsule.id);
-                      toast.success("초대 코드가 복사되었습니다!");
-                    }}>
-                      <Copy className="w-3 h-3 mr-1" />
-                      초대 코드 복사
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setShowInviteModal(true)}>
+                        <UserPlus className="w-3 h-3 mr-1" />
+                        참여 요청
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => {
+                        navigator.clipboard.writeText("CAPSULE-" + selectedCapsule.id);
+                        toast.success("초대 코드가 복사되었습니다!");
+                      }}>
+                        <Copy className="w-3 h-3 mr-1" />
+                        초대 코드 복사
+                      </Button>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     {selectedCapsule.contributors.map((contributor) => (
@@ -524,11 +787,238 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                   닫기
                 </Button>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => setShowInviteModal(true)}>
                     <Share2 className="w-4 h-4 mr-1" />
                     공유하기
                   </Button>
                 </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 참여 요청 모달 */}
+      <AnimatePresence>
+        {showInviteModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowInviteModal(false)}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl p-6 max-w-md w-full"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-purple-600" />
+                  가족/지인에게 참여 요청
+                </h3>
+                <button onClick={() => setShowInviteModal(false)}>
+                  <X className="w-5 h-5 text-muted-foreground" />
+                </button>
+              </div>
+              
+              <div className="bg-purple-50 rounded-xl p-4 mb-4">
+                <p className="text-sm text-purple-800 font-medium mb-2">💌 참여 요청 메시지</p>
+                <Textarea
+                  value={inviteMessage}
+                  onChange={(e) => setInviteMessage(e.target.value)}
+                  placeholder="참여를 요청하는 메시지를 작성해주세요"
+                  className="min-h-[80px] bg-white"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-foreground">전송 방법 선택</p>
+                
+                <button
+                  onClick={() => {
+                    const smsBody = encodeURIComponent(`${inviteMessage}\n\n타임캡슐 참여하기: https://orangeletter.app/capsule/invite/CAPSULE-${selectedCapsule?.id || "1"}`);
+                    window.open(`sms:?body=${smsBody}`, "_blank");
+                    toast.success("문자 앱이 열렸습니다!");
+                    setShowInviteModal(false);
+                  }}
+                  className="w-full flex items-center gap-4 p-4 bg-green-50 rounded-xl border border-green-200 hover:bg-green-100 transition-all"
+                >
+                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                    <MessageSquare className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div className="text-left flex-1">
+                    <p className="font-medium text-foreground">문자로 보내기</p>
+                    <p className="text-xs text-muted-foreground">SMS 문자 메시지로 초대 링크 전송</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    const kakaoMessage = encodeURIComponent(`${inviteMessage}\n\n타임캡슐 참여하기: https://orangeletter.app/capsule/invite/CAPSULE-${selectedCapsule?.id || "1"}`);
+                    window.open(`https://sharer.kakao.com/talk/friends/picker/link?url=${encodeURIComponent(`https://orangeletter.app/capsule/invite/CAPSULE-${selectedCapsule?.id || "1"}`)}`, "_blank");
+                    toast.success("카카오톡으로 공유합니다!");
+                    setShowInviteModal(false);
+                  }}
+                  className="w-full flex items-center gap-4 p-4 bg-yellow-50 rounded-xl border border-yellow-200 hover:bg-yellow-100 transition-all"
+                >
+                  <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-2xl">
+                    💬
+                  </div>
+                  <div className="text-left flex-1">
+                    <p className="font-medium text-foreground">카카오톡으로 보내기</p>
+                    <p className="text-xs text-muted-foreground">카카오톡으로 초대 링크 전송</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${inviteMessage}\n\n타임캡슐 참여하기: https://orangeletter.app/capsule/invite/CAPSULE-${selectedCapsule?.id || "1"}`);
+                    toast.success("링크가 복사되었습니다!");
+                    setShowInviteModal(false);
+                  }}
+                  className="w-full flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-all"
+                >
+                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                    <Copy className="w-6 h-6 text-gray-600" />
+                  </div>
+                  <div className="text-left flex-1">
+                    <p className="font-medium text-foreground">링크 복사하기</p>
+                    <p className="text-xs text-muted-foreground">초대 링크를 클립보드에 복사</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 선물 추가 모달 */}
+      <AnimatePresence>
+        {showGiftModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowGiftModal(false)}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl p-6 max-w-md w-full"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Gift className="w-5 h-5 text-amber-600" />
+                  함께 선물하기
+                </h3>
+                <button onClick={() => setShowGiftModal(false)}>
+                  <X className="w-5 h-5 text-muted-foreground" />
+                </button>
+              </div>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                편지와 함께 마음을 담은 선물을 보내보세요. 출소 당일 전달됩니다.
+              </p>
+
+              <div className="space-y-3">
+                {giftOptions.map((gift) => {
+                  const selected = selectedGifts.find(g => g.id === gift.id);
+                  return (
+                    <div
+                      key={gift.id}
+                      className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${
+                        selected ? "border-amber-400 bg-amber-50" : "border-border hover:border-amber-200"
+                      }`}
+                    >
+                      <span className="text-3xl">{gift.icon}</span>
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground">{gift.name}</p>
+                        <p className="text-xs text-muted-foreground">{gift.description}</p>
+                        <p className="text-sm font-semibold text-amber-600 mt-1">{gift.price.toLocaleString()}원</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {selected ? (
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                if (selected.quantity <= 1) {
+                                  setSelectedGifts(selectedGifts.filter(g => g.id !== gift.id));
+                                } else {
+                                  setSelectedGifts(selectedGifts.map(g => 
+                                    g.id === gift.id ? {...g, quantity: g.quantity - 1} : g
+                                  ));
+                                }
+                              }}
+                            >
+                              -
+                            </Button>
+                            <span className="w-8 text-center font-medium">{selected.quantity}</span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedGifts(selectedGifts.map(g => 
+                                  g.id === gift.id ? {...g, quantity: g.quantity + 1} : g
+                                ));
+                              }}
+                            >
+                              +
+                            </Button>
+                          </>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedGifts([...selectedGifts, { id: gift.id, quantity: 1 }])}
+                          >
+                            추가
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {selectedGifts.length > 0 && (
+                <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-foreground">총 금액</span>
+                    <span className="text-lg font-bold text-amber-600">
+                      {selectedGifts.reduce((sum, g) => {
+                        const gift = giftOptions.find(go => go.id === g.id);
+                        return sum + (gift?.price || 0) * g.quantity;
+                      }, 0).toLocaleString()}원
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-2 mt-6">
+                <Button variant="outline" className="flex-1" onClick={() => setShowGiftModal(false)}>
+                  취소
+                </Button>
+                <Button 
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500"
+                  onClick={() => {
+                    toast.success("선물이 추가되었습니다!");
+                    setShowGiftModal(false);
+                  }}
+                >
+                  선물 추가하기
+                </Button>
               </div>
             </motion.div>
           </motion.div>
