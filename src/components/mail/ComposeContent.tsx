@@ -382,10 +382,10 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
                         key={sender.id}
                         onClick={() => setSelectedSenderId(sender.id)}
                         className={`
-                          relative rounded-xl p-3 cursor-pointer transition-all bg-amber-50/70
+                          relative rounded-xl p-3 cursor-pointer transition-all
                           ${selectedSenderId === sender.id 
-                            ? "shadow-[0_2px_8px_rgba(0,0,0,0.08)] border-2 border-primary" 
-                            : "border border-gray-300 hover:shadow-[0_2px_6px_rgba(0,0,0,0.08)] hover:border-gray-400"
+                            ? "bg-amber-50/70 shadow-[0_2px_8px_rgba(0,0,0,0.08)] border-2 border-primary" 
+                            : "bg-white border border-gray-300 hover:shadow-[0_2px_6px_rgba(0,0,0,0.08)] hover:border-gray-400"
                           }
                         `}
                       >
