@@ -13,12 +13,12 @@ interface TimeCapsuleContentProps {
   onClose: () => void;
 }
 
-// 선물 옵션
+// 선물 옵션 (오렌지 제거)
 const giftOptions = [
-  { id: "orange", name: "오렌지 선물하기", icon: "🍊", price: 5000, description: "마음을 담은 오렌지를 함께 전달해요" },
   { id: "starbucks", name: "스타벅스 커피", icon: "☕", price: 6000, description: "따뜻한 커피 한 잔의 마음을 전해요" },
   { id: "flower", name: "꽃다발", icon: "💐", price: 15000, description: "아름다운 꽃과 함께 마음을 전해요" },
   { id: "cake", name: "케이크", icon: "🎂", price: 25000, description: "특별한 날을 위한 달콤한 선물" },
+  { id: "snack", name: "간식 세트", icon: "🍪", price: 12000, description: "맛있는 간식으로 힘을 전해요" },
 ];
 
 // 목업 데이터: 타임캡슐 목록
@@ -183,25 +183,38 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
 
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-5xl mx-auto space-y-8">
-          {/* 안내 배너 */}
+          {/* 히어로 소개 배너 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-6 border border-purple-200/50"
+            className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 rounded-3xl p-8 text-white shadow-xl"
           >
-            <div className="flex items-start gap-6">
-              <div className="w-24 h-24 rounded-2xl bg-white flex items-center justify-center p-2 shrink-0">
-                <img src={timeCapsuleGif} alt="타임캡슐" className="w-20 h-20 object-contain" />
+            {/* 배경 장식 */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+            
+            <div className="relative flex items-center gap-8">
+              <div className="shrink-0">
+                <motion.div 
+                  className="w-32 h-32 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center p-3 ring-4 ring-white/30"
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <img src={timeCapsuleGif} alt="타임캡슐" className="w-24 h-24 object-contain" />
+                </motion.div>
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-foreground mb-1">타임캡슐이란?</h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  수감 중인 가족을 위해 여러 사람이 함께 편지를 모아 특별한 날에 전달하는 서비스예요.<br />
-                  <strong>출소일, 가석방일, 생일, 기념일</strong> 등 특별한 순간에 모은 마음을 한꺼번에 전해보세요.
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full">✨ 함께 모으는 마음</span>
+                </div>
+                <h2 className="text-3xl font-bold mb-3">타임캡슐</h2>
+                <p className="text-white/90 leading-relaxed text-base">
+                  수감 중인 가족을 위해 여러 사람이 함께 편지를 모아<br />
+                  <strong className="text-white">출소일, 가석방일, 생일, 기념일</strong> 등 특별한 순간에 전달하는 서비스예요.
                 </p>
-                <div className="flex gap-2 mt-3">
+                <div className="flex gap-2 mt-4">
                   {capsuleTypes.slice(0, 4).map((type) => (
-                    <span key={type.id} className="bg-white/60 text-xs px-2 py-1 rounded-full">
+                    <span key={type.id} className="bg-white/20 backdrop-blur-sm text-xs px-3 py-1.5 rounded-full font-medium">
                       {type.icon} {type.label}
                     </span>
                   ))}

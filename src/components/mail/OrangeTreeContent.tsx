@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote } from "lucide-react";
+import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote, Gift, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import orangeSeed from "@/assets/emoticons/orange-seed-icon.png";
@@ -60,9 +61,38 @@ const mockData = {
   }
 };
 
+// 선물 옵션 (오렌지 제거)
+const giftOptions = [
+  { id: "starbucks", name: "스타벅스 커피", icon: "☕", price: 6000 },
+  { id: "flower", name: "꽃다발", icon: "💐", price: 15000 },
+  { id: "cake", name: "케이크", icon: "🎂", price: 25000 },
+  { id: "snack", name: "간식 세트", icon: "🍪", price: 12000 },
+];
+
 export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
+  const [selectedGifts, setSelectedGifts] = useState<{id: string, quantity: number}[]>([]);
   const currentStage = growthStages[mockData.currentGrowthLevel - 1];
   const nextStage = growthStages[mockData.currentGrowthLevel];
+
+  const toggleGift = (giftId: string) => {
+    setSelectedGifts(prev => {
+      const existing = prev.find(g => g.id === giftId);
+      if (existing) {
+        if (existing.quantity >= 3) {
+          return prev.filter(g => g.id !== giftId);
+        }
+        return prev.map(g => g.id === giftId ? { ...g, quantity: g.quantity + 1 } : g);
+      }
+      return [...prev, { id: giftId, quantity: 1 }];
+    });
+  };
+
+  const getTotalPrice = () => {
+    return selectedGifts.reduce((sum, sg) => {
+      const gift = giftOptions.find(g => g.id === sg.id);
+      return sum + (gift?.price || 0) * sg.quantity;
+    }, 0);
+  };
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-gradient-to-br from-orange-50/50 to-amber-50/30">
@@ -382,6 +412,87 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalDeposits}</p>
                 <p className="text-xs text-muted-foreground">영치금 입금</p>
               </div>
+            </div>
+          </motion.div>
+
+          {/* 함께 선물하기 섹션 */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55 }}
+            className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200/60 shadow-sm overflow-hidden"
+          >
+            <div className="px-6 py-4 border-b border-amber-200/40 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Gift className="w-5 h-5 text-amber-600" />
+                <div>
+                  <h3 className="font-semibold text-foreground">함께 선물하기</h3>
+                  <p className="text-xs text-muted-foreground">편지와 함께 마음을 담은 선물을 전달해보세요</p>
+                </div>
+              </div>
+              {selectedGifts.length > 0 && (
+                <div className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full">
+                  {selectedGifts.reduce((sum, g) => sum + g.quantity, 0)}개 선택됨
+                </div>
+              )}
+            </div>
+            <div className="p-5">
+              <div className="grid grid-cols-2 gap-3">
+                {giftOptions.map((gift) => {
+                  const selected = selectedGifts.find(g => g.id === gift.id);
+                  return (
+                    <motion.button
+                      key={gift.id}
+                      onClick={() => toggleGift(gift.id)}
+                      className={`relative p-4 rounded-xl border-2 transition-all text-left ${
+                        selected 
+                          ? "border-primary bg-white shadow-md" 
+                          : "border-transparent bg-white hover:border-amber-300 hover:shadow-sm"
+                      }`}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {selected && (
+                        <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">{selected.quantity}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{gift.icon}</span>
+                        <div>
+                          <p className="font-medium text-foreground">{gift.name}</p>
+                          <p className="text-sm text-muted-foreground">{gift.price.toLocaleString()}원</p>
+                        </div>
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </div>
+              
+              {/* 선택된 선물 요약 */}
+              {selectedGifts.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="mt-4 p-4 bg-white rounded-xl border border-amber-200"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm text-muted-foreground">선택한 선물:</span>
+                      {selectedGifts.map(sg => {
+                        const gift = giftOptions.find(g => g.id === sg.id);
+                        return (
+                          <span key={sg.id} className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-sm px-2 py-0.5 rounded-full">
+                            {gift?.icon} {gift?.name} x{sg.quantity}
+                          </span>
+                        );
+                      })}
+                    </div>
+                    <div className="font-bold text-primary text-lg">
+                      {getTotalPrice().toLocaleString()}원
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </motion.div>
 
