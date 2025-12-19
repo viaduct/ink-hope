@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote, Gift, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { TreeDeciduous, Leaf, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Gift, Check, Mail, Send, Image, FileText, Settings, ExternalLink, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import orangeSeed from "@/assets/emoticons/orange-seed-icon.png";
@@ -16,12 +16,31 @@ interface OrangeTreeContentProps {
 
 // 성장 단계 정의
 const growthStages = [
-  { id: 1, name: "씨앗", minLetters: 0, icon: orangeSeed },
-  { id: 2, name: "새싹", minLetters: 5, icon: orangeSprout },
-  { id: 3, name: "푸른 가지", minLetters: 15, icon: orangeYoungTree },
-  { id: 4, name: "흰 꽃나무", minLetters: 30, icon: orangeFullTree },
-  { id: 5, name: "오렌지나무", minLetters: 50, icon: orangeRipe },
+  { id: 1, name: "씨앗", level: "Lv.1", minLetters: 0, icon: orangeSeed, color: "from-amber-200 to-amber-300" },
+  { id: 2, name: "새싹", level: "Lv.2", minLetters: 5, icon: orangeSprout, color: "from-lime-300 to-green-400" },
+  { id: 3, name: "푸른 가지", level: "Lv.3", minLetters: 15, icon: orangeYoungTree, color: "from-green-400 to-emerald-500" },
+  { id: 4, name: "흰 꽃나무", level: "Lv.4", minLetters: 30, icon: orangeFullTree, color: "from-emerald-400 to-teal-500" },
+  { id: 5, name: "오렌지나무", level: "Lv.5", minLetters: 50, icon: orangeRipe, color: "from-orange-400 to-orange-500" },
 ];
+
+// 관계 아이콘 정의
+const relationIcons: Record<string, { emoji: string; color: string }> = {
+  "어머니": { emoji: "👩", color: "bg-pink-100 text-pink-600" },
+  "아버지": { emoji: "👨", color: "bg-blue-100 text-blue-600" },
+  "여동생": { emoji: "👧", color: "bg-purple-100 text-purple-600" },
+  "남동생": { emoji: "👦", color: "bg-cyan-100 text-cyan-600" },
+  "아내": { emoji: "👰", color: "bg-rose-100 text-rose-600" },
+  "남편": { emoji: "🤵", color: "bg-indigo-100 text-indigo-600" },
+  "아들": { emoji: "👦", color: "bg-sky-100 text-sky-600" },
+  "딸": { emoji: "👧", color: "bg-fuchsia-100 text-fuchsia-600" },
+};
+
+// 우편 종류 아이콘
+const mailTypeIcons: Record<string, { icon: React.ReactNode; label: string }> = {
+  "편지": { icon: <Mail className="w-3.5 h-3.5" />, label: "편지" },
+  "사진": { icon: <Image className="w-3.5 h-3.5" />, label: "사진" },
+  "파일": { icon: <FileText className="w-3.5 h-3.5" />, label: "파일" },
+};
 
 // 목업 데이터
 const mockData = {
@@ -29,7 +48,9 @@ const mockData = {
   sentLetters: 12,
   receivedLetters: 11,
   currentGrowthLevel: 3,
-  growthProgress: 53, // 현재 레벨에서의 진행률
+  growthProgress: 53,
+  sentThisWeek: false, // 이번 주 편지 발송 여부
+  lastLetterDate: "2025-01-02",
   prisonerInfo: {
     name: "홍길동",
     facility: "서울구치소",
@@ -39,6 +60,7 @@ const mockData = {
     daysServed: 280,
     daysRemaining: 178,
   },
+  nextVisitDate: "2025-01-15",
   fruits: [
     { id: 1, type: "release", title: "출소 예정일", date: "2025-06-15", description: "D-178 남음", icon: "🏠" },
     { id: 2, type: "birthday", title: "생일", date: "2025-03-20", description: "길동이의 생일", icon: "🎂" },
@@ -49,25 +71,52 @@ const mockData = {
     { id: 7, type: "health", title: "건강검진", date: "2025-02-01", description: "정기 건강검진", icon: "🏥" },
   ],
   recentActivity: [
-    { id: 1, action: "편지 발송", target: "어머니에게", date: "2025-01-02", status: "전달완료" },
-    { id: 2, action: "편지 수신", target: "아버지로부터", date: "2024-12-28", status: "수신완료" },
-    { id: 3, action: "사진 동봉", target: "여동생에게", date: "2024-12-25", status: "전달완료" },
-    { id: 4, action: "영치금 입금", target: "어머니로부터", date: "2024-12-20", status: "입금확인" },
+    { id: 1, action: "편지 발송", target: "어머니", relation: "어머니", date: "2025-01-02", status: "전달완료", mailTypes: ["편지", "사진"] },
+    { id: 2, action: "편지 수신", target: "아버지", relation: "아버지", date: "2024-12-28", status: "수신완료", mailTypes: ["편지"] },
+    { id: 3, action: "편지 발송", target: "여동생", relation: "여동생", date: "2024-12-25", status: "전달완료", mailTypes: ["편지", "사진", "파일"] },
+    { id: 4, action: "편지 발송", target: "아내", relation: "아내", date: "2024-12-20", status: "전달완료", mailTypes: ["편지"] },
   ],
   supportStats: {
     totalVisits: 15,
-    totalCalls: 8,
-    totalDeposits: 12,
   }
 };
 
-// 선물 옵션 (오렌지 제거)
+// 선물 옵션
 const giftOptions = [
   { id: "starbucks", name: "스타벅스 커피", icon: "☕", price: 6000 },
   { id: "flower", name: "꽃다발", icon: "💐", price: 15000 },
   { id: "cake", name: "케이크", icon: "🎂", price: 25000 },
   { id: "snack", name: "간식 세트", icon: "🍪", price: 12000 },
 ];
+
+// 롤링 메시지 컴포넌트
+function RollingText({ messages }: { messages: string[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % messages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [messages.length]);
+
+  return (
+    <div className="h-5 overflow-hidden relative">
+      <AnimatePresence mode="wait">
+        <motion.p
+          key={currentIndex}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -20, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-sm text-green-600 absolute"
+        >
+          {messages[currentIndex]}
+        </motion.p>
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
   const [selectedGifts, setSelectedGifts] = useState<{id: string, quantity: number}[]>([]);
@@ -94,6 +143,12 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
     }, 0);
   };
 
+  // 성장 속도 롤링 메시지
+  const growthMessages = [
+    "▲ 지난주 대비 25% 증가",
+    "▲ 지난달 대비 25% 증가",
+  ];
+
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-gradient-to-br from-orange-50/50 to-amber-50/30">
       {/* Header */}
@@ -109,7 +164,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
 
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-5xl mx-auto space-y-6">
-          {/* 히어로 소개 배너 */}
+          {/* 히어로 소개 배너 - 편지 발송 유도 메시지 포함 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -134,20 +189,36 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                     {currentStage.name}
                   </span>
                   <span className="bg-white/90 text-orange-600 text-xs font-bold px-2 py-1 rounded-full shadow-md">
-                    Lv.{mockData.currentGrowthLevel}
+                    {currentStage.level}
                   </span>
                 </div>
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full">🌳 함께 키우는 마음</span>
+                {/* 편지 발송 유도 메시지 */}
+                <div className="mb-4 p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                  {mockData.sentThisWeek ? (
+                    <div className="flex items-center gap-2">
+                      <Heart className="w-5 h-5 text-red-200 fill-red-200" />
+                      <p className="text-white/95 text-sm">
+                        <strong>이번 주 편지를 보냈습니다!</strong> 당신의 편지가 {mockData.prisonerInfo.name}에게 큰 힘이 됩니다. 💛
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-5 h-5 text-yellow-200" />
+                      <p className="text-white/95 text-sm">
+                        <strong>이번 주 아직 편지를 보내지 않았어요.</strong> 바쁜 일상 속 편지 한 통이 안에 있는 {mockData.prisonerInfo.name}에게 큰 의지가 됩니다.
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <h2 className="text-3xl font-bold mb-3">오렌지나무</h2>
-                <p className="text-white/90 leading-relaxed text-base">
-                  편지를 주고받을 때마다 나무가 자라나요.<br />
-                  <strong className="text-white">씨앗에서 오렌지나무까지</strong>, 함께한 시간이 열매가 됩니다.
+                
+                <h2 className="text-3xl font-bold mb-2">오렌지나무</h2>
+                <p className="text-white/90 leading-relaxed text-sm mb-3">
+                  안에 있는 사람들은 가족의 사랑과 정으로 버팁니다.<br />
+                  <strong className="text-white">일주일에 한 번 전하는 편지</strong>가 {mockData.prisonerInfo.name}이(가) 거듭나는 힘이 됩니다.
                 </p>
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2">
                   <span className="bg-white/20 backdrop-blur-sm text-xs px-3 py-1.5 rounded-full font-medium">🌱 성장 기록</span>
                   <span className="bg-white/20 backdrop-blur-sm text-xs px-3 py-1.5 rounded-full font-medium">📅 소중한 날들</span>
                   <span className="bg-white/20 backdrop-blur-sm text-xs px-3 py-1.5 rounded-full font-medium">🎁 함께 선물하기</span>
@@ -229,18 +300,47 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                   떨어져 있어도, 마음은 자라고 있어요 💛
                 </p>
 
-                {/* 진행률 바 */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">성장 진행률</span>
-                    <span className="font-medium text-primary">{mockData.growthProgress}%</span>
+                {/* Lv 1-5 그라데이션 막대 그래프 */}
+                <div className="space-y-3">
+                  <div className="flex justify-between text-xs text-muted-foreground mb-2">
+                    <span>성장 레벨</span>
+                    <span className="font-medium text-primary">{currentStage.level}</span>
                   </div>
-                  <Progress value={mockData.growthProgress} className="h-3" />
+                  <div className="flex gap-1.5">
+                    {growthStages.map((stage, idx) => {
+                      const isActive = idx < mockData.currentGrowthLevel;
+                      const isCurrent = idx === mockData.currentGrowthLevel - 1;
+                      return (
+                        <div key={stage.id} className="flex-1 relative group">
+                          <div
+                            className={`h-3 rounded-full transition-all ${
+                              isActive 
+                                ? `bg-gradient-to-r ${stage.color}` 
+                                : "bg-gray-200"
+                            } ${isCurrent ? "ring-2 ring-primary ring-offset-1" : ""}`}
+                          />
+                          <div className="absolute -bottom-5 left-1/2 -translate-x-1/2">
+                            <span className={`text-[10px] ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+                              {stage.level.replace("Lv.", "")}
+                            </span>
+                          </div>
+                          {/* 호버 시 스테이지 아이콘 표시 */}
+                          <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            <motion.img 
+                              src={stage.icon} 
+                              alt={stage.name}
+                              className="w-8 h-8 object-contain"
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
               
               {/* 나무 이미지 - 하단 센터 정렬 */}
-              <div className="flex justify-center mt-4 pt-4 border-t border-border/40">
+              <div className="flex justify-center mt-8 pt-4 border-t border-border/40">
                 <motion.img 
                   src={currentStage.icon} 
                   alt={currentStage.name}
@@ -277,7 +377,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               </div>
             </motion.div>
 
-            {/* 열매 - 소중한 날들 */}
+            {/* 열매 - 소중한 날들 (오렌지 아이콘으로 변경) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -286,7 +386,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                  <Apple className="w-5 h-5 text-orange-600" />
+                  <img src={orangeRipe} alt="열매" className="w-6 h-6 object-contain" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">열매</p>
@@ -294,13 +394,19 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 </div>
               </div>
               <p className="text-3xl font-bold text-foreground">{mockData.fruits.length}<span className="text-lg text-muted-foreground ml-1">개</span></p>
-              <Button variant="ghost" size="sm" className="mt-2 text-primary hover:text-primary/80 -ml-2">
-                <Plus className="w-4 h-4 mr-1" />
-                기념일 추가
-              </Button>
+              <div className="flex gap-2 mt-3">
+                <Button size="sm" className="flex-1 h-8 text-xs bg-primary hover:bg-primary/90">
+                  <Send className="w-3 h-3 mr-1" />
+                  편지 쓰기
+                </Button>
+                <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">
+                  <Plus className="w-3 h-3 mr-1" />
+                  새 날짜 추가
+                </Button>
+              </div>
             </motion.div>
 
-            {/* 성장 트렌드 */}
+            {/* 성장 트렌드 - 롤링 애니메이션 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -317,7 +423,9 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 </div>
               </div>
               <p className="text-3xl font-bold text-foreground">+5<span className="text-lg text-muted-foreground ml-1">통</span></p>
-              <p className="text-sm text-green-600 mt-2">▲ 지난달 대비 25% 증가</p>
+              <div className="mt-2">
+                <RollingText messages={growthMessages} />
+              </div>
             </motion.div>
           </div>
 
@@ -330,17 +438,28 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
           >
             <div className="px-6 py-4 border-b border-border/40">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-orange-500" />
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                    <img src={orangeRipe} alt="열매" className="w-6 h-6 object-contain" />
+                  </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">잊지 말아야 할 날들</h3>
-                    <p className="text-xs text-muted-foreground">출소일, 생일, 기념일 등 잊지 말아야 할 특별한 날을 기록해요</p>
+                    <h3 className="font-semibold text-foreground">소중한 날들</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      출소일, 생일, 기념일 등 중요한 날짜를 등록하면<br />
+                      <strong className="text-orange-600">편지 보낼 날짜에 미리 알림</strong>을 받을 수 있어요!
+                    </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
-                  <Plus className="w-4 h-4 mr-1" />
-                  기념일 추가
-                </Button>
+                <div className="flex gap-2">
+                  <Button size="sm" className="bg-primary hover:bg-primary/90">
+                    <Send className="w-4 h-4 mr-1" />
+                    편지 쓰기
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Plus className="w-4 h-4 mr-1" />
+                    새 날짜 추가
+                  </Button>
+                </div>
               </div>
             </div>
             <div className="divide-y divide-border/40">
@@ -402,7 +521,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             </div>
           </motion.div>
 
-          {/* 가족 지원 현황 */}
+          {/* 가족 지원 현황 - 면회일 설정으로 변경 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -414,20 +533,37 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               가족 지원 현황
             </h3>
             <div className="grid grid-cols-3 gap-4">
+              {/* 면회 횟수 */}
               <div className="text-center p-4 bg-blue-50 rounded-xl">
                 <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalVisits}</p>
                 <p className="text-xs text-muted-foreground">면회 횟수</p>
               </div>
+              
+              {/* 다음 면회일 */}
               <div className="text-center p-4 bg-green-50 rounded-xl">
-                <Phone className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalCalls}</p>
-                <p className="text-xs text-muted-foreground">전화 통화</p>
+                <Calendar className="w-6 h-6 text-green-600 mx-auto mb-2" />
+                <p className="text-lg font-bold text-foreground">{mockData.nextVisitDate || "미정"}</p>
+                <p className="text-xs text-muted-foreground">다음 면회일</p>
               </div>
-              <div className="text-center p-4 bg-amber-50 rounded-xl">
-                <Banknote className="w-6 h-6 text-amber-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalDeposits}</p>
-                <p className="text-xs text-muted-foreground">영치금 입금</p>
+              
+              {/* 면회일 설정/예약 */}
+              <div className="flex flex-col gap-2 p-4 bg-amber-50 rounded-xl">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full text-xs border-amber-300 hover:bg-amber-100"
+                >
+                  <Settings className="w-3.5 h-3.5 mr-1" />
+                  면회일 설정
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="w-full text-xs bg-amber-500 hover:bg-amber-600 text-white"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 mr-1" />
+                  지금 접견 예약하기
+                </Button>
               </div>
             </div>
           </motion.div>
@@ -513,7 +649,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             </div>
           </motion.div>
 
-          {/* 최근 활동 */}
+          {/* 최근 활동 - 관계 아이콘 및 우편 종류 아이콘 추가 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -524,17 +660,45 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               <h3 className="font-semibold text-foreground">최근 활동</h3>
             </div>
             <div className="divide-y divide-border/40">
-              {mockData.recentActivity.map((activity) => (
-                <div key={activity.id} className="p-4 flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <div className="flex-1">
-                    <span className="text-sm text-foreground">{activity.action}</span>
-                    <span className="text-sm text-muted-foreground ml-1">{activity.target}</span>
+              {mockData.recentActivity.map((activity) => {
+                const relationInfo = relationIcons[activity.relation] || { emoji: "👤", color: "bg-gray-100 text-gray-600" };
+                
+                return (
+                  <div key={activity.id} className="p-4 flex items-center gap-3">
+                    {/* 관계 아이콘 */}
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg ${relationInfo.color}`}>
+                      {relationInfo.emoji}
+                    </div>
+                    
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-foreground">{activity.action}</span>
+                        <span className="text-sm text-muted-foreground">{activity.target}에게</span>
+                        
+                        {/* 우편 종류 아이콘들 */}
+                        <div className="flex items-center gap-1 ml-2">
+                          {activity.mailTypes?.map((type, idx) => {
+                            const typeInfo = mailTypeIcons[type];
+                            if (!typeInfo) return null;
+                            return (
+                              <div 
+                                key={idx} 
+                                className="w-5 h-5 rounded bg-muted flex items-center justify-center text-muted-foreground"
+                                title={typeInfo.label}
+                              >
+                                {typeInfo.icon}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">{activity.status}</span>
+                    <span className="text-xs text-muted-foreground">{activity.date}</span>
                   </div>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">{activity.status}</span>
-                  <span className="text-xs text-muted-foreground">{activity.date}</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
         </div>
