@@ -17,9 +17,9 @@ interface OrangeTreeContentProps {
 const growthStages = [
   { id: 1, name: "씨앗", minLetters: 0, icon: orangeSeed },
   { id: 2, name: "새싹", minLetters: 5, icon: orangeSprout },
-  { id: 3, name: "어린나무", minLetters: 15, icon: orangeYoungTree },
-  { id: 4, name: "청년나무", minLetters: 30, icon: orangeFullTree },
-  { id: 5, name: "열매나무", minLetters: 50, icon: orangeRipe },
+  { id: 3, name: "푸른 가지", minLetters: 15, icon: orangeYoungTree },
+  { id: 4, name: "흰 꽃나무", minLetters: 30, icon: orangeFullTree },
+  { id: 5, name: "오렌지나무", minLetters: 50, icon: orangeRipe },
 ];
 
 // 목업 데이터
@@ -237,7 +237,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               </div>
             </motion.div>
 
-            {/* 열매 - 함께한 순간 */}
+            {/* 열매 - 소중한 날들 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -250,13 +250,13 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">열매</p>
-                  <p className="text-xs text-muted-foreground">함께한 순간</p>
+                  <p className="text-xs text-muted-foreground">소중한 날들</p>
                 </div>
               </div>
               <p className="text-3xl font-bold text-foreground">{mockData.fruits.length}<span className="text-lg text-muted-foreground ml-1">개</span></p>
               <Button variant="ghost" size="sm" className="mt-2 text-primary hover:text-primary/80 -ml-2">
                 <Plus className="w-4 h-4 mr-1" />
-                마일스톤 추가
+                기념일 추가
               </Button>
             </motion.div>
 
@@ -288,15 +288,20 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             transition={{ delay: 0.4 }}
             className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
           >
-            <div className="px-6 py-4 border-b border-border/40 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Apple className="w-5 h-5 text-orange-500" />
-                <h3 className="font-semibold text-foreground">열매 (함께한 순간)</h3>
+            <div className="px-6 py-4 border-b border-border/40">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Apple className="w-5 h-5 text-orange-500" />
+                  <div>
+                    <h3 className="font-semibold text-foreground">소중한 날들</h3>
+                    <p className="text-xs text-muted-foreground">출소일, 생일, 기념일 등 잊지 말아야 할 특별한 날을 기록해요</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">
+                  <Plus className="w-4 h-4 mr-1" />
+                  기념일 추가
+                </Button>
               </div>
-              <Button variant="outline" size="sm">
-                <Plus className="w-4 h-4 mr-1" />
-                마일스톤 추가
-              </Button>
             </div>
             <div className="divide-y divide-border/40">
               {mockData.fruits.map((fruit, index) => {
