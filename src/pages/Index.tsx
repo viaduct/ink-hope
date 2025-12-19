@@ -10,11 +10,12 @@ import { OrangeTreeContent } from "@/components/mail/OrangeTreeContent";
 import { TimeCapsuleContent } from "@/components/mail/TimeCapsuleContent";
 import { GalleryContent } from "@/components/mail/GalleryContent";
 import { ScheduleContent } from "@/components/mail/ScheduleContent";
+import { RewardsContent } from "@/components/mail/RewardsContent";
 import { familyMembers as initialFamilyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 
-type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery" | "schedule";
+type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery" | "schedule" | "rewards";
 
 const Index = () => {
   const [activeFolder, setActiveFolder] = useState<FolderType | null>("inbox");
@@ -113,7 +114,7 @@ const Index = () => {
           onFolderChange={(folder) => {
             setActiveFolder(folder);
             setSelectedMemberId(null);
-            // 오렌지나무, 타임캡슐, 갤러리, 스케줄 폴더 선택 시 해당 화면으로 전환
+            // 오렌지나무, 타임캡슐, 갤러리, 스케줄, 경품 폴더 선택 시 해당 화면으로 전환
             if (folder === "orangetree") {
               setViewMode("orangetree");
             } else if (folder === "timecapsule") {
@@ -122,6 +123,8 @@ const Index = () => {
               setViewMode("gallery");
             } else if (folder === "schedule") {
               setViewMode("schedule");
+            } else if (folder === "rewards") {
+              setViewMode("rewards");
             } else {
               setViewMode("mail");
             }
@@ -198,6 +201,13 @@ const Index = () => {
           <GalleryContent />
         ) : viewMode === "schedule" ? (
           <ScheduleContent />
+        ) : viewMode === "rewards" ? (
+          <RewardsContent
+            onClose={() => {
+              setActiveFolder("inbox");
+              setViewMode("mail");
+            }}
+          />
         ) : (
           <MailContent
             mails={filteredMails}
