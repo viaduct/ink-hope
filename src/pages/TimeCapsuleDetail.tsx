@@ -320,8 +320,8 @@ export default function TimeCapsuleDetail() {
                     animate={{ opacity: 1, x: 0 }}
                     className={`p-4 rounded-xl border-2 transition-all ${
                       contributor.contributed 
-                        ? "bg-green-50 border-green-200" 
-                        : "bg-gray-50 border-gray-200"
+                        ? "bg-white border-green-200" 
+                        : "bg-white border-gray-200"
                     }`}
                   >
                     <div className="flex items-center justify-between">
