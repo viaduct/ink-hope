@@ -154,8 +154,8 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                   {/* 헤더 */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
-                        <img src={orangeRipe} alt="" className="w-8 h-8" />
+                      <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center">
+                        <img src={timeCapsuleGif} alt="" className="w-10 h-10 object-contain" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-foreground">{capsule.title}</h3>
