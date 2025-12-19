@@ -57,14 +57,20 @@ const Index = () => {
     setSelectedMail(null);
     
     const folderNames: Record<FolderType, string> = {
-      inbox: "받은편지함",
-      sent: "보낸편지함",
-      draft: "임시저장함",
+      inbox: "받은 편지함",
+      sent: "보낸 편지함",
+      draft: "임시보관함",
       archive: "중요편지함",
+      gallery: "갤러리",
+      schedule: "스케줄 관리",
       spam: "스팸함",
       trash: "휴지통",
-      orangetree: "오렌지나무",
+      orangetree: "오렌지 나무",
       timecapsule: "타임캡슐",
+      deals: "특가 할인",
+      faq: "자주 묻는 질문",
+      feedback: "고객의 소리",
+      rewards: "내가 받은 경품",
     };
     toast.success(`${folderNames[targetFolder]}으로 이동했습니다.`);
   };

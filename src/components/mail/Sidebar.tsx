@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock, Image, CalendarDays, Tag, HelpCircle, MessageSquare, Gift } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import { DeadlineTimer } from "./DeadlineTimer";
 import orangeRipe from "@/assets/emoticons/orange-ripe.png";
 import orangeSprout from "@/assets/emoticons/orange-sprout.png";
 import orangeCharacter from "@/assets/emoticons/orange-character.gif";
+
 interface SidebarProps {
   familyMembers: FamilyMember[];
   activeFolder: FolderType | null;
@@ -28,20 +29,28 @@ interface SidebarProps {
   onHandwrittenUpload?: () => void;
 }
 
-// 중요편지함까지 (내 편지함 위에 표시)
+// 상단 폴더 (받은편지함 ~ 스케줄 관리)
 const foldersTop = [
-  { id: "inbox" as FolderType, label: "받은편지함", icon: Mail },
-  { id: "sent" as FolderType, label: "보낸편지함", icon: Send },
-  { id: "draft" as FolderType, label: "임시저장함", icon: FileText },
-  { id: "archive" as FolderType, label: "중요편지함", icon: Star },
+  { id: "inbox" as FolderType, label: "받은 편지함", icon: Mail },
+  { id: "sent" as FolderType, label: "보낸 편지함", icon: Send },
+  { id: "draft" as FolderType, label: "임시보관함", icon: FileText },
+  { id: "gallery" as FolderType, label: "갤러리", icon: Image },
+  { id: "schedule" as FolderType, label: "스케줄 관리", icon: CalendarDays },
 ];
 
-// 스팸함부터 (내 편지함 아래에 표시)
+// 스팸함 ~ 타임캡슐
 const foldersBottom = [
   { id: "spam" as FolderType, label: "스팸함", icon: AlertCircle },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2 },
-  { id: "orangetree" as FolderType, label: "오렌지나무", icon: TreeDeciduous },
+  { id: "orangetree" as FolderType, label: "오렌지 나무", icon: TreeDeciduous },
   { id: "timecapsule" as FolderType, label: "타임캡슐", icon: Clock },
+];
+
+// 고객 지원 메뉴
+const supportMenus = [
+  { id: "faq" as FolderType, label: "자주 묻는 질문", icon: HelpCircle },
+  { id: "feedback" as FolderType, label: "고객의 소리", icon: MessageSquare },
+  { id: "rewards" as FolderType, label: "내가 받은 경품", icon: Gift },
 ];
 
 interface SidebarItem {
@@ -333,23 +342,32 @@ export function Sidebar({
                     </li>
                   );
                 })}
-                {/* 새 편지함 추가 */}
-                <li>
-                  <button 
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors text-foreground hover:bg-secondary"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span className="text-sm">새 편지함 추가</span>
-                  </button>
-                </li>
               </ul>
             )}
           </>
         )}
 
+        {/* Divider */}
+        {!isCollapsed && (
+          <div className="my-3 mx-2 border-t border-border/60" />
+        )}
+
+        {/* 새 편지함 추가 (분리된 버튼) */}
+        {!isCollapsed && (
+          <button className="w-full flex items-center gap-2.5 px-3.5 py-3 rounded-lg text-sm transition-all duration-150 text-foreground hover:bg-muted/60">
+            <Plus className="w-4 h-4 flex-shrink-0" />
+            <span className="flex-1 text-left">새 편지함 추가</span>
+          </button>
+        )}
+
+        {/* Divider */}
+        {!isCollapsed && (
+          <div className="my-3 mx-2 border-t border-border/60" />
+        )}
+
         {/* 하단 폴더들 (스팸함, 휴지통 등) */}
         {(isCollapsed || isFolderExpanded) && (
-          <ul className="space-y-1.5 mt-1">
+          <ul className="space-y-1.5">
             {foldersBottom.map((folder) => {
               const Icon = folder.icon;
               const isActive = activeFolder === folder.id;
@@ -392,6 +410,60 @@ export function Sidebar({
                         {count}
                       </span>
                     )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        {/* Divider */}
+        {!isCollapsed && (
+          <div className="my-3 mx-2 border-t border-border/60" />
+        )}
+
+        {/* 특가 할인 */}
+        {!isCollapsed && (
+          <button
+            onClick={() => onFolderChange("deals")}
+            className={cn(
+              "w-full flex items-center gap-2.5 px-3.5 py-3 rounded-lg text-sm transition-all duration-150",
+              activeFolder === "deals"
+                ? "bg-primary/10 text-primary font-medium"
+                : "text-foreground hover:bg-muted/60"
+            )}
+          >
+            <Tag className={cn("w-4 h-4 flex-shrink-0", activeFolder === "deals" && "text-primary")} />
+            <span className="flex-1 text-left">특가 할인</span>
+            <span className="bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full">HOT</span>
+          </button>
+        )}
+
+        {/* Divider */}
+        {!isCollapsed && (
+          <div className="my-3 mx-2 border-t border-border/60" />
+        )}
+
+        {/* 고객 지원 메뉴 */}
+        {!isCollapsed && (
+          <ul className="space-y-1.5">
+            {supportMenus.map((menu) => {
+              const Icon = menu.icon;
+              const isActive = activeFolder === menu.id;
+
+              return (
+                <li key={menu.id}>
+                  <button
+                    onClick={() => onFolderChange(menu.id)}
+                    className={cn(
+                      "w-full flex items-center gap-2.5 px-3.5 py-3 rounded-lg text-sm transition-all duration-150",
+                      isActive
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-foreground hover:bg-muted/60"
+                    )}
+                  >
+                    <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary")} />
+                    <span className="flex-1 text-left">{menu.label}</span>
                   </button>
                 </li>
               );
