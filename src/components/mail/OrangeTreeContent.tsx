@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote } from "lucide-react";
+import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote, HelpCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import orangeSeed from "@/assets/emoticons/orange-seed-icon.png";
@@ -127,33 +128,71 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             <div className="p-6">
               <div className="flex items-start gap-6">
                 {/* 나무 이미지 */}
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center p-2">
-                    <div className="w-full h-full rounded-full bg-white/80 flex items-center justify-center overflow-hidden">
-                      <motion.img 
-                        src={currentStage.icon} 
-                        alt={currentStage.name}
-                        className="w-14 h-14 object-contain"
-                        animate={{ scale: [1, 1.02, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
+                <div className="flex flex-col items-center">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center p-2 ring-4 ring-primary/60">
+                      <div className="w-full h-full rounded-full bg-white/80 flex items-center justify-center overflow-hidden">
+                        <motion.img 
+                          src={currentStage.icon} 
+                          alt={currentStage.name}
+                          className="w-14 h-14 object-contain"
+                          animate={{ scale: [1, 1.02, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-full">
-                    Lv.{mockData.currentGrowthLevel}
+                  <div className="flex items-center gap-1.5 mt-3">
+                    <span className="font-bold text-foreground">{currentStage.name}</span>
+                    <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+                      Lv.{mockData.currentGrowthLevel}
+                    </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button className="text-muted-foreground hover:text-primary transition-colors">
+                            <HelpCircle className="w-4 h-4" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs p-4 bg-white border border-border shadow-lg z-50">
+                          <div className="space-y-3">
+                            <p className="font-semibold text-foreground text-sm">🌳 성장 단계 안내</p>
+                            <div className="space-y-2 text-xs">
+                              {growthStages.map((stage, idx) => (
+                                <div 
+                                  key={stage.id} 
+                                  className={`flex items-center gap-2 p-1.5 rounded ${
+                                    idx === mockData.currentGrowthLevel - 1 
+                                      ? "bg-primary/10 font-medium" 
+                                      : ""
+                                  }`}
+                                >
+                                  <img src={stage.icon} alt={stage.name} className="w-5 h-5 object-contain" />
+                                  <span className="flex-1">{stage.name}</span>
+                                  <span className="text-muted-foreground">{stage.minLetters}통 이상</span>
+                                </div>
+                              ))}
+                            </div>
+                            <p className="text-xs text-muted-foreground pt-2 border-t border-border">
+                              편지를 주고받을수록 나무가 성장해요! 🧡
+                            </p>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
 
                 {/* 성장 정보 */}
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h2 className="text-xl font-bold text-foreground">{currentStage.name}</h2>
-                    {nextStage && (
+                  {nextStage && (
+                    <div className="mb-2">
                       <span className="text-sm text-muted-foreground">
-                        → {nextStage.name}까지 {nextStage.minLetters - mockData.totalLetters}통 남음
+                        다음 단계 <span className="font-medium text-foreground">{nextStage.name}</span>까지 
+                        <span className="text-primary font-bold ml-1">{nextStage.minLetters - mockData.totalLetters}통</span> 남음
                       </span>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   
                   <p className="text-sm text-muted-foreground mb-4">
                     떨어져 있어도, 마음은 자라고 있어요 💛
