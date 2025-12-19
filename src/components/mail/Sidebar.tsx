@@ -169,9 +169,9 @@ export function Sidebar({
                 className="flex-1 bg-muted/50 rounded-xl py-2.5 px-2 hover:bg-muted transition-colors"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5 mx-auto mb-1 fill-primary">
-                  <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM19 13h-1.5v1.5H19V13z"/>
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
                 </svg>
-                <p className="text-[10px] text-muted-foreground">손편지 스캔</p>
+                <p className="text-[10px] text-muted-foreground">손편지 담기</p>
               </button>
             </div>
           </div>
