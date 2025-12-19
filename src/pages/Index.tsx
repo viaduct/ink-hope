@@ -149,9 +149,35 @@ const Index = () => {
         ) : viewMode === "handwritten" ? (
           <HandwrittenUploadContent
             onClose={() => setViewMode("mail")}
-            onComposeWithText={(text) => {
-              // TODO: Pass OCR text to compose
+            onComposeWithText={(text, senderName) => {
+              // TODO: Pass OCR text to compose with sender context
               setViewMode("compose");
+            }}
+            onSaveToInbox={(data) => {
+              // 손편지를 받은 편지함에 저장
+              const newMail: Mail = {
+                id: crypto.randomUUID(),
+                sender: {
+                  id: crypto.randomUUID(),
+                  name: data.senderName,
+                  relation: "손편지 발신자",
+                  facility: "",
+                  avatar: data.senderName.charAt(0),
+                  color: "bg-orange-100 text-orange-600",
+                },
+                subject: `${data.senderName}님의 손편지`,
+                preview: data.ocrText.slice(0, 50) + "...",
+                content: data.ocrText,
+                date: "오늘",
+                isRead: false,
+                isNew: true,
+                folder: "inbox",
+                isHandwritten: true,
+                originalImage: data.originalImage,
+              };
+              setMails((prev) => [newMail, ...prev]);
+              setActiveFolder("inbox");
+              setViewMode("mail");
             }}
           />
         ) : viewMode === "orangetree" ? (

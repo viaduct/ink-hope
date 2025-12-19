@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Reply, Bookmark, ChevronLeft, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar, Pencil, Truck } from "lucide-react";
+import { Image, Reply, Bookmark, ChevronLeft, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar, Pencil, Truck, FileEdit } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
@@ -34,7 +34,7 @@ const folderTitles: Record<FolderType, string> = {
   rewards: "내가 받은 경품",
 };
 
-type TabType = "all" | "unread" | "important";
+type TabType = "all" | "unread" | "important" | "handwritten";
 
 export function MailContent({
   mails,
@@ -51,6 +51,7 @@ export function MailContent({
 
   const unreadCount = mails.filter((mail) => !mail.isRead).length;
   const importantCount = mails.filter((mail) => mail.isImportant).length;
+  const handwrittenCount = mails.filter((mail) => mail.isHandwritten).length;
 
   // 선택된 멤버와의 통계 계산
   const memberStats = selectedMember ? {
@@ -62,6 +63,7 @@ export function MailContent({
   const filteredMails = mails.filter((mail) => {
     if (activeTab === "unread") return !mail.isRead;
     if (activeTab === "important") return mail.isImportant;
+    if (activeTab === "handwritten") return mail.isHandwritten;
     return true;
   });
 
@@ -208,6 +210,20 @@ export function MailContent({
                 >
                   중요
                 </button>
+                {activeFolder === "inbox" && handwrittenCount > 0 && (
+                  <button
+                    onClick={() => setActiveTab("handwritten")}
+                    className={cn(
+                      "text-sm font-medium transition-colors pb-2 -mb-3 border-b-2 flex items-center gap-1",
+                      activeTab === "handwritten"
+                        ? "text-primary border-primary"
+                        : "text-muted-foreground border-transparent hover:text-foreground"
+                    )}
+                  >
+                    <FileEdit className="w-3.5 h-3.5" />
+                    손편지 <span className="ml-1">{handwrittenCount}</span>
+                  </button>
+                )}
               </div>
 
               {/* Mail List */}
@@ -265,6 +281,12 @@ export function MailContent({
                               >
                                 {mail.sender.name}
                               </span>
+                              {mail.isHandwritten && (
+                                <span className="inline-flex items-center gap-1 text-xs text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full font-medium">
+                                  <FileEdit className="w-3 h-3" />
+                                  손편지
+                                </span>
+                              )}
                               {!mail.isRead && (
                                 <span className="inline-flex items-center gap-1 text-xs text-primary bg-accent px-2 py-0.5 rounded-full font-medium">
                                   읽지않음

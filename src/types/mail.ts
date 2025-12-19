@@ -24,6 +24,8 @@ export interface Mail {
   folder: FolderType;
   originalFolder?: FolderType;
   status?: MailStatus;
+  isHandwritten?: boolean;
+  originalImage?: string;
 }
 
 export type MailStatus = "편지발송완료" | "접수완료" | "동봉시작" | "우체국 접수" | "우체국 발송완료";

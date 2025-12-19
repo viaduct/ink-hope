@@ -85,7 +85,25 @@ export const mockMails: Mail[] = [
     attachmentCount: 2,
     folder: "inbox",
   },
-  // 보낸편지함 (sent)
+  // 손편지 (handwritten)
+  {
+    id: "8",
+    sender: familyMembers[2],
+    subject: "손으로 쓴 편지",
+    preview: "사랑하는 가족에게, 오늘도 건강하게 지내고 있어요...",
+    content: `사랑하는 가족에게,
+
+오늘도 건강하게 지내고 있어요. 날씨가 많이 추워졌는데 감기 조심하세요.
+
+항상 보고싶고 사랑해요.
+
+2024년 12월`,
+    date: "어제",
+    isRead: false,
+    isNew: true,
+    folder: "inbox",
+    isHandwritten: true,
+  },
   {
     id: "4",
     sender: familyMembers[0],
