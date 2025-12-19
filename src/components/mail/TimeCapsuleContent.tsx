@@ -403,15 +403,10 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 >
                   <X className="w-4 h-4" />
                 </button>
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center">
-                    <img src={timeCapsuleGif} alt="" className="w-12 h-12 object-contain" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold">{selectedCapsule.title}</h2>
-                    <p className="text-purple-100 text-sm">To. {selectedCapsule.recipient}</p>
-                    <p className="text-purple-200 text-xs">{selectedCapsule.recipientFacility}</p>
-                  </div>
+                <div>
+                  <h2 className="text-xl font-bold">{selectedCapsule.title}</h2>
+                  <p className="text-purple-100 text-sm">To. {selectedCapsule.recipient}</p>
+                  <p className="text-purple-200 text-xs">{selectedCapsule.recipientFacility}</p>
                 </div>
                 <div className="flex items-center gap-4 mt-4">
                   <div className="bg-white/20 rounded-lg px-3 py-2">
