@@ -1,13 +1,12 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote } from "lucide-react";
+import { TreeDeciduous, ChevronRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import orangeSeed from "@/assets/emoticons/orange-seed-icon.png";
 import orangeSprout from "@/assets/emoticons/orange-sprout-icon.png";
 import orangeYoungTree from "@/assets/emoticons/orange-young-tree-icon.png";
 import orangeFullTree from "@/assets/emoticons/orange-full-tree-icon.png";
 import orangeRipe from "@/assets/emoticons/orange-ripe-icon.png";
-import orangeCharacter from "@/assets/emoticons/orange-character.gif";
 
 interface OrangeTreeContentProps {
   onClose: () => void;
@@ -22,50 +21,139 @@ const growthStages = [
   { id: 5, name: "오렌지나무", minLetters: 50, icon: orangeRipe },
 ];
 
-// 목업 데이터
-const mockData = {
-  totalLetters: 23,
-  sentLetters: 12,
-  receivedLetters: 11,
-  currentGrowthLevel: 3,
-  growthProgress: 53, // 현재 레벨에서의 진행률
-  prisonerInfo: {
-    name: "홍길동",
+// 수신자별 데이터
+const recipientsData = [
+  {
+    id: 1,
+    name: "이재원",
     facility: "서울구치소",
-    prisonerNumber: "2024-1234",
-    admissionDate: "2024-03-15",
-    expectedReleaseDate: "2025-06-15",
-    daysServed: 280,
-    daysRemaining: 178,
+    currentGrowthLevel: 4,
+    totalLetters: 32,
+    daysRemaining: 120,
+    expectedReleaseDate: "2025-04-19",
   },
-  fruits: [
-    { id: 1, type: "release", title: "출소 예정일", date: "2025-06-15", description: "D-178 남음", icon: "🏠" },
-    { id: 2, type: "birthday", title: "생일", date: "2025-03-20", description: "길동이의 생일", icon: "🎂" },
-    { id: 3, type: "anniversary", title: "결혼기념일", date: "2025-04-10", description: "10주년 결혼기념일", icon: "💍" },
-    { id: 4, type: "visit", title: "가족 면회", date: "2025-01-08", description: "어머니, 여동생 면회 예정", icon: "👨‍👩‍👧" },
-    { id: 5, type: "program", title: "교육 수료", date: "2025-03-01", description: "제빵 기능사 과정 수료 예정", icon: "🎓" },
-    { id: 6, type: "trial", title: "재판일", date: "2025-02-15", description: "항소심 재판", icon: "⚖️" },
-    { id: 7, type: "health", title: "건강검진", date: "2025-02-01", description: "정기 건강검진", icon: "🏥" },
-  ],
-  recentActivity: [
-    { id: 1, action: "편지 발송", target: "어머니에게", date: "2025-01-02", status: "전달완료" },
-    { id: 2, action: "편지 수신", target: "아버지로부터", date: "2024-12-28", status: "수신완료" },
-    { id: 3, action: "사진 동봉", target: "여동생에게", date: "2024-12-25", status: "전달완료" },
-    { id: 4, action: "영치금 입금", target: "어머니로부터", date: "2024-12-20", status: "입금확인" },
-  ],
-  supportStats: {
-    totalVisits: 15,
-    totalCalls: 8,
-    totalDeposits: 12,
-  }
-};
+  {
+    id: 2,
+    name: "서은우",
+    facility: "안양교도소",
+    currentGrowthLevel: 2,
+    totalLetters: 8,
+    daysRemaining: 450,
+    expectedReleaseDate: "2026-03-15",
+  },
+  {
+    id: 3,
+    name: "임성훈",
+    facility: "대전교도소",
+    currentGrowthLevel: 3,
+    totalLetters: 18,
+    daysRemaining: 280,
+    expectedReleaseDate: "2025-09-25",
+  },
+];
 
 export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
-  const currentStage = growthStages[mockData.currentGrowthLevel - 1];
-  const nextStage = growthStages[mockData.currentGrowthLevel];
+  const [selectedRecipient, setSelectedRecipient] = useState<typeof recipientsData[0] | null>(null);
+
+  if (selectedRecipient) {
+    const currentStage = growthStages[selectedRecipient.currentGrowthLevel - 1];
+    const nextStage = growthStages[selectedRecipient.currentGrowthLevel];
+    const progress = nextStage 
+      ? ((selectedRecipient.totalLetters - currentStage.minLetters) / (nextStage.minLetters - currentStage.minLetters)) * 100
+      : 100;
+
+    return (
+      <div className="flex-1 flex flex-col h-full overflow-hidden bg-gradient-to-br from-orange-50/50 to-amber-50/30">
+        <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={() => setSelectedRecipient(null)}>
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              돌아가기
+            </Button>
+          </div>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            편지함으로 돌아가기
+          </Button>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-2xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-3xl border border-border/60 shadow-lg p-8 text-center"
+            >
+              {/* 나무 이미지 */}
+              <motion.div 
+                className="relative inline-block mb-6"
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <div className="w-40 h-40 mx-auto bg-gradient-to-br from-orange-100 to-amber-100 rounded-full flex items-center justify-center">
+                  <img 
+                    src={currentStage.icon} 
+                    alt={currentStage.name}
+                    className="w-28 h-28 object-contain"
+                  />
+                </div>
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-sm font-bold px-4 py-1.5 rounded-full shadow-md">
+                  Lv.{selectedRecipient.currentGrowthLevel} {currentStage.name}
+                </div>
+              </motion.div>
+
+              {/* 수신자 정보 */}
+              <h2 className="text-2xl font-bold text-foreground mb-1">{selectedRecipient.name}</h2>
+              <p className="text-muted-foreground text-sm mb-6">{selectedRecipient.facility}</p>
+
+              {/* 통계 */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-orange-50 rounded-xl p-4">
+                  <p className="text-2xl font-bold text-primary">{selectedRecipient.totalLetters}</p>
+                  <p className="text-xs text-muted-foreground">주고받은 편지</p>
+                </div>
+                <div className="bg-green-50 rounded-xl p-4">
+                  <p className="text-2xl font-bold text-green-600">D-{selectedRecipient.daysRemaining}</p>
+                  <p className="text-xs text-muted-foreground">출소까지</p>
+                </div>
+                <div className="bg-blue-50 rounded-xl p-4">
+                  <p className="text-2xl font-bold text-blue-600">
+                    {nextStage ? nextStage.minLetters - selectedRecipient.totalLetters : 0}
+                  </p>
+                  <p className="text-xs text-muted-foreground">다음 단계까지</p>
+                </div>
+              </div>
+
+              {/* 성장 진행률 */}
+              <div className="bg-muted/30 rounded-xl p-4">
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">
+                    {nextStage ? `${nextStage.name}까지` : "최고 레벨 달성!"}
+                  </span>
+                  <span className="font-medium text-primary">{Math.round(progress)}%</span>
+                </div>
+                <div className="h-3 bg-muted rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-gradient-to-r from-primary to-amber-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                  />
+                </div>
+              </div>
+
+              {/* 감성 메시지 */}
+              <p className="text-muted-foreground text-sm mt-6">
+                떨어져 있어도, 마음은 자라고 있어요 💛
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-gradient-to-br from-orange-50/50 to-amber-50/30">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-gradient-to-b from-sky-100 via-sky-50 to-amber-100">
       {/* Header */}
       <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
         <div className="flex items-center gap-3">
@@ -77,346 +165,118 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
         </Button>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-5xl mx-auto space-y-6">
-          {/* 재소자 정보 & 출소 카운트다운 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-6 text-white shadow-lg"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                {/* 오렌지 캐릭터 프로필 이미지 */}
-                <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm p-1 flex items-center justify-center">
-                  <img 
-                    src={orangeCharacter} 
-                    alt="오렌지 캐릭터" 
-                    className="w-16 h-16 object-contain"
-                  />
-                </div>
-                <div>
-                  <p className="text-orange-100 text-sm mb-1">수신자 정보</p>
-                  <h2 className="text-2xl font-bold mb-1">{mockData.prisonerInfo.name}</h2>
-                  <p className="text-orange-100 text-sm">
-                    {mockData.prisonerInfo.facility} · {mockData.prisonerInfo.prisonerNumber}
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-4">
-                  <p className="text-orange-100 text-xs mb-1">출소까지</p>
-                  <p className="text-4xl font-bold">D-{mockData.prisonerInfo.daysRemaining}</p>
-                  <p className="text-orange-100 text-xs mt-1">{mockData.prisonerInfo.expectedReleaseDate}</p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-white/20">
-              <div className="flex gap-6 text-sm">
-                <div>
-                  <span className="text-orange-100">함께한 시간</span>
-                  <span className="font-semibold ml-2">{mockData.prisonerInfo.daysServed}일</span>
-                </div>
-                <div>
-                  <span className="text-orange-100">첫 만남</span>
-                  <span className="font-semibold ml-2">{mockData.prisonerInfo.admissionDate}</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+      <div className="flex-1 flex flex-col items-center justify-center p-6">
+        {/* 감성 메시지 */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-2xl font-bold text-foreground mb-2">마음을 심고, 함께 키워요</h2>
+          <p className="text-muted-foreground">편지를 주고받을수록 나무가 자라나요</p>
+        </motion.div>
 
-          {/* 나무 성장 현황 카드 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
-          >
-            <div className="p-6">
-              <div className="flex items-start gap-6">
-                {/* 나무 이미지 */}
-                <div className="relative">
-                  <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center">
-                    <motion.img 
-                      src={currentStage.icon} 
-                      alt={currentStage.name}
-                      className="w-24 h-24 object-contain"
-                      animate={{ scale: [1, 1.02, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-full">
-                    Lv.{mockData.currentGrowthLevel}
-                  </div>
-                </div>
-
-                {/* 성장 정보 */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h2 className="text-xl font-bold text-foreground">{currentStage.name}</h2>
-                    {nextStage && (
-                      <span className="text-sm text-muted-foreground">
-                        → {nextStage.name}까지 {nextStage.minLetters - mockData.totalLetters}통 남음
-                      </span>
-                    )}
-                  </div>
-                  
-                  <p className="text-sm text-muted-foreground mb-4">
-                    떨어져 있어도, 마음은 자라고 있어요 💛
-                  </p>
-
-                  {/* 진행률 바 */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">성장 진행률</span>
-                      <span className="font-medium text-primary">{mockData.growthProgress}%</span>
-                    </div>
-                    <Progress value={mockData.growthProgress} className="h-3" />
-                  </div>
-
-                  {/* 성장 단계 표시 */}
-                  <div className="flex items-center gap-1 mt-4">
-                    {growthStages.map((stage, index) => {
-                      const isCurrent = index === mockData.currentGrowthLevel - 1;
-                      const isPast = index < mockData.currentGrowthLevel - 1;
-                      
-                      return (
-                        <div key={stage.id} className="flex items-center">
-                          <div className="flex flex-col items-center">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                              isCurrent 
-                                ? "bg-primary ring-2 ring-primary ring-offset-2 scale-110" 
-                                : isPast 
-                                  ? "bg-primary/80" 
-                                  : "bg-muted"
-                            }`}>
-                              <img src={stage.icon} alt={stage.name} className="w-6 h-6 object-contain" />
-                            </div>
-                            <span className={`text-[10px] mt-1 ${
-                              isCurrent ? "font-bold text-primary" : "text-muted-foreground"
-                            }`}>
-                              {stage.name}
-                            </span>
-                          </div>
-                          {index < growthStages.length - 1 && (
-                            <div className={`w-4 h-0.5 mb-4 ${
-                              isPast ? "bg-primary" : "bg-muted"
-                            }`} />
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* 통계 카드 그리드 */}
-          <div className="grid grid-cols-3 gap-4">
-            {/* 잎사귀 - 편지 개수 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white rounded-2xl border border-border/60 shadow-sm p-5"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-                  <Leaf className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">잎사귀</p>
-                  <p className="text-xs text-muted-foreground">총 편지 개수</p>
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-foreground">{mockData.totalLetters}<span className="text-lg text-muted-foreground ml-1">통</span></p>
-              <div className="flex gap-4 mt-3 text-sm">
-                <span className="text-muted-foreground">보낸 편지 <span className="text-foreground font-medium">{mockData.sentLetters}</span></span>
-                <span className="text-muted-foreground">받은 편지 <span className="text-foreground font-medium">{mockData.receivedLetters}</span></span>
-              </div>
-            </motion.div>
-
-            {/* 열매 - 소중한 날들 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl border border-border/60 shadow-sm p-5"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                  <Apple className="w-5 h-5 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">열매</p>
-                  <p className="text-xs text-muted-foreground">소중한 날들</p>
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-foreground">{mockData.fruits.length}<span className="text-lg text-muted-foreground ml-1">개</span></p>
-              <Button variant="ghost" size="sm" className="mt-2 text-primary hover:text-primary/80 -ml-2">
-                <Plus className="w-4 h-4 mr-1" />
-                기념일 추가
-              </Button>
-            </motion.div>
-
-            {/* 성장 트렌드 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white rounded-2xl border border-border/60 shadow-sm p-5"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">성장 속도</p>
-                  <p className="text-xs text-muted-foreground">이번 달</p>
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-foreground">+5<span className="text-lg text-muted-foreground ml-1">통</span></p>
-              <p className="text-sm text-green-600 mt-2">▲ 지난달 대비 25% 증가</p>
-            </motion.div>
+        {/* 흙과 나무들 */}
+        <div className="relative w-full max-w-3xl">
+          {/* 흙 배경 */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-amber-800 via-amber-700 to-amber-600 rounded-t-[100%] shadow-inner" />
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-amber-900 to-amber-800 rounded-t-[100%]" />
+          
+          {/* 잔디 효과 */}
+          <div className="absolute bottom-20 left-0 right-0 flex justify-around px-20">
+            {[...Array(12)].map((_, i) => (
+              <div 
+                key={i} 
+                className="w-1 bg-green-500 rounded-full"
+                style={{ 
+                  height: `${8 + Math.random() * 12}px`,
+                  opacity: 0.4 + Math.random() * 0.3
+                }}
+              />
+            ))}
           </div>
 
-          {/* 열매 (타임라인 일정) 섹션 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
-          >
-            <div className="px-6 py-4 border-b border-border/40">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Apple className="w-5 h-5 text-orange-500" />
-                  <div>
-                    <h3 className="font-semibold text-foreground">소중한 날들</h3>
-                    <p className="text-xs text-muted-foreground">출소일, 생일, 기념일 등 잊지 말아야 할 특별한 날을 기록해요</p>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm">
-                  <Plus className="w-4 h-4 mr-1" />
-                  기념일 추가
-                </Button>
-              </div>
-            </div>
-            <div className="divide-y divide-border/40">
-              {mockData.fruits.map((fruit, index) => {
-                const getIconAndColor = () => {
-                  switch (fruit.type) {
-                    case "release": return { icon: <Home className="w-5 h-5 text-green-600" />, bg: "bg-green-100" };
-                    case "birthday": return { icon: <Calendar className="w-5 h-5 text-pink-600" />, bg: "bg-pink-100" };
-                    case "anniversary": return { icon: <Calendar className="w-5 h-5 text-red-600" />, bg: "bg-red-100" };
-                    case "visit": return { icon: <Users className="w-5 h-5 text-amber-600" />, bg: "bg-amber-100" };
-                    case "program": return { icon: <GraduationCap className="w-5 h-5 text-indigo-600" />, bg: "bg-indigo-100" };
-                    case "trial": return { icon: <Scale className="w-5 h-5 text-purple-600" />, bg: "bg-purple-100" };
-                    case "health": return { icon: <Calendar className="w-5 h-5 text-teal-600" />, bg: "bg-teal-100" };
-                    default: return { icon: <Calendar className="w-5 h-5 text-gray-600" />, bg: "bg-gray-100" };
-                  }
-                };
-                const { icon, bg } = getIconAndColor();
-                const getTypeLabel = () => {
-                  switch (fruit.type) {
-                    case "release": return "출소";
-                    case "birthday": return "생일";
-                    case "anniversary": return "기념일";
-                    case "visit": return "면회";
-                    case "program": return "교육";
-                    case "trial": return "재판";
-                    case "health": return "건강";
-                    default: return "마일스톤";
-                  }
-                };
-
-                return (
+          {/* 나무들 */}
+          <div className="relative flex justify-around items-end pb-28 pt-8">
+            {recipientsData.map((recipient, index) => {
+              const stage = growthStages[recipient.currentGrowthLevel - 1];
+              const sizes = ["w-20 h-20", "w-24 h-24", "w-28 h-28", "w-32 h-32", "w-36 h-36"];
+              const sizeClass = sizes[recipient.currentGrowthLevel - 1] || sizes[2];
+              
+              return (
+                <motion.div
+                  key={recipient.id}
+                  initial={{ opacity: 0, y: 50, scale: 0.5 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: index * 0.2, duration: 0.5, type: "spring" }}
+                  className="flex flex-col items-center cursor-pointer group"
+                  onClick={() => setSelectedRecipient(recipient)}
+                >
+                  {/* 나무 이미지 */}
                   <motion.div
-                    key={fruit.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                    className="p-4 hover:bg-muted/30 transition-colors cursor-pointer flex items-center gap-4"
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{ duration: 2 + index * 0.5, repeat: Infinity, ease: "easeInOut" }}
+                    className={`${sizeClass} flex items-center justify-center group-hover:scale-110 transition-transform`}
                   >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${bg}`}>
-                      {icon}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-foreground">{fruit.title}</p>
-                        {fruit.type === "release" && (
-                          <span className="bg-green-100 text-green-700 text-[10px] font-medium px-1.5 py-0.5 rounded">중요</span>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">{fruit.description}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-foreground">{fruit.date}</p>
-                      <p className="text-xs text-muted-foreground">{getTypeLabel()}</p>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    <img 
+                      src={stage.icon} 
+                      alt={stage.name}
+                      className="w-full h-full object-contain drop-shadow-lg"
+                    />
                   </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
 
-          {/* 가족 지원 현황 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-white rounded-2xl border border-border/60 shadow-sm p-5"
-          >
-            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5 text-primary" />
-              가족 지원 현황
-            </h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-blue-50 rounded-xl">
-                <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalVisits}</p>
-                <p className="text-xs text-muted-foreground">면회 횟수</p>
-              </div>
-              <div className="text-center p-4 bg-green-50 rounded-xl">
-                <Phone className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalCalls}</p>
-                <p className="text-xs text-muted-foreground">전화 통화</p>
-              </div>
-              <div className="text-center p-4 bg-amber-50 rounded-xl">
-                <Banknote className="w-6 h-6 text-amber-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalDeposits}</p>
-                <p className="text-xs text-muted-foreground">영치금 입금</p>
-              </div>
-            </div>
-          </motion.div>
+                  {/* 푯말 */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.2 + 0.5 }}
+                    className="relative mt-2"
+                  >
+                    {/* 푯말 기둥 */}
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full w-2 h-8 bg-amber-700 rounded-b" />
+                    
+                    {/* 푯말 판 */}
+                    <div className="relative bg-amber-100 border-2 border-amber-600 rounded-lg px-4 py-2 shadow-md group-hover:bg-amber-50 transition-colors">
+                      <div className="absolute -top-1 left-2 w-2 h-2 bg-amber-700 rounded-full" />
+                      <div className="absolute -top-1 right-2 w-2 h-2 bg-amber-700 rounded-full" />
+                      
+                      <p className="font-bold text-amber-900 text-center whitespace-nowrap">
+                        {recipient.name}
+                      </p>
+                      <p className="text-xs text-amber-700 text-center">
+                        Lv.{recipient.currentGrowthLevel} {stage.name}
+                      </p>
+                    </div>
+                  </motion.div>
 
-          {/* 최근 활동 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
-          >
-            <div className="px-6 py-4 border-b border-border/40">
-              <h3 className="font-semibold text-foreground">최근 활동</h3>
-            </div>
-            <div className="divide-y divide-border/40">
-              {mockData.recentActivity.map((activity) => (
-                <div key={activity.id} className="p-4 flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <div className="flex-1">
-                    <span className="text-sm text-foreground">{activity.action}</span>
-                    <span className="text-sm text-muted-foreground ml-1">{activity.target}</span>
-                  </div>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">{activity.status}</span>
-                  <span className="text-xs text-muted-foreground">{activity.date}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                  {/* 호버 시 상세 정보 */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileHover={{ opacity: 1, scale: 1 }}
+                    className="absolute -top-16 bg-white rounded-xl shadow-lg px-4 py-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                  >
+                    <p className="text-sm font-medium text-foreground">{recipient.facility}</p>
+                    <p className="text-xs text-muted-foreground">편지 {recipient.totalLetters}통 · D-{recipient.daysRemaining}</p>
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full">
+                      <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white" />
+                    </div>
+                  </motion.div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
+
+        {/* 안내 문구 */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-muted-foreground text-sm mt-8 flex items-center gap-1"
+        >
+          나무를 터치하면 상세 정보를 볼 수 있어요
+          <ChevronRight className="w-4 h-4" />
+        </motion.p>
       </div>
     </div>
   );
