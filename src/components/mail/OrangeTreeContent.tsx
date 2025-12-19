@@ -194,10 +194,10 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               <div className="relative">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
                   <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="14" r="7" className="stroke-orange-500" />
-                    <path d="M12 7V4" className="stroke-green-600" />
-                    <path d="M12 4C14 4 15 3 15 2" className="stroke-green-600" />
-                    <ellipse cx="14" cy="5" rx="2" ry="1.5" className="stroke-green-500 fill-green-100" />
+                    <circle cx="12" cy="14" r="8" className="stroke-orange-500" />
+                    <path d="M12 6V4" className="stroke-orange-500" />
+                    <path d="M12 6C8 6 6 4 7 2" className="stroke-orange-500" />
+                    <path d="M7 2Q4 3 5 6" className="stroke-orange-500" />
                   </svg>
                 </div>
                 <motion.div
