@@ -741,8 +741,8 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                         key={contributor.id}
                         className={`flex items-center justify-between p-3 rounded-xl border ${
                           contributor.contributed 
-                            ? "bg-white border-green-200" 
-                            : "bg-white border-gray-200"
+                            ? "bg-green-50 border-green-200" 
+                            : "bg-gray-50 border-gray-200"
                         }`}
                       >
                         <div className="flex items-center gap-3">
