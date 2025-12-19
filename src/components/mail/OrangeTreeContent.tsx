@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import orangeSeed from "@/assets/emoticons/orange-seed.png";
-import orangeSprout from "@/assets/emoticons/orange-sprout.png";
-import orangeYoungTree from "@/assets/emoticons/orange-young-tree.png";
-import orangeFullTree from "@/assets/emoticons/orange-full-tree.png";
-import orangeRipe from "@/assets/emoticons/orange-ripe.png";
+import orangeSeed from "@/assets/emoticons/orange-seed-new.png";
+import orangeSprout from "@/assets/emoticons/orange-sprout-new.png";
+import orangeYoungTree from "@/assets/emoticons/orange-young-tree-new.png";
+import orangeFullTree from "@/assets/emoticons/orange-full-tree-new.png";
+import orangeRipe from "@/assets/emoticons/orange-ripe-new.png";
 import orangeCharacter from "@/assets/emoticons/orange-character.gif";
 
 interface OrangeTreeContentProps {
