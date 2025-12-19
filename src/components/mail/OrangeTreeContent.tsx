@@ -271,12 +271,12 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 <p className="text-gray-500 text-sm mt-1">일 후면, 다시 만날 수 있습니다</p>
               </div>
               
-              <div className="flex gap-4 mt-4 text-sm">
-                <div>
+              <div className="flex gap-6 mt-4 text-sm">
+                <div className="flex-1">
                   <span className="text-muted-foreground">함께한 시간</span>
                   <span className="font-semibold text-foreground ml-2">{mockData.prisonerInfo.daysServed}일</span>
                 </div>
-                <div>
+                <div className="flex-1">
                   <span className="text-muted-foreground">첫 만남</span>
                   <span className="font-semibold text-foreground ml-2">{mockData.prisonerInfo.admissionDate}</span>
                 </div>
@@ -329,19 +329,15 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 </div>
               </div>
               
-              <div className="flex gap-4 mt-4 text-sm">
-                {nextStage && (
-                  <>
-                    <div>
-                      <span className="text-muted-foreground">다음 단계</span>
-                      <span className="font-semibold text-foreground ml-2">{nextStage.name}</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">남은 편지</span>
-                      <span className="font-semibold text-primary ml-2">{nextStage.minLetters - mockData.totalLetters}통</span>
-                    </div>
-                  </>
-                )}
+              <div className="flex gap-6 mt-4 text-sm">
+                <div className="flex-1">
+                  <span className="text-muted-foreground">다음 단계</span>
+                  <span className="font-semibold text-foreground ml-2">{nextStage?.name || "-"}</span>
+                </div>
+                <div className="flex-1">
+                  <span className="text-muted-foreground">남은 편지</span>
+                  <span className="font-semibold text-primary ml-2">{nextStage ? `${nextStage.minLetters - mockData.totalLetters}통` : "-"}</span>
+                </div>
               </div>
             </div>
           </motion.div>
