@@ -18,7 +18,7 @@ const growthStages = [
   { id: 1, name: "씨앗", minLetters: 0, icon: orangeSeed },
   { id: 2, name: "새싹", minLetters: 5, icon: orangeSprout },
   { id: 3, name: "어린나무", minLetters: 15, icon: orangeYoungTree },
-  { id: 4, name: "나무", minLetters: 30, icon: orangeFullTree },
+  { id: 4, name: "청년나무", minLetters: 30, icon: orangeFullTree },
   { id: 5, name: "열매나무", minLetters: 50, icon: orangeRipe },
 ];
 
@@ -40,15 +40,17 @@ const mockData = {
   },
   fruits: [
     { id: 1, type: "release", title: "출소 예정일", date: "2025-06-15", description: "D-178 남음", icon: "🏠" },
-    { id: 2, type: "parole", title: "가석방 심사", date: "2025-02-20", description: "1차 가석방 심사 예정", icon: "⚖️" },
-    { id: 3, type: "lawyer", title: "변호사 접견", date: "2025-01-15", description: "항소심 진행 상담", icon: "👨‍⚖️" },
+    { id: 2, type: "birthday", title: "생일", date: "2025-03-20", description: "길동이의 생일", icon: "🎂" },
+    { id: 3, type: "anniversary", title: "결혼기념일", date: "2025-04-10", description: "10주년 결혼기념일", icon: "💍" },
     { id: 4, type: "visit", title: "가족 면회", date: "2025-01-08", description: "어머니, 여동생 면회 예정", icon: "👨‍👩‍👧" },
-    { id: 5, type: "program", title: "직업훈련 수료", date: "2025-03-01", description: "제빵 기능사 과정 수료 예정", icon: "🎓" },
+    { id: 5, type: "program", title: "교육 수료", date: "2025-03-01", description: "제빵 기능사 과정 수료 예정", icon: "🎓" },
+    { id: 6, type: "trial", title: "재판일", date: "2025-02-15", description: "항소심 재판", icon: "⚖️" },
+    { id: 7, type: "health", title: "건강검진", date: "2025-02-01", description: "정기 건강검진", icon: "🏥" },
   ],
   recentActivity: [
-    { id: 1, action: "편지 발송", target: "어머니에게", date: "2025-01-02", status: "발송완료" },
+    { id: 1, action: "편지 발송", target: "어머니에게", date: "2025-01-02", status: "전달완료" },
     { id: 2, action: "편지 수신", target: "아버지로부터", date: "2024-12-28", status: "수신완료" },
-    { id: 3, action: "사진 동봉", target: "여동생에게", date: "2024-12-25", status: "검열완료" },
+    { id: 3, action: "사진 동봉", target: "여동생에게", date: "2024-12-25", status: "전달완료" },
     { id: 4, action: "영치금 입금", target: "어머니로부터", date: "2024-12-20", status: "입금확인" },
   ],
   supportStats: {
@@ -112,11 +114,11 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             <div className="mt-4 pt-4 border-t border-white/20">
               <div className="flex gap-6 text-sm">
                 <div>
-                  <span className="text-orange-100">복역 기간</span>
+                  <span className="text-orange-100">함께한 시간</span>
                   <span className="font-semibold ml-2">{mockData.prisonerInfo.daysServed}일</span>
                 </div>
                 <div>
-                  <span className="text-orange-100">입소일</span>
+                  <span className="text-orange-100">첫 만남</span>
                   <span className="font-semibold ml-2">{mockData.prisonerInfo.admissionDate}</span>
                 </div>
               </div>
@@ -160,7 +162,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                   </div>
                   
                   <p className="text-sm text-muted-foreground mb-4">
-                    편지를 주고받을수록 나무가 성장해요! 가족의 사랑으로 무럭무럭 자라나고 있어요.
+                    떨어져 있어도, 마음은 자라고 있어요 💛
                   </p>
 
                   {/* 진행률 바 */}
@@ -173,23 +175,37 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                   </div>
 
                   {/* 성장 단계 표시 */}
-                  <div className="flex items-center gap-2 mt-4">
-                    {growthStages.map((stage, index) => (
-                      <div key={stage.id} className="flex items-center">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          index < mockData.currentGrowthLevel 
-                            ? "bg-primary text-primary-foreground" 
-                            : "bg-muted text-muted-foreground"
-                        }`}>
-                          <img src={stage.icon} alt={stage.name} className="w-5 h-5 object-contain" />
+                  <div className="flex items-center gap-1 mt-4">
+                    {growthStages.map((stage, index) => {
+                      const isCurrent = index === mockData.currentGrowthLevel - 1;
+                      const isPast = index < mockData.currentGrowthLevel - 1;
+                      
+                      return (
+                        <div key={stage.id} className="flex items-center">
+                          <div className="flex flex-col items-center">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                              isCurrent 
+                                ? "bg-primary ring-2 ring-primary ring-offset-2 scale-110" 
+                                : isPast 
+                                  ? "bg-primary/80" 
+                                  : "bg-muted"
+                            }`}>
+                              <img src={stage.icon} alt={stage.name} className="w-6 h-6 object-contain" />
+                            </div>
+                            <span className={`text-[10px] mt-1 ${
+                              isCurrent ? "font-bold text-primary" : "text-muted-foreground"
+                            }`}>
+                              {stage.name}
+                            </span>
+                          </div>
+                          {index < growthStages.length - 1 && (
+                            <div className={`w-4 h-0.5 mb-4 ${
+                              isPast ? "bg-primary" : "bg-muted"
+                            }`} />
+                          )}
                         </div>
-                        {index < growthStages.length - 1 && (
-                          <div className={`w-6 h-0.5 ${
-                            index < mockData.currentGrowthLevel - 1 ? "bg-primary" : "bg-muted"
-                          }`} />
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -221,7 +237,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               </div>
             </motion.div>
 
-            {/* 열매 - 일정/이벤트 */}
+            {/* 열매 - 함께한 순간 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -234,13 +250,13 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">열매</p>
-                  <p className="text-xs text-muted-foreground">등록된 일정</p>
+                  <p className="text-xs text-muted-foreground">함께한 순간</p>
                 </div>
               </div>
               <p className="text-3xl font-bold text-foreground">{mockData.fruits.length}<span className="text-lg text-muted-foreground ml-1">개</span></p>
               <Button variant="ghost" size="sm" className="mt-2 text-primary hover:text-primary/80 -ml-2">
                 <Plus className="w-4 h-4 mr-1" />
-                일정 추가하기
+                마일스톤 추가
               </Button>
             </motion.div>
 
@@ -275,11 +291,11 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             <div className="px-6 py-4 border-b border-border/40 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Apple className="w-5 h-5 text-orange-500" />
-                <h3 className="font-semibold text-foreground">열매 (주요 일정)</h3>
+                <h3 className="font-semibold text-foreground">열매 (함께한 순간)</h3>
               </div>
               <Button variant="outline" size="sm">
                 <Plus className="w-4 h-4 mr-1" />
-                일정 추가
+                마일스톤 추가
               </Button>
             </div>
             <div className="divide-y divide-border/40">
@@ -287,10 +303,12 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 const getIconAndColor = () => {
                   switch (fruit.type) {
                     case "release": return { icon: <Home className="w-5 h-5 text-green-600" />, bg: "bg-green-100" };
-                    case "parole": return { icon: <Scale className="w-5 h-5 text-purple-600" />, bg: "bg-purple-100" };
-                    case "lawyer": return { icon: <MessageSquare className="w-5 h-5 text-blue-600" />, bg: "bg-blue-100" };
+                    case "birthday": return { icon: <Calendar className="w-5 h-5 text-pink-600" />, bg: "bg-pink-100" };
+                    case "anniversary": return { icon: <Calendar className="w-5 h-5 text-red-600" />, bg: "bg-red-100" };
                     case "visit": return { icon: <Users className="w-5 h-5 text-amber-600" />, bg: "bg-amber-100" };
                     case "program": return { icon: <GraduationCap className="w-5 h-5 text-indigo-600" />, bg: "bg-indigo-100" };
+                    case "trial": return { icon: <Scale className="w-5 h-5 text-purple-600" />, bg: "bg-purple-100" };
+                    case "health": return { icon: <Calendar className="w-5 h-5 text-teal-600" />, bg: "bg-teal-100" };
                     default: return { icon: <Calendar className="w-5 h-5 text-gray-600" />, bg: "bg-gray-100" };
                   }
                 };
@@ -298,11 +316,13 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 const getTypeLabel = () => {
                   switch (fruit.type) {
                     case "release": return "출소";
-                    case "parole": return "가석방";
-                    case "lawyer": return "법률상담";
+                    case "birthday": return "생일";
+                    case "anniversary": return "기념일";
                     case "visit": return "면회";
-                    case "program": return "교정프로그램";
-                    default: return "일정";
+                    case "program": return "교육";
+                    case "trial": return "재판";
+                    case "health": return "건강";
+                    default: return "마일스톤";
                   }
                 };
 
@@ -357,7 +377,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               <div className="text-center p-4 bg-green-50 rounded-xl">
                 <Phone className="w-6 h-6 text-green-600 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalCalls}</p>
-                <p className="text-xs text-muted-foreground">화상접견</p>
+                <p className="text-xs text-muted-foreground">전화 통화</p>
               </div>
               <div className="text-center p-4 bg-amber-50 rounded-xl">
                 <Banknote className="w-6 h-6 text-amber-600 mx-auto mb-2" />
