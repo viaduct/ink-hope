@@ -263,12 +263,12 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 {mockData.prisonerInfo.facility} · {mockData.prisonerInfo.prisonerNumber}
               </p>
               
-              <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl p-4 text-white">
+              <div className="bg-gray-100 rounded-xl p-4">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-orange-200" />
-                  <p className="text-4xl font-bold">{mockData.prisonerInfo.daysRemaining}</p>
+                  <Calendar className="w-5 h-5 text-gray-400" />
+                  <p className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">{mockData.prisonerInfo.daysRemaining}</p>
                 </div>
-                <p className="text-orange-100 text-sm mt-1">일 후면, 다시 만날 수 있습니다</p>
+                <p className="text-gray-500 text-sm mt-1">일 후면, 다시 만날 수 있습니다</p>
               </div>
               
               <div className="flex gap-4 mt-4 text-sm">
