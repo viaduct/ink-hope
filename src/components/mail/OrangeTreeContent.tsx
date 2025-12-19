@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote, HelpCircle } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TreeDeciduous, Leaf, Apple, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Phone, Banknote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import orangeSeed from "@/assets/emoticons/orange-seed-icon.png";
@@ -141,45 +140,6 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                         />
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 mt-3">
-                    <span className="font-bold text-foreground">{currentStage.name}</span>
-                    <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
-                      Lv.{mockData.currentGrowthLevel}
-                    </span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="text-muted-foreground hover:text-primary transition-colors">
-                            <HelpCircle className="w-4 h-4" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="max-w-xs p-4 bg-white border border-border shadow-lg z-50">
-                          <div className="space-y-3">
-                            <p className="font-semibold text-foreground text-sm">🌳 성장 단계 안내</p>
-                            <div className="space-y-2 text-xs">
-                              {growthStages.map((stage, idx) => (
-                                <div 
-                                  key={stage.id} 
-                                  className={`flex items-center gap-2 p-1.5 rounded ${
-                                    idx === mockData.currentGrowthLevel - 1 
-                                      ? "bg-primary/10 font-medium" 
-                                      : ""
-                                  }`}
-                                >
-                                  <img src={stage.icon} alt={stage.name} className="w-5 h-5 object-contain" />
-                                  <span className="flex-1">{stage.name}</span>
-                                  <span className="text-muted-foreground">{stage.minLetters}통 이상</span>
-                                </div>
-                              ))}
-                            </div>
-                            <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-                              편지를 주고받을수록 나무가 성장해요! 🧡
-                            </p>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
                   </div>
                 </div>
 
