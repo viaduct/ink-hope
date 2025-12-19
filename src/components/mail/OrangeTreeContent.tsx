@@ -331,7 +331,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             <div className="px-6 py-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Apple className="w-5 h-5 text-orange-500" />
+                  <Calendar className="w-5 h-5 text-orange-500" />
                   <div>
                     <h3 className="font-semibold text-foreground">소중한 날들</h3>
                     <p className="text-xs text-muted-foreground">출소일, 생일, 기념일 등 잊지 말아야 할 특별한 날을 기록해요</p>
