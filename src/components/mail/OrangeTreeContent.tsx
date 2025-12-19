@@ -394,7 +394,11 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                  <img src={orangeRipe} alt="열매" className="w-6 h-6 object-contain" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 text-orange-500">
+                    <circle cx="12" cy="13" r="8" />
+                    <path d="M12 5V3" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M10 5c-1.5 0-3-1-3.5-2.5" strokeLinecap="round" />
+                  </svg>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">열매</p>
