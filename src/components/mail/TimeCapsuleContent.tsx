@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Users, Mail, Plus, ChevronRight, Heart, Calendar, Share2, Lock, Unlock, Gift, Sparkles } from "lucide-react";
+import { Clock, Users, Mail, Plus, ChevronRight, Heart, Calendar, Share2, Lock, Unlock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import orangeRipe from "@/assets/emoticons/orange-ripe.png";
+import timeCapsuleGif from "@/assets/emoticons/time-capsule.gif";
 
 interface TimeCapsuleContentProps {
   onClose: () => void;
@@ -109,9 +110,9 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
             animate={{ opacity: 1, y: 0 }}
             className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-6 border border-purple-200/50"
           >
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-white/80 flex items-center justify-center">
-                <Gift className="w-8 h-8 text-purple-600" />
+            <div className="flex items-start gap-6">
+              <div className="w-24 h-24 rounded-2xl bg-white/80 flex items-center justify-center p-2 shrink-0">
+                <img src={timeCapsuleGif} alt="타임캡슐" className="w-20 h-20 object-contain" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-foreground mb-1">타임캡슐이란?</h2>
