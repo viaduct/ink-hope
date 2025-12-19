@@ -292,12 +292,12 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               </p>
               
               {/* Lv 1-5 그라데이션 막대 그래프 */}
-              <div className="bg-gray-100 rounded-xl p-4 mb-4">
+              <div className="bg-gray-100 rounded-xl p-4 pb-6">
                 <div className="flex justify-between text-xs text-muted-foreground mb-3">
                   <span>성장 레벨</span>
                   <span className="font-medium text-primary">{currentStage.level}</span>
                 </div>
-                <div className="flex gap-1.5">
+                <div className="flex gap-1.5 mt-4">
                   {growthStages.map((stage, idx) => {
                     const isActive = idx < mockData.currentGrowthLevel;
                     const isCurrent = idx === mockData.currentGrowthLevel - 1;
@@ -329,7 +329,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 </div>
               </div>
               
-              <div className="flex gap-4 text-sm">
+              <div className="flex gap-4 mt-4 text-sm">
                 {nextStage && (
                   <>
                     <div>
