@@ -409,14 +409,17 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             <div className="px-6 py-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                    <img src={orangeRipe} alt="열매" className="w-6 h-6 object-contain" />
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 text-orange-500">
+                      <circle cx="12" cy="12" r="8" />
+                      <path d="M12 4c0-1.5 1-2.5 2-3" strokeLinecap="round" />
+                      <path d="M10 5.5c-1 0-2-.5-2.5-1.5" strokeLinecap="round" />
+                    </svg>
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">소중한 날들</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      출소일, 생일, 기념일 등 중요한 날짜를 등록하면<br />
-                      <strong className="text-orange-600">편지 보낼 날짜에 미리 알림</strong>을 받을 수 있어요!
+                      출소일, 생일, 기념일 등 중요한 날짜를 등록하면 <strong className="text-orange-600">편지 보낼 날짜에 미리 알림</strong>을 받을 수 있어요!
                     </p>
                   </div>
                 </div>
