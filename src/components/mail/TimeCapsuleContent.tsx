@@ -111,7 +111,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
             className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-6 border border-purple-200/50"
           >
             <div className="flex items-start gap-6">
-              <div className="w-24 h-24 rounded-2xl bg-white/80 flex items-center justify-center p-2 shrink-0">
+              <div className="w-24 h-24 rounded-2xl bg-white flex items-center justify-center p-2 shrink-0">
                 <img src={timeCapsuleGif} alt="타임캡슐" className="w-20 h-20 object-contain" />
               </div>
               <div>
