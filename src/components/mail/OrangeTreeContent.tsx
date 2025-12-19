@@ -183,14 +183,14 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                       return (
                         <div key={stage.id} className="flex items-center">
                           <div className="flex flex-col items-center">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all overflow-hidden ${
                               isCurrent 
-                                ? "bg-primary ring-2 ring-primary ring-offset-2 scale-110" 
+                                ? "bg-white ring-2 ring-primary ring-offset-2 scale-110" 
                                 : isPast 
-                                  ? "bg-primary/80" 
-                                  : "bg-muted"
+                                  ? "bg-white ring-2 ring-primary/60" 
+                                  : "bg-white ring-2 ring-muted"
                             }`}>
-                              <img src={stage.icon} alt={stage.name} className="w-6 h-6 object-contain" />
+                              <img src={stage.icon} alt={stage.name} className="w-8 h-8 object-contain" />
                             </div>
                             <span className={`text-[10px] mt-1 ${
                               isCurrent ? "font-bold text-primary" : "text-muted-foreground"
