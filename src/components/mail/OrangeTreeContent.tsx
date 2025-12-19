@@ -120,7 +120,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
             
             <div className="relative flex items-center gap-8">
-              <div className="shrink-0">
+              <div className="shrink-0 flex flex-col items-center">
                 <motion.div 
                   className="w-32 h-32 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center p-3 ring-4 ring-white/30"
                   animate={{ scale: [1, 1.05, 1] }}
@@ -128,6 +128,15 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 >
                   <img src={orangeCharacter} alt="오렌지 캐릭터" className="w-24 h-24 object-contain" />
                 </motion.div>
+                {/* 레벨 배지 */}
+                <div className="mt-3 flex items-center gap-1.5">
+                  <span className="bg-white text-primary font-bold text-sm px-3 py-1 rounded-full shadow-md">
+                    {currentStage.name}
+                  </span>
+                  <span className="bg-white/90 text-orange-600 text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                    Lv.{mockData.currentGrowthLevel}
+                  </span>
+                </div>
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
@@ -147,77 +156,81 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             </div>
           </motion.div>
 
-          {/* 재소자 정보 & 출소 카운트다운 */}
+          {/* 수신자 탭 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-6 text-white shadow-lg"
+            transition={{ delay: 0.05 }}
+            className="flex gap-2"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <div>
-                  <p className="text-orange-100 text-sm mb-1">수신자 정보</p>
-                  <h2 className="text-2xl font-bold mb-1">{mockData.prisonerInfo.name}</h2>
-                  <p className="text-orange-100 text-sm">
-                    {mockData.prisonerInfo.facility} · {mockData.prisonerInfo.prisonerNumber}
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-4">
-                  <p className="text-4xl font-bold">{mockData.prisonerInfo.daysRemaining}</p>
-                  <p className="text-orange-100 text-sm mt-1">일 후면, 다시 만날 수 있습니다</p>
-                  <p className="text-orange-100/80 text-xs mt-2">끝이 있다는 것, 그것이 희망입니다</p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-white/20">
-              <div className="flex gap-6 text-sm">
-                <div>
-                  <span className="text-orange-100">함께한 시간</span>
-                  <span className="font-semibold ml-2">{mockData.prisonerInfo.daysServed}일</span>
-                </div>
-                <div>
-                  <span className="text-orange-100">첫 만남</span>
-                  <span className="font-semibold ml-2">{mockData.prisonerInfo.admissionDate}</span>
-                </div>
-              </div>
-            </div>
+            {["이재원", "서은우", "임성훈"].map((name, idx) => (
+              <button
+                key={name}
+                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all ${
+                  idx === 0 
+                    ? "bg-primary text-primary-foreground shadow-md" 
+                    : "bg-white text-muted-foreground border border-border/60 hover:border-primary/40 hover:bg-orange-50"
+                }`}
+              >
+                {name}
+              </button>
+            ))}
           </motion.div>
 
-          {/* 나무 성장 현황 카드 */}
+          {/* 수신자 정보 + 성장 진행률 좌우 배치 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
+            className="grid grid-cols-2 gap-4"
           >
-            <div className="p-6">
-              <div className="flex items-start gap-6">
+            {/* 수신자 정보 카드 (좌) */}
+            <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+              <p className="text-xs text-muted-foreground mb-1">수신자 정보</p>
+              <h2 className="text-xl font-bold text-foreground mb-1">{mockData.prisonerInfo.name}</h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                {mockData.prisonerInfo.facility} · {mockData.prisonerInfo.prisonerNumber}
+              </p>
+              
+              <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl p-4 text-white">
+                <p className="text-3xl font-bold">{mockData.prisonerInfo.daysRemaining}</p>
+                <p className="text-orange-100 text-sm mt-1">일 후면, 다시 만날 수 있습니다</p>
+              </div>
+              
+              <div className="flex gap-4 mt-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">함께한 시간</span>
+                  <span className="font-semibold text-foreground ml-2">{mockData.prisonerInfo.daysServed}일</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">첫 만남</span>
+                  <span className="font-semibold text-foreground ml-2">{mockData.prisonerInfo.admissionDate}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 성장 진행률 카드 (우) */}
+            <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+              <div className="flex items-start gap-4">
                 {/* 나무 이미지 */}
-                <div className="flex flex-col items-center">
-                  <div className="relative">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center p-2 ring-4 ring-primary/60">
-                      <div className="w-full h-full rounded-full bg-white/80 flex items-center justify-center overflow-hidden">
-                        <motion.img 
-                          src={currentStage.icon} 
-                          alt={currentStage.name}
-                          className="w-14 h-14 object-contain"
-                          animate={{ scale: [1, 1.02, 1] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        />
-                      </div>
-                    </div>
+                <div className="shrink-0">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center p-2 ring-4 ring-primary/40">
+                    <motion.img 
+                      src={currentStage.icon} 
+                      alt={currentStage.name}
+                      className="w-12 h-12 object-contain"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
                   </div>
                 </div>
-
+                
                 {/* 성장 정보 */}
                 <div className="flex-1">
                   {nextStage && (
                     <div className="mb-2">
                       <span className="text-sm text-muted-foreground">
-                        다음 단계 <span className="font-medium text-foreground">{nextStage.name}</span>까지 
+                        다음 단계 <span className="font-semibold text-foreground">{nextStage.name}</span>까지 
                         <span className="text-primary font-bold ml-1">{nextStage.minLetters - mockData.totalLetters}통</span> 남음
                       </span>
                     </div>
@@ -234,40 +247,6 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                       <span className="font-medium text-primary">{mockData.growthProgress}%</span>
                     </div>
                     <Progress value={mockData.growthProgress} className="h-3" />
-                  </div>
-
-                  {/* 성장 단계 표시 */}
-                  <div className="flex items-center gap-1 mt-4">
-                    {growthStages.map((stage, index) => {
-                      const isCurrent = index === mockData.currentGrowthLevel - 1;
-                      const isPast = index < mockData.currentGrowthLevel - 1;
-                      
-                      return (
-                        <div key={stage.id} className="flex items-center">
-                          <div className="flex flex-col items-center">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all overflow-hidden ${
-                              isCurrent 
-                                ? "bg-white ring-2 ring-primary ring-offset-2 scale-110" 
-                                : isPast 
-                                  ? "bg-white ring-2 ring-primary/60" 
-                                  : "bg-white ring-2 ring-muted"
-                            }`}>
-                              <img src={stage.icon} alt={stage.name} className="w-8 h-8 object-contain" />
-                            </div>
-                            <span className={`text-[10px] mt-1 ${
-                              isCurrent ? "font-bold text-primary" : "text-muted-foreground"
-                            }`}>
-                              {stage.name}
-                            </span>
-                          </div>
-                          {index < growthStages.length - 1 && (
-                            <div className={`w-4 h-0.5 mb-4 ${
-                              isPast ? "bg-primary" : "bg-muted"
-                            }`} />
-                          )}
-                        </div>
-                      );
-                    })}
                   </div>
                 </div>
               </div>
