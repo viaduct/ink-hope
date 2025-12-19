@@ -271,7 +271,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 <p className="text-gray-500 text-sm mt-1">일 후면, 다시 만날 수 있습니다</p>
               </div>
               
-              <div className="flex gap-6 mt-auto pt-4 text-sm">
+              <div className="flex gap-[30px] mt-auto pt-4 text-sm">
                 <div className="flex-1">
                   <span className="text-muted-foreground">함께한 시간</span>
                   <span className="font-semibold text-foreground ml-2">{mockData.prisonerInfo.daysServed}일</span>
@@ -329,7 +329,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 </div>
               </div>
               
-              <div className="flex gap-6 mt-auto pt-4 text-sm">
+              <div className="flex gap-[30px] mt-auto pt-4 text-sm">
                 <div className="flex-1">
                   <span className="text-muted-foreground">다음 단계</span>
                   <span className="font-semibold text-foreground ml-2">{nextStage?.name || "-"}</span>
