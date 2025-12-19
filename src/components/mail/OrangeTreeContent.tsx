@@ -256,7 +256,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             className="grid grid-cols-2 gap-4"
           >
             {/* 수신자 정보 카드 (좌) */}
-            <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+            <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5 flex flex-col">
               <p className="text-xs text-muted-foreground mb-1">수신자 정보</p>
               <h2 className="text-xl font-bold text-foreground mb-1">{mockData.prisonerInfo.name}</h2>
               <p className="text-sm text-muted-foreground mb-4">
@@ -271,7 +271,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 <p className="text-gray-500 text-sm mt-1">일 후면, 다시 만날 수 있습니다</p>
               </div>
               
-              <div className="flex gap-6 mt-4 text-sm">
+              <div className="flex gap-6 mt-auto pt-4 text-sm">
                 <div className="flex-1">
                   <span className="text-muted-foreground">함께한 시간</span>
                   <span className="font-semibold text-foreground ml-2">{mockData.prisonerInfo.daysServed}일</span>
@@ -284,7 +284,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             </div>
 
             {/* 성장 진행률 카드 (우) */}
-            <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+            <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5 flex flex-col">
               <p className="text-xs text-muted-foreground mb-1">성장 정보</p>
               <h2 className="text-xl font-bold text-foreground mb-1">{currentStage.name}</h2>
               <p className="text-sm text-muted-foreground mb-4">
@@ -329,7 +329,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                 </div>
               </div>
               
-              <div className="flex gap-6 mt-4 text-sm">
+              <div className="flex gap-6 mt-auto pt-4 text-sm">
                 <div className="flex-1">
                   <span className="text-muted-foreground">다음 단계</span>
                   <span className="font-semibold text-foreground ml-2">{nextStage?.name || "-"}</span>
