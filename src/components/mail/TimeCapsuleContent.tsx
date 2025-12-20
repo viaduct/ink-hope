@@ -707,8 +707,8 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 {/* 참여자 목록 */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-foreground flex items-center gap-2">
-                      <Users className="w-4 h-4 text-purple-600" />
+                  <h3 className="font-semibold text-foreground flex items-center gap-2">
+                      <Users className="w-4 h-4 text-orange-500" />
                       참여자 현황
                     </h3>
                     <div className="flex gap-2">
@@ -767,7 +767,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 {/* 내 편지 작성 영역 */}
                 <div className="border-t border-border pt-6">
                   <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                    <PenLine className="w-4 h-4 text-purple-600" />
+                    <PenLine className="w-4 h-4 text-orange-500" />
                     내 편지 작성하기
                   </h3>
                   <Textarea 
@@ -778,7 +778,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                     <Button variant="outline" className="flex-1">
                       임시저장
                     </Button>
-                    <Button className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500">
+                    <Button className="flex-1 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600">
                       <Send className="w-4 h-4 mr-1" />
                       편지 제출하기
                     </Button>
@@ -822,7 +822,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <UserPlus className="w-5 h-5 text-purple-600" />
+                  <UserPlus className="w-5 h-5 text-orange-500" />
                   가족/지인에게 참여 요청
                 </h3>
                 <button onClick={() => setShowInviteModal(false)}>
@@ -830,8 +830,8 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 </button>
               </div>
               
-              <div className="bg-purple-50 rounded-xl p-4 mb-4">
-                <p className="text-sm text-purple-800 font-medium mb-2">💌 참여 요청 메시지</p>
+              <div className="bg-orange-50 rounded-xl p-4 mb-4">
+                <p className="text-sm text-orange-700 font-medium mb-2">💌 참여 요청 메시지</p>
                 <Textarea
                   value={inviteMessage}
                   onChange={(e) => setInviteMessage(e.target.value)}
