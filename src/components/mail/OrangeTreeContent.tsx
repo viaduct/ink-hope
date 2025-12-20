@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TreeDeciduous, Leaf, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Gift, Check, Mail, Send, Image, FileText, Settings, ExternalLink, Heart, ChevronDown, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { TreeDeciduous, Leaf, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Gift, Check, Mail, Send, Image, FileText, Settings, ExternalLink, Heart, ChevronDown, MailPlus, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -33,9 +33,9 @@ const growthStages = [
 // 활동 타입별 아이콘 (발송/수신 구분)
 const getActivityIcon = (action: string) => {
   if (action.includes("발송")) {
-    return { icon: <ArrowUpRight className="w-4 h-4 text-orange-500" />, bg: "bg-gray-100" };
+    return { icon: <Send className="w-4 h-4 text-orange-500" />, bg: "bg-gray-100" };
   } else if (action.includes("수신")) {
-    return { icon: <ArrowDownLeft className="w-4 h-4 text-orange-500" />, bg: "bg-gray-100" };
+    return { icon: <MailOpen className="w-4 h-4 text-orange-500" />, bg: "bg-gray-100" };
   }
   return { icon: <Mail className="w-4 h-4 text-orange-500" />, bg: "bg-gray-100" };
 };
