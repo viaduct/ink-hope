@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TreeDeciduous, Leaf, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Gift, Check, Mail, Send, Image, FileText, Settings, ExternalLink, Heart, ChevronDown } from "lucide-react";
+import { TreeDeciduous, Leaf, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Gift, Check, Mail, Send, Image, FileText, Settings, ExternalLink, Heart, ChevronDown, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -30,16 +30,14 @@ const growthStages = [
   { id: 5, name: "오렌지나무", level: "Lv.5", minLetters: 50, icon: orangeRipe, color: "from-orange-400 to-orange-500" },
 ];
 
-// 관계 아이콘 정의
-const relationIcons: Record<string, { emoji: string; color: string }> = {
-  "어머니": { emoji: "👩", color: "bg-pink-100 text-pink-600" },
-  "아버지": { emoji: "👨", color: "bg-blue-100 text-blue-600" },
-  "여동생": { emoji: "👧", color: "bg-purple-100 text-purple-600" },
-  "남동생": { emoji: "👦", color: "bg-cyan-100 text-cyan-600" },
-  "아내": { emoji: "👰", color: "bg-rose-100 text-rose-600" },
-  "남편": { emoji: "🤵", color: "bg-indigo-100 text-indigo-600" },
-  "아들": { emoji: "👦", color: "bg-sky-100 text-sky-600" },
-  "딸": { emoji: "👧", color: "bg-fuchsia-100 text-fuchsia-600" },
+// 활동 타입별 아이콘 (발송/수신 구분)
+const getActivityIcon = (action: string) => {
+  if (action.includes("발송")) {
+    return { icon: <ArrowUpRight className="w-4 h-4 text-orange-500" />, bg: "bg-gray-100" };
+  } else if (action.includes("수신")) {
+    return { icon: <ArrowDownLeft className="w-4 h-4 text-orange-500" />, bg: "bg-gray-100" };
+  }
+  return { icon: <Mail className="w-4 h-4 text-orange-500" />, bg: "bg-gray-100" };
 };
 
 // 우편 종류 아이콘
@@ -676,13 +674,13 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             </div>
             <div className="divide-y divide-border/40">
               {mockData.recentActivity.map((activity) => {
-                const relationInfo = relationIcons[activity.relation] || { emoji: "👤", color: "bg-gray-100 text-gray-600" };
+                const activityIcon = getActivityIcon(activity.action);
                 
                 return (
                   <div key={activity.id} className="p-4 flex items-center gap-3">
-                    {/* 관계 아이콘 */}
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg ${relationInfo.color}`}>
-                      {relationInfo.emoji}
+                    {/* 발송/수신 아이콘 */}
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center ${activityIcon.bg}`}>
+                      {activityIcon.icon}
                     </div>
                     
                     <div className="flex-1">
