@@ -165,15 +165,15 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
   const completedCapsules = mockCapsules.filter(c => c.status === "sealed" || c.status === "opened");
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-gradient-to-br from-purple-50/50 to-pink-50/30">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-gradient-to-br from-orange-50/50 to-amber-50/30">
       {/* Header */}
       <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
         <div className="flex items-center gap-3">
-          <Clock className="w-5 h-5 text-purple-600" />
+          <Clock className="w-5 h-5 text-orange-500" />
           <h1 className="text-lg font-semibold text-foreground">타임캡슐</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={() => setShowCreateModal(true)} className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+          <Button onClick={() => setShowCreateModal(true)} className="bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600">
             <Plus className="w-4 h-4 mr-1" />
             새 타임캡슐 만들기
           </Button>
@@ -189,7 +189,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 rounded-3xl p-8 text-white shadow-xl"
+            className="relative overflow-hidden bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500 rounded-3xl p-8 text-white shadow-xl"
           >
             {/* 배경 장식 */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -232,13 +232,13 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   onClick={() => navigate(`/time-capsule/${capsule.id}`)}
-                  className="bg-white rounded-2xl border border-border/60 shadow-sm p-5 cursor-pointer hover:shadow-md transition-all hover:border-purple-200"
+                  className="bg-white rounded-2xl border border-border/60 shadow-sm p-5 cursor-pointer hover:shadow-md transition-all hover:border-orange-200"
                 >
                   {/* 헤더 */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
-                        <Clock className="w-6 h-6 text-purple-600" />
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center">
+                        <Clock className="w-6 h-6 text-orange-500" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-foreground">{capsule.title}</h3>
@@ -246,7 +246,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                         <p className="text-[10px] text-muted-foreground">{capsule.recipientFacility}</p>
                       </div>
                     </div>
-                    <div className="bg-purple-100 text-purple-700 text-xs font-medium px-2.5 py-1 rounded-full">
+                    <div className="bg-orange-100 text-orange-600 text-xs font-medium px-2.5 py-1 rounded-full">
                       D-{capsule.daysLeft}
                     </div>
                   </div>
@@ -286,7 +286,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                         )}
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="text-purple-600 hover:text-purple-700">
+                    <Button variant="ghost" size="sm" className="text-orange-500 hover:text-orange-600">
                       참여하기
                       <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
@@ -300,10 +300,10 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: collectingCapsules.length * 0.1 }}
                 onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-dashed border-purple-200 p-5 cursor-pointer hover:border-purple-300 transition-all flex flex-col items-center justify-center min-h-[240px]"
+                className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl border-2 border-dashed border-orange-200 p-5 cursor-pointer hover:border-orange-300 transition-all flex flex-col items-center justify-center min-h-[240px]"
               >
-                <div className="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center mb-3">
-                  <Plus className="w-6 h-6 text-purple-600" />
+                <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center mb-3">
+                  <Plus className="w-6 h-6 text-orange-500" />
                 </div>
                 <p className="font-medium text-foreground mb-1">새 타임캡슐 만들기</p>
                 <p className="text-sm text-muted-foreground text-center">
@@ -333,9 +333,9 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                     transition={{ delay: index * 0.1 }}
                     className="bg-white rounded-xl border border-border/60 p-4 flex items-center gap-4 hover:shadow-sm transition-all cursor-pointer"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
                       {capsule.status === "opened" ? (
-                        <Unlock className="w-5 h-5 text-pink-600" />
+                        <Unlock className="w-5 h-5 text-green-600" />
                       ) : (
                         <Lock className="w-5 h-5 text-gray-400" />
                       )}
@@ -365,7 +365,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <SendHorizontal className="w-5 h-5 text-blue-500" />
+                  <SendHorizontal className="w-5 h-5 text-orange-500" />
                   보낸 타임캡슐
                 </h2>
                 <span className="text-sm text-muted-foreground">{sentCapsules.length}개</span>
@@ -380,8 +380,8 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                     transition={{ delay: index * 0.1 }}
                     className="bg-white rounded-xl border border-border/60 p-4 flex items-center gap-4 hover:shadow-sm transition-all cursor-pointer"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                      <Send className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                      <Send className="w-5 h-5 text-orange-500" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-foreground">{capsule.title}</h3>
@@ -397,7 +397,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                         )}
                       </p>
                     </div>
-                    <div className="bg-blue-100 text-blue-700 text-xs font-medium px-2.5 py-1 rounded-full">
+                    <div className="bg-orange-100 text-orange-600 text-xs font-medium px-2.5 py-1 rounded-full">
                       발송완료
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground" />
@@ -411,7 +411,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Share2 className="w-5 h-5 text-blue-500" />
+                <Share2 className="w-5 h-5 text-orange-500" />
                 초대받은 타임캡슐
               </h2>
             </div>
@@ -448,65 +448,64 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto"
             >
-              <h3 className="text-lg font-semibold mb-4">새 타임캡슐 만들기</h3>
-              <div className="space-y-4">
+              <h3 className="text-xl font-semibold mb-6">새 타임캡슐 만들기</h3>
+              <div className="space-y-5">
                 <div>
-                  <label className="text-sm font-medium text-foreground block mb-1.5">타임캡슐 종류</label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <label className="text-sm font-medium text-foreground block mb-2">타임캡슐 종류</label>
+                  <div className="grid grid-cols-3 gap-3">
                     {capsuleTypes.map((type) => (
                       <button
                         key={type.id}
-                        className="p-3 border border-border rounded-xl text-left hover:border-purple-300 hover:bg-purple-50 transition-all"
+                        className="p-4 border border-border rounded-xl text-left hover:border-orange-300 hover:bg-orange-50 transition-all"
                       >
-                        <span className="text-xl mr-2">{type.icon}</span>
+                        <span className="text-2xl mr-2">{type.icon}</span>
                         <span className="text-sm font-medium">{type.label}</span>
                       </button>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground block mb-1.5">타임캡슐 이름</label>
-                  <Input placeholder="예: 아버지 출소 축하 편지 모음" />
+                  <label className="text-sm font-medium text-foreground block mb-2">타임캡슐 이름</label>
+                  <Input placeholder="예: 아버지 출소 축하 편지 모음" className="h-12" />
                 </div>
 
-                {/* 대상 유형 선택 */}
                 <div>
-                  <label className="text-sm font-medium text-foreground block mb-1.5">대상 유형</label>
-                  <div className="flex gap-2">
+                  <label className="text-sm font-medium text-foreground block mb-2">대상 유형</label>
+                  <div className="flex gap-3">
                     <button
                       onClick={() => setIsMultiRecipient(false)}
-                      className={`flex-1 p-3 border rounded-xl text-center transition-all ${
-                        !isMultiRecipient ? "border-purple-400 bg-purple-50" : "border-border hover:border-purple-200"
+                      className={`flex-1 p-4 border rounded-xl text-center transition-all ${
+                        !isMultiRecipient ? "border-orange-400 bg-orange-50" : "border-border hover:border-orange-200"
                       }`}
                     >
-                      <span className="text-lg">👤</span>
-                      <p className="text-sm font-medium mt-1">1명에게</p>
+                      <span className="text-2xl">👤</span>
+                      <p className="text-sm font-medium mt-2">1명에게</p>
                     </button>
                     <button
                       onClick={() => setIsMultiRecipient(true)}
-                      className={`flex-1 p-3 border rounded-xl text-center transition-all ${
-                        isMultiRecipient ? "border-purple-400 bg-purple-50" : "border-border hover:border-purple-200"
+                      className={`flex-1 p-4 border rounded-xl text-center transition-all ${
+                        isMultiRecipient ? "border-orange-400 bg-orange-50" : "border-border hover:border-orange-200"
                       }`}
                     >
-                      <span className="text-lg">👥</span>
-                      <p className="text-sm font-medium mt-1">여러 명에게</p>
+                      <span className="text-2xl">👥</span>
+                      <p className="text-sm font-medium mt-2">여러 명에게</p>
                     </button>
                   </div>
                 </div>
 
                 {!isMultiRecipient ? (
-                  <>
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium text-foreground block mb-1.5">받는 사람 (수감자)</label>
-                      <Input placeholder="예: 홍길동 (아버지)" />
+                      <label className="text-sm font-medium text-foreground block mb-2">받는 사람 (수감자)</label>
+                      <Input placeholder="예: 홍길동 (아버지)" className="h-12" />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-foreground block mb-1.5">수감 시설</label>
-                      <Input placeholder="예: 서울구치소" />
+                      <label className="text-sm font-medium text-foreground block mb-2">수감 시설</label>
+                      <Input placeholder="예: 서울구치소" className="h-12" />
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <div>
                     <label className="text-sm font-medium text-foreground block mb-1.5">받는 사람들 (다수 대상)</label>
@@ -556,26 +555,28 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                   </div>
                 )}
 
-                <div>
-                  <label className="text-sm font-medium text-foreground block mb-1.5">전달 예정일</label>
-                  <Input type="date" />
-                  <p className="text-xs text-muted-foreground mt-1">출소일, 가석방일, 생일 등</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-foreground block mb-2">전달 예정일</label>
+                    <Input type="date" className="h-12" />
+                    <p className="text-xs text-muted-foreground mt-1">출소일, 가석방일, 생일 등</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground block mb-2">목표 편지 수</label>
+                    <Input type="number" placeholder="5" defaultValue={5} className="h-12" />
+                  </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground block mb-1.5">목표 편지 수</label>
-                  <Input type="number" placeholder="5" defaultValue={5} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground block mb-1.5">참여자 초대</label>
+                  <label className="text-sm font-medium text-foreground block mb-2">참여자 초대</label>
                   <p className="text-xs text-muted-foreground mb-2">편지를 함께 모을 가족/지인의 이메일 또는 전화번호</p>
-                  <Input placeholder="예: mother@email.com, 010-1234-5678" />
+                  <Input placeholder="예: mother@email.com, 010-1234-5678" className="h-12" />
                 </div>
               </div>
-              <div className="flex gap-2 mt-6">
-                <Button variant="outline" className="flex-1" onClick={() => setShowCreateModal(false)}>
+              <div className="flex gap-3 mt-8">
+                <Button variant="outline" className="flex-1 h-12" onClick={() => setShowCreateModal(false)}>
                   취소
                 </Button>
-                <Button className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500">
+                <Button className="flex-1 h-12 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600">
                   타임캡슐 만들기
                 </Button>
               </div>
@@ -602,7 +603,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
               className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col"
             >
               {/* 헤더 */}
-              <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white relative">
+              <div className="bg-gradient-to-r from-orange-400 to-amber-500 p-6 text-white relative">
                 <button 
                   onClick={() => setSelectedCapsule(null)}
                   className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
@@ -611,20 +612,20 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 </button>
                 <div>
                   <h2 className="text-xl font-bold">{selectedCapsule.title}</h2>
-                  <p className="text-purple-100 text-sm">To. {selectedCapsule.recipient}</p>
-                  <p className="text-purple-200 text-xs">{selectedCapsule.recipientFacility}</p>
+                  <p className="text-orange-100 text-sm">To. {selectedCapsule.recipient}</p>
+                  <p className="text-orange-200 text-xs">{selectedCapsule.recipientFacility}</p>
                 </div>
                 <div className="flex items-center gap-4 mt-4">
                   <div className="bg-white/20 rounded-lg px-3 py-2">
-                    <p className="text-xs text-purple-100">전달 예정일</p>
+                    <p className="text-xs text-orange-100">전달 예정일</p>
                     <p className="font-semibold">{selectedCapsule.targetDate}</p>
                   </div>
                   <div className="bg-white/20 rounded-lg px-3 py-2">
-                    <p className="text-xs text-purple-100">남은 일수</p>
+                    <p className="text-xs text-orange-100">남은 일수</p>
                     <p className="font-semibold">D-{selectedCapsule.daysLeft}</p>
                   </div>
                   <div className="bg-white/20 rounded-lg px-3 py-2">
-                    <p className="text-xs text-purple-100">편지 현황</p>
+                    <p className="text-xs text-orange-100">편지 현황</p>
                     <p className="font-semibold">{selectedCapsule.letterCount}/{selectedCapsule.targetLetters}통</p>
                   </div>
                 </div>
@@ -633,7 +634,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
               {/* 콘텐츠 */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {/* 설명 */}
-                <div className="bg-purple-50 rounded-xl p-4">
+                <div className="bg-orange-50 rounded-xl p-4">
                   <p className="text-sm text-muted-foreground">{selectedCapsule.description}</p>
                 </div>
 
@@ -641,7 +642,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 <div>
                   <div className="flex justify-between text-sm mb-2">
                     <span className="font-medium text-foreground">편지 모음 진행률</span>
-                    <span className="text-purple-600 font-semibold">
+                    <span className="text-orange-500 font-semibold">
                       {Math.round((selectedCapsule.letterCount / selectedCapsule.targetLetters) * 100)}%
                     </span>
                   </div>
