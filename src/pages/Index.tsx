@@ -204,6 +204,7 @@ const Index = () => {
               setActiveFolder("inbox");
               setViewMode("mail");
             }}
+            onCompose={() => setViewMode("compose")}
           />
         ) : viewMode === "timecapsule" ? (
           <TimeCapsuleContent
