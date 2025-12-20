@@ -118,21 +118,24 @@ export function DealsContent({ onClose }: DealsContentProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-6">
-        {/* 배너 */}
+        {/* 설명 배너 */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-orange-50/50 rounded-2xl p-5 mb-6 border border-orange-200/30"
+          className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-5 mb-6 border border-orange-200/40"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <Tag className="w-5 h-5 text-orange-500" />
-            <Badge className="bg-orange-100 text-orange-600 text-xs border-0">HOT DEAL</Badge>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+              <Percent className="w-5 h-5 text-orange-500" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-foreground">특가 할인이란?</h2>
+              <p className="text-xs text-muted-foreground">편지 발송 시 사용할 수 있는 할인 혜택</p>
+            </div>
           </div>
-          <h2 className="text-lg font-bold text-foreground mb-1">
-            놓치면 후회할 특가 할인!
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            지금만 만날 수 있는 특별한 혜택을 확인하세요.
+          <p className="text-sm text-foreground/80 leading-relaxed">
+            우편특급, 편지지, 타임캡슐 등 다양한 서비스를 <span className="font-semibold text-orange-600">최대 50% 할인</span>된 가격에 이용하세요. 
+            아래에서 원하는 특가를 선택하고 <span className="font-medium">"적용하기"</span>를 누르면 결제 시 자동으로 할인이 적용됩니다.
           </p>
         </motion.div>
 
