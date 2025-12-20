@@ -482,16 +482,10 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => setShowWriteLetterModal(true)}>
-                    <Send className="w-4 h-4 mr-1" />
-                    편지 쓰기
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setShowAddDayModal(true)}>
-                    <Plus className="w-4 h-4 mr-1" />
-                    새 날짜 추가
-                  </Button>
-                </div>
+                <Button variant="outline" size="sm" onClick={() => setShowAddDayModal(true)}>
+                  <Plus className="w-4 h-4 mr-1" />
+                  새 날짜 추가
+                </Button>
               </div>
             </div>
             <div className="divide-y divide-border/40">
