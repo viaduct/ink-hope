@@ -147,7 +147,13 @@ const Index = () => {
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           selectedMemberId={selectedMemberId}
-          onSelectMember={setSelectedMemberId}
+          onSelectMember={(memberId) => {
+            setSelectedMemberId(memberId);
+            if (memberId) {
+              setViewMode("mail");
+              setActiveFolder("inbox");
+            }
+          }}
           onUpdateFamilyMembers={setFamilyMembers}
           onHandwrittenUpload={() => setViewMode("handwritten")}
         />
