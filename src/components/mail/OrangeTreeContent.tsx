@@ -422,10 +422,7 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
                 </div>
               </div>
               <p className="text-3xl font-bold text-foreground">{mockData.fruits.length}<span className="text-lg text-muted-foreground ml-1">개</span></p>
-              <Button variant="outline" size="sm" className="mt-3 w-full h-8 text-xs" onClick={() => setShowAddDayModal(true)}>
-                <Plus className="w-3 h-3 mr-1" />
-                새 날짜 추가
-              </Button>
+              <p className="text-sm text-muted-foreground mt-2">등록된 날짜</p>
             </motion.div>
 
             {/* 성장 트렌드 - 롤링 애니메이션 */}
