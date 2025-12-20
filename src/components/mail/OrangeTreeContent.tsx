@@ -426,8 +426,8 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               className="bg-white rounded-2xl border border-border/60 shadow-sm p-5"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-orange-500" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">성장 속도</p>
@@ -481,14 +481,14 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
               {mockData.fruits.map((fruit, index) => {
                 const getIconAndColor = () => {
                   switch (fruit.type) {
-                    case "release": return { icon: <Home className="w-5 h-5 text-green-600" />, bg: "bg-green-100" };
-                    case "birthday": return { icon: <Calendar className="w-5 h-5 text-pink-600" />, bg: "bg-pink-100" };
-                    case "anniversary": return { icon: <Calendar className="w-5 h-5 text-red-600" />, bg: "bg-red-100" };
-                    case "visit": return { icon: <Users className="w-5 h-5 text-amber-600" />, bg: "bg-amber-100" };
-                    case "program": return { icon: <GraduationCap className="w-5 h-5 text-indigo-600" />, bg: "bg-indigo-100" };
-                    case "trial": return { icon: <Scale className="w-5 h-5 text-purple-600" />, bg: "bg-purple-100" };
-                    case "health": return { icon: <Calendar className="w-5 h-5 text-teal-600" />, bg: "bg-teal-100" };
-                    default: return { icon: <Calendar className="w-5 h-5 text-gray-600" />, bg: "bg-gray-100" };
+                    case "release": return { icon: <Home className="w-5 h-5 text-orange-500" />, bg: "bg-gray-100" };
+                    case "birthday": return { icon: <Calendar className="w-5 h-5 text-orange-500" />, bg: "bg-gray-100" };
+                    case "anniversary": return { icon: <Calendar className="w-5 h-5 text-orange-500" />, bg: "bg-gray-100" };
+                    case "visit": return { icon: <Users className="w-5 h-5 text-orange-500" />, bg: "bg-gray-100" };
+                    case "program": return { icon: <GraduationCap className="w-5 h-5 text-orange-500" />, bg: "bg-gray-100" };
+                    case "trial": return { icon: <Scale className="w-5 h-5 text-orange-500" />, bg: "bg-gray-100" };
+                    case "health": return { icon: <Calendar className="w-5 h-5 text-orange-500" />, bg: "bg-gray-100" };
+                    default: return { icon: <Calendar className="w-5 h-5 text-orange-500" />, bg: "bg-gray-100" };
                   }
                 };
                 const { icon, bg } = getIconAndColor();
@@ -520,7 +520,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                       <div className="flex items-center gap-2">
                         <p className="font-medium text-foreground">{fruit.title}</p>
                         {fruit.type === "release" && (
-                          <span className="bg-green-100 text-green-700 text-[10px] font-medium px-1.5 py-0.5 rounded">중요</span>
+                          <span className="bg-orange-100 text-orange-600 text-[10px] font-medium px-1.5 py-0.5 rounded">중요</span>
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground">{fruit.description}</p>
@@ -549,32 +549,32 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
             </h3>
             <div className="grid grid-cols-3 gap-4">
               {/* 면회 횟수 */}
-              <div className="text-center p-4 bg-blue-50 rounded-xl">
-                <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+              <div className="text-center p-4 bg-gray-50 rounded-xl">
+                <Users className="w-6 h-6 text-orange-500 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-foreground">{mockData.supportStats.totalVisits}</p>
                 <p className="text-xs text-muted-foreground">면회 횟수</p>
               </div>
               
               {/* 다음 면회일 */}
-              <div className="text-center p-4 bg-green-50 rounded-xl">
-                <Calendar className="w-6 h-6 text-green-600 mx-auto mb-2" />
+              <div className="text-center p-4 bg-gray-50 rounded-xl">
+                <Calendar className="w-6 h-6 text-orange-500 mx-auto mb-2" />
                 <p className="text-lg font-bold text-foreground">{mockData.nextVisitDate || "미정"}</p>
                 <p className="text-xs text-muted-foreground">다음 면회일</p>
               </div>
               
               {/* 면회일 설정/예약 */}
-              <div className="flex flex-col gap-2 p-4 bg-amber-50 rounded-xl">
+              <div className="flex flex-col gap-2 p-4 bg-orange-50 rounded-xl">
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="w-full text-xs border-amber-300 hover:bg-amber-100"
+                  className="w-full text-xs border-orange-300 hover:bg-orange-100"
                 >
                   <Settings className="w-3.5 h-3.5 mr-1" />
                   면회일 설정
                 </Button>
                 <Button 
                   size="sm" 
-                  className="w-full text-xs bg-amber-500 hover:bg-amber-600 text-white"
+                  className="w-full text-xs bg-primary hover:bg-primary/90 text-white"
                 >
                   <ExternalLink className="w-3.5 h-3.5 mr-1" />
                   지금 접견 예약하기
@@ -709,7 +709,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
                       </div>
                     </div>
                     
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">{activity.status}</span>
+                    <span className="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">{activity.status}</span>
                     <span className="text-xs text-muted-foreground">{activity.date}</span>
                   </div>
                 );
