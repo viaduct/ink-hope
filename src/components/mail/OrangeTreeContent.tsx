@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TreeDeciduous, Leaf, Calendar, MessageSquare, TrendingUp, Clock, ChevronRight, Plus, Home, Scale, Users, GraduationCap, Gift, Check, Mail, Send, Image, FileText, Settings, ExternalLink, Heart, ChevronDown, MailPlus, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SpecialDayWriteLetterModal } from "./SpecialDayWriteLetterModal";
 import { AddSpecialDayModal } from "./AddSpecialDayModal";
 import { SpecialDayDetailModal } from "./SpecialDayDetailModal";
 import { Progress } from "@/components/ui/progress";
@@ -22,6 +21,7 @@ import orangeCharacter from "@/assets/emoticons/orange-character.gif";
 
 interface OrangeTreeContentProps {
   onClose: () => void;
+  onCompose?: () => void;
 }
 
 // 성장 단계 정의
@@ -128,14 +128,13 @@ function RollingText({ messages }: { messages: string[] }) {
 
 const recipients = ["이재원", "서은우", "임성훈"];
 
-export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
+export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps) {
   const [selectedGifts, setSelectedGifts] = useState<{id: string, quantity: number}[]>([]);
   const [selectedRecipient, setSelectedRecipient] = useState(recipients[0]);
   const currentStage = growthStages[mockData.currentGrowthLevel - 1];
   const nextStage = growthStages[mockData.currentGrowthLevel];
 
   // 모달 상태
-  const [showWriteLetterModal, setShowWriteLetterModal] = useState(false);
   const [showAddDayModal, setShowAddDayModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState<typeof mockData.fruits[0] | null>(null);
@@ -147,7 +146,7 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
 
   const handleWriteLetterFromDetail = () => {
     setShowDetailModal(false);
-    setShowWriteLetterModal(true);
+    onCompose?.();
   };
 
   const toggleGift = (giftId: string) => {
@@ -732,11 +731,6 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
       </div>
 
       {/* 모달들 */}
-      <SpecialDayWriteLetterModal 
-        isOpen={showWriteLetterModal} 
-        onClose={() => setShowWriteLetterModal(false)}
-        specialDay={selectedDay ? { title: selectedDay.title, date: selectedDay.date, type: selectedDay.type } : undefined}
-      />
       <AddSpecialDayModal 
         isOpen={showAddDayModal} 
         onClose={() => setShowAddDayModal(false)} 
