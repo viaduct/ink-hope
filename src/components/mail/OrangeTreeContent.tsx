@@ -35,7 +35,7 @@ interface OrangeTreeContentProps {
   onCompose?: () => void;
 }
 
-// 소중한 날들 타입별 아이콘 및 색상 매핑
+// 소중한 날들 타입별 아이콘 및 색상 매핑 - 통일된 그레이 배경 + 오렌지 라인 아이콘
 const specialDayStyles: Record<SpecialDay["type"], { 
   icon: React.ReactNode; 
   bg: string; 
@@ -43,51 +43,51 @@ const specialDayStyles: Record<SpecialDay["type"], {
   label: string;
 }> = {
   release: { 
-    icon: <Home className="w-4 h-4" />, 
-    bg: "bg-gradient-to-br from-orange-100 to-amber-100", 
-    iconColor: "text-orange-600",
+    icon: <Home className="w-4 h-4" strokeWidth={1.5} />, 
+    bg: "bg-gray-100", 
+    iconColor: "text-primary",
     label: "출소"
   },
   parole: { 
-    icon: <Home className="w-4 h-4" />, 
-    bg: "bg-gradient-to-br from-orange-100 to-amber-100", 
-    iconColor: "text-orange-600",
+    icon: <Home className="w-4 h-4" strokeWidth={1.5} />, 
+    bg: "bg-gray-100", 
+    iconColor: "text-primary",
     label: "가석방"
   },
   birthday: { 
-    icon: <Cake className="w-4 h-4" />, 
-    bg: "bg-gradient-to-br from-pink-100 to-rose-100", 
-    iconColor: "text-pink-600",
+    icon: <Cake className="w-4 h-4" strokeWidth={1.5} />, 
+    bg: "bg-gray-100", 
+    iconColor: "text-primary",
     label: "생일"
   },
   anniversary: { 
-    icon: <Heart className="w-4 h-4" />, 
-    bg: "bg-gradient-to-br from-red-100 to-pink-100", 
-    iconColor: "text-red-500",
+    icon: <Heart className="w-4 h-4" strokeWidth={1.5} />, 
+    bg: "bg-gray-100", 
+    iconColor: "text-primary",
     label: "기념일"
   },
   visit: { 
-    icon: <Users className="w-4 h-4" />, 
-    bg: "bg-gradient-to-br from-blue-100 to-sky-100", 
-    iconColor: "text-blue-600",
+    icon: <Users className="w-4 h-4" strokeWidth={1.5} />, 
+    bg: "bg-gray-100", 
+    iconColor: "text-primary",
     label: "면회"
   },
   trial: { 
-    icon: <Scale className="w-4 h-4" />, 
-    bg: "bg-gradient-to-br from-slate-100 to-gray-100", 
-    iconColor: "text-slate-600",
+    icon: <Scale className="w-4 h-4" strokeWidth={1.5} />, 
+    bg: "bg-gray-100", 
+    iconColor: "text-primary",
     label: "재판"
   },
   education: { 
-    icon: <GraduationCap className="w-4 h-4" />, 
-    bg: "bg-gradient-to-br from-purple-100 to-violet-100", 
-    iconColor: "text-purple-600",
+    icon: <GraduationCap className="w-4 h-4" strokeWidth={1.5} />, 
+    bg: "bg-gray-100", 
+    iconColor: "text-primary",
     label: "교육"
   },
   other: { 
-    icon: <Calendar className="w-4 h-4" />, 
-    bg: "bg-gradient-to-br from-gray-100 to-slate-100", 
-    iconColor: "text-gray-600",
+    icon: <Calendar className="w-4 h-4" strokeWidth={1.5} />, 
+    bg: "bg-gray-100", 
+    iconColor: "text-primary",
     label: "기타"
   },
 };
@@ -96,7 +96,7 @@ const specialDayStyles: Record<SpecialDay["type"], {
 const SpecialDayIcon = ({ type }: { type: SpecialDay["type"] }) => {
   const style = specialDayStyles[type] || specialDayStyles.other;
   return (
-    <div className={`w-9 h-9 rounded-xl ${style.bg} flex items-center justify-center shadow-sm`}>
+    <div className={`w-9 h-9 rounded-xl ${style.bg} flex items-center justify-center`}>
       <span className={style.iconColor}>{style.icon}</span>
     </div>
   );
