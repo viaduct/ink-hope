@@ -102,22 +102,23 @@ const SpecialDayIcon = ({ type }: { type: SpecialDay["type"] }) => {
   );
 };
 
-// 잎사귀 아이콘 컴포넌트
+// 잎사귀 아이콘 컴포넌트 - 그레이 배경 + 오렌지 라인
 const LeafIcon = () => (
-  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-sm">
-    <Leaf className="w-4 h-4 text-white" />
+  <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+    <Leaf className="w-4 h-4 text-primary" strokeWidth={1.5} />
   </div>
 );
 
-// 열매(오렌지) 아이콘 컴포넌트
+// 열매(오렌지) 아이콘 컴포넌트 - 그레이 배경 + 오렌지 라인
 const OrangeIcon = ({ size = "md" }: { size?: "sm" | "md" }) => {
   const sizeClasses = size === "sm" ? "w-6 h-6" : "w-8 h-8";
   const iconSize = size === "sm" ? "w-3 h-3" : "w-4 h-4";
   return (
-    <div className={`${sizeClasses} rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center shadow-sm relative`}>
-      <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-1 h-1.5 bg-green-500 rounded-full" />
-      <svg viewBox="0 0 24 24" fill="none" className={iconSize}>
-        <circle cx="12" cy="12" r="8" fill="white" fillOpacity="0.3" />
+    <div className={`${sizeClasses} rounded-lg bg-gray-100 flex items-center justify-center`}>
+      <svg viewBox="0 0 24 24" className={iconSize} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="13" r="7" className="text-primary" />
+        <path d="M12 6V4" className="text-primary" />
+        <path d="M12 4c1 0 2-1 2-2" className="text-green-500" />
       </svg>
     </div>
   );
