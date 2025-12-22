@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, User } from "lucide-react";
+import { User, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,17 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFamilyMembers } from "@/hooks/useFamilyMembers";
 
 interface AddRecipientModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdd: (recipient: {
-    name: string;
-    relation: string;
-    facility: string;
-    address: string;
-    prisonerNumber: string;
-  }) => void;
+  onSuccess?: () => void;
 }
 
 const relations = ["아들", "딸", "남편", "아내", "아버지", "어머니", "형제", "자매", "친구", "기타"];
@@ -42,31 +37,39 @@ const facilities = [
   "인천구치소",
 ];
 
-export function AddRecipientModal({ open, onOpenChange, onAdd }: AddRecipientModalProps) {
+export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipientModalProps) {
   const [name, setName] = useState("");
   const [relation, setRelation] = useState("");
   const [facility, setFacility] = useState("");
   const [address, setAddress] = useState("");
   const [prisonerNumber, setPrisonerNumber] = useState("");
 
+  const { createFamilyMember, isCreating } = useFamilyMembers();
+
   const handleSubmit = () => {
     if (!name.trim() || !relation || !facility) return;
     
-    onAdd({
-      name: name.trim(),
-      relation,
-      facility,
-      address: address.trim(),
-      prisonerNumber: prisonerNumber.trim(),
-    });
-
-    // Reset form
-    setName("");
-    setRelation("");
-    setFacility("");
-    setAddress("");
-    setPrisonerNumber("");
-    onOpenChange(false);
+    createFamilyMember(
+      {
+        name: name.trim(),
+        relation,
+        facility,
+        facility_address: address.trim(),
+        prisoner_number: prisonerNumber.trim(),
+      },
+      {
+        onSuccess: () => {
+          // Reset form
+          setName("");
+          setRelation("");
+          setFacility("");
+          setAddress("");
+          setPrisonerNumber("");
+          onOpenChange(false);
+          onSuccess?.();
+        },
+      }
+    );
   };
 
   const isValid = name.trim() && relation && facility;
@@ -152,15 +155,23 @@ export function AddRecipientModal({ open, onOpenChange, onAdd }: AddRecipientMod
             variant="outline"
             className="flex-1"
             onClick={() => onOpenChange(false)}
+            disabled={isCreating}
           >
             취소
           </Button>
           <Button
             className="flex-1"
             onClick={handleSubmit}
-            disabled={!isValid}
+            disabled={!isValid || isCreating}
           >
-            추가하기
+            {isCreating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                추가 중...
+              </>
+            ) : (
+              "추가하기"
+            )}
           </Button>
         </div>
       </DialogContent>

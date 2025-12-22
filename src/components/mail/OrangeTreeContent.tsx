@@ -4,7 +4,8 @@ import {
   Leaf, Calendar, ChevronRight, Plus, 
   Home, Scale, Users, GraduationCap,
   Heart, PenLine, ChevronDown, Cake, 
-  Briefcase, Stethoscope, TreeDeciduous
+  Briefcase, Stethoscope, TreeDeciduous,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddSpecialDayModal } from "./AddSpecialDayModal";
@@ -17,15 +18,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import { useOrangeTrees, OrangeTreeDB } from "@/hooks/useOrangeTrees";
+import { useSpecialDays, SpecialDayDB } from "@/hooks/useSpecialDays";
 import { 
-  orangeTrees, 
-  specialDays, 
+  orangeTrees as mockOrangeTrees, 
+  specialDays as mockSpecialDays, 
   recentActivities, 
   growthStages, 
   getGrowthStage, 
   getLettersToNextStage 
 } from "@/data/mockData";
-import type { SpecialDay } from "@/types/mail";
+import type { SpecialDay, OrangeTree } from "@/types/mail";
 
 interface OrangeTreeContentProps {
   onClose: () => void;
@@ -137,15 +140,64 @@ const getDaysRemaining = (dateStr: string): number => {
 };
 
 export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps) {
-  const [selectedTreeId, setSelectedTreeId] = useState(orangeTrees[0]?.id || "");
+  // DB에서 나무 데이터 가져오기
+  const { orangeTrees: dbTrees, isLoading: treesLoading } = useOrangeTrees();
+  
+  // DB 데이터가 있으면 사용, 없으면 mock 데이터 사용
+  const orangeTrees: OrangeTree[] = useMemo(() => {
+    if (dbTrees.length > 0) {
+      return dbTrees.map((tree: OrangeTreeDB) => ({
+        id: tree.id,
+        personId: tree.family_member_id,
+        personName: tree.person_name,
+        relation: tree.relation,
+        sentLetters: tree.sent_letters,
+        receivedLetters: tree.received_letters,
+        totalLetters: tree.total_letters || (tree.sent_letters + tree.received_letters),
+        createdAt: tree.created_at,
+        isArchived: tree.is_archived,
+        facility: "",
+        prisonerNumber: "",
+      }));
+    }
+    return mockOrangeTrees;
+  }, [dbTrees]);
+
+  const [selectedTreeId, setSelectedTreeId] = useState("");
   const [showAddDayModal, setShowAddDayModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState<SpecialDay | null>(null);
 
+  // DB에서 소중한 날들 가져오기
+  const { specialDays: dbSpecialDays, isLoading: daysLoading } = useSpecialDays(selectedTreeId || undefined);
+  
+  // 선택된 트리 ID 초기화
+  useMemo(() => {
+    if (orangeTrees.length > 0 && !selectedTreeId) {
+      setSelectedTreeId(orangeTrees[0].id);
+    }
+  }, [orangeTrees, selectedTreeId]);
+
+  // 소중한 날들 데이터
+  const specialDays: SpecialDay[] = useMemo(() => {
+    if (dbSpecialDays.length > 0) {
+      return dbSpecialDays.map((day: SpecialDayDB) => ({
+        id: day.id,
+        treeId: day.tree_id,
+        type: day.type as SpecialDay["type"],
+        title: day.title,
+        date: day.date,
+        description: day.description || undefined,
+        isGolden: day.is_golden,
+      }));
+    }
+    return mockSpecialDays.filter(d => d.treeId === selectedTreeId);
+  }, [dbSpecialDays, selectedTreeId]);
+
   // 선택된 나무
   const selectedTree = useMemo(() => 
     orangeTrees.find(t => t.id === selectedTreeId) || orangeTrees[0],
-    [selectedTreeId]
+    [selectedTreeId, orangeTrees]
   );
 
   // 현재 성장 단계
@@ -167,12 +219,12 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
       .sort((a, b) => getDaysRemaining(a.date) - getDaysRemaining(b.date))
       .slice(0, 3);
     return days;
-  }, [selectedTreeId]);
+  }, [selectedTreeId, specialDays]);
 
   // 모든 소중한 날들
   const allTreeSpecialDays = useMemo(() => 
     specialDays.filter(d => d.treeId === selectedTreeId),
-    [selectedTreeId]
+    [selectedTreeId, specialDays]
   );
 
   const handleDayClick = (day: SpecialDay) => {
@@ -187,17 +239,30 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
 
   // 진행률 계산
   const progressPercent = useMemo(() => {
-    if (!nextStageInfo.nextStage) return 100;
+    if (!nextStageInfo.nextStage || !selectedTree) return 100;
     const currentMin = currentStage.minLetters;
     const nextMin = nextStageInfo.nextStage.minLetters;
     const progress = ((selectedTree.totalLetters - currentMin) / (nextMin - currentMin)) * 100;
     return Math.min(100, Math.max(0, progress));
-  }, [selectedTree.totalLetters, currentStage, nextStageInfo]);
+  }, [selectedTree?.totalLetters, currentStage, nextStageInfo]);
 
-  if (!selectedTree) {
+  // 로딩 상태
+  if (treesLoading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-background">
-        <p className="text-muted-foreground">나무를 선택해주세요</p>
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!selectedTree || orangeTrees.length === 0) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center bg-background gap-4">
+        <TreeDeciduous className="w-16 h-16 text-muted-foreground/50" />
+        <p className="text-muted-foreground">소중한 사람을 추가하면 오렌지나무가 함께 생겨요</p>
+        <Button onClick={onClose} variant="outline">
+          편지함으로 돌아가기
+        </Button>
       </div>
     );
   }

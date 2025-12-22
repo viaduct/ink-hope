@@ -14,7 +14,194 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      family_members: {
+        Row: {
+          avatar: string | null
+          color: string | null
+          created_at: string
+          facility: string
+          facility_address: string | null
+          id: string
+          is_active: boolean
+          name: string
+          prisoner_number: string | null
+          relation: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar?: string | null
+          color?: string | null
+          created_at?: string
+          facility: string
+          facility_address?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          prisoner_number?: string | null
+          relation: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar?: string | null
+          color?: string | null
+          created_at?: string
+          facility?: string
+          facility_address?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          prisoner_number?: string | null
+          relation?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orange_trees: {
+        Row: {
+          created_at: string
+          family_member_id: string
+          id: string
+          is_archived: boolean
+          person_name: string
+          received_letters: number
+          relation: string
+          sent_letters: number
+          total_letters: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          family_member_id: string
+          id?: string
+          is_archived?: boolean
+          person_name: string
+          received_letters?: number
+          relation: string
+          sent_letters?: number
+          total_letters?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          family_member_id?: string
+          id?: string
+          is_archived?: boolean
+          person_name?: string
+          received_letters?: number
+          relation?: string
+          sent_letters?: number
+          total_letters?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orange_trees_family_member_id_fkey"
+            columns: ["family_member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orange_trees_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      special_days: {
+        Row: {
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          is_golden: boolean
+          title: string
+          tree_id: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          is_golden?: boolean
+          title: string
+          tree_id: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          is_golden?: boolean
+          title?: string
+          tree_id?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "special_days_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "orange_trees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "special_days_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Mail, 
@@ -26,6 +26,7 @@ import { LetterPreview } from "./LetterPreview";
 import { PhotoUpload } from "./PhotoUpload";
 import { AdditionalOptions } from "./AdditionalOptions";
 import { PaymentSummary } from "./PaymentSummary";
+import { useFamilyMembers } from "@/hooks/useFamilyMembers";
 import type { FamilyMember } from "@/types/mail";
 import { type FacilityType, type Region, type RelationType } from "@/data/facilities";
 import orangeRipe from "@/assets/emoticons/orange-ripe.png";
@@ -98,8 +99,26 @@ const sampleSenders = [
   },
 ];
 
-export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) {
+export function ComposeContent({ familyMembers: propFamilyMembers, onClose }: ComposeContentProps) {
   const [currentStep, setCurrentStep] = useState<StepId>(1);
+  
+  // DB에서 가족 구성원 가져오기
+  const { familyMembers: dbFamilyMembers } = useFamilyMembers();
+  
+  // DB 데이터 또는 prop 데이터 사용
+  const familyMembers = dbFamilyMembers.length > 0 
+    ? dbFamilyMembers.map(member => ({
+        id: member.id,
+        name: member.name,
+        relation: member.relation,
+        facility: member.facility,
+        facilityAddress: member.facility_address || "",
+        prisonerNumber: member.prisoner_number || "",
+        avatar: member.avatar || member.name.charAt(0),
+        color: member.color || "bg-orange-100 text-orange-600",
+        isActive: member.is_active,
+      }))
+    : propFamilyMembers;
   
   // familyMembers를 recipients 형태로 변환
   const recipientsFromFamily = familyMembers.map(member => ({
@@ -524,15 +543,9 @@ export function ComposeContent({ familyMembers, onClose }: ComposeContentProps) 
       <AddRecipientModal
         open={isAddRecipientModalOpen}
         onOpenChange={setIsAddRecipientModalOpen}
-        onAdd={(newRecipient) => {
-          const id = String(recipients.length + 1);
-          const colors = ["bg-primary", "bg-blue-500", "bg-blue-400", "bg-green-500", "bg-purple-500"];
-          setRecipients([...recipients, {
-            ...newRecipient,
-            id,
-            color: colors[recipients.length % colors.length],
-          }]);
-          setSelectedRecipientId(id);
+        onSuccess={() => {
+          // DB에서 자동으로 리페치됨 (useFamilyMembers 훅에서 처리)
+          // 새로 추가된 수신자 선택은 별도 처리 필요시 여기에
         }}
       />
 
