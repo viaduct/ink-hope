@@ -210,12 +210,12 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
         
         {/* 나무 선택 드롭다운 (중앙) */}
         <Select value={selectedTreeId} onValueChange={setSelectedTreeId}>
-          <SelectTrigger className="w-auto h-9 gap-2 border border-border bg-white font-medium px-4 rounded-full shadow-sm hover:shadow transition-shadow">
+          <SelectTrigger className="w-auto h-9 gap-2 border border-border bg-white font-medium px-4 rounded-full shadow-sm hover:shadow transition-shadow [&>svg:last-child]:hidden">
             <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center">
               <TreeDeciduous className="w-3 h-3 text-white" />
             </div>
             <SelectValue />
-            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            <ChevronDown className="w-4 h-4 text-muted-foreground ml-1" />
           </SelectTrigger>
           <SelectContent className="bg-white">
             {orangeTrees.map((tree) => (
