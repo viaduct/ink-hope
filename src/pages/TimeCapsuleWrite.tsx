@@ -103,7 +103,7 @@ export default function TimeCapsuleWrite() {
       <div className="min-h-screen bg-muted/30 flex flex-col">
         {/* Header */}
         <header className="bg-background border-b border-border/60 sticky top-0 z-50">
-          <div className="max-w-2xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="max-w-lg mx-auto px-6 h-14 flex items-center justify-between">
             <button 
               onClick={handleBack}
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -123,7 +123,7 @@ export default function TimeCapsuleWrite() {
         </header>
 
         {/* Main content */}
-        <main className="flex-1 max-w-2xl mx-auto w-full px-6 py-6 flex flex-col">
+        <main className="flex-1 max-w-lg mx-auto w-full px-6 py-6 flex flex-col">
           {/* 수신자 정보 */}
           <section className="mb-6">
             <div className="flex items-center gap-3 p-4 bg-primary/5 rounded-2xl">
@@ -182,7 +182,7 @@ export default function TimeCapsuleWrite() {
 
         {/* 하단 버튼 */}
         <footer className="bg-background border-t border-border/60 p-4 sticky bottom-0">
-          <div className="max-w-2xl mx-auto flex gap-3">
+          <div className="max-w-lg mx-auto flex gap-3">
             <Button 
               variant="outline" 
               onClick={handleSaveDraft}
