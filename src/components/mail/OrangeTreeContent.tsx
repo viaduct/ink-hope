@@ -365,7 +365,7 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
               <motion.img 
                 src={currentStage.icon} 
                 alt={currentStage.name}
-                className="w-36 h-36 object-contain"
+                className="w-52 h-52 object-contain"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2, type: "spring" }}
