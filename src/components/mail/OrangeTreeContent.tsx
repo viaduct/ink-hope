@@ -307,11 +307,11 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
             className="flex items-center gap-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200/60 p-4"
           >
             <motion.div 
-              className="flex-shrink-0"
+              className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary flex items-center justify-center"
               animate={{ rotate: [0, -5, 5, -5, 0] }}
               transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
             >
-              <OrangeIcon size="md" />
+              <PenLine className="w-5 h-5 text-white" strokeWidth={1.5} />
             </motion.div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground">
@@ -442,7 +442,6 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
           >
             <div className="px-5 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <OrangeIcon size="sm" />
                 <h3 className="font-semibold text-foreground">소중한 날들</h3>
               </div>
               <button 
