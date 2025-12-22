@@ -272,7 +272,10 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-gray-50">
       {/* Header */}
       <header className="h-14 border-b border-border/40 bg-white flex items-center justify-between px-6">
-        <span className="text-lg font-bold text-primary">To.orange</span>
+        <div className="flex items-center gap-3">
+          <TreeDeciduous className="w-5 h-5 text-primary" />
+          <h1 className="text-lg font-bold text-foreground">오렌지 나무</h1>
+        </div>
         
         {/* 나무 선택 드롭다운 (중앙) */}
         <Select value={selectedTreeId} onValueChange={setSelectedTreeId}>
