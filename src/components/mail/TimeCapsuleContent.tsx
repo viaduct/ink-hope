@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import timeCapsuleGif from "@/assets/emoticons/time-capsule.gif";
+
 
 interface TimeCapsuleContentProps {
   onClose: () => void;
@@ -178,7 +178,6 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
           {mockInvitations.length > 0 && (
             <section>
               <div className="flex items-center gap-2 mb-4">
-                <img src={timeCapsuleGif} alt="타임캡슐" className="w-5 h-5" />
                 <h2 className="font-semibold text-foreground">참여 요청</h2>
                 <span className="animate-pulse px-2 py-0.5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full">
                   {mockInvitations.length}

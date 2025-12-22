@@ -29,6 +29,8 @@ const mockCapsuleData: Record<string, {
   targetLetters: number;
   inviteCode: string;
   myLetter: string | null;
+  status?: "collecting" | "delivered";
+  deliveredDate?: string;
   contributors: Array<{
     id: number;
     name: string;
@@ -50,6 +52,7 @@ const mockCapsuleData: Record<string, {
     targetLetters: 5,
     inviteCode: "ABC123XY",
     myLetter: "아버지, 출소하시는 날만 손꼽아 기다리고 있어요. 그동안 정말 힘드셨죠? 저희도 아버지 없이 지내는 시간이 너무 길게 느껴졌어요. 이제 곧 다시 만날 수 있다는 생각에 벌써부터 마음이 설레요. 건강하게 나오셔서 함께 맛있는 것도 먹고, 그동안 못 했던 이야기들 많이 나누고 싶어요...",
+    status: "collecting",
     contributors: [
       { id: 1, name: "어머니", relation: "배우자", avatar: "😊", contributed: true, letterDate: "2025-01-02", isMe: false },
       { id: 2, name: "나", relation: "자녀", avatar: "😄", contributed: true, letterDate: "2025-01-05", isMe: true },
@@ -69,10 +72,30 @@ const mockCapsuleData: Record<string, {
     targetLetters: 3,
     inviteCode: "XYZ789AB",
     myLetter: null,
+    status: "collecting",
     contributors: [
       { id: 1, name: "아버지", relation: "배우자", avatar: "👨", contributed: true, letterDate: "2025-01-10", isMe: false },
       { id: 2, name: "큰딸", relation: "자녀", avatar: "👩", contributed: true, letterDate: "2025-01-12", isMe: false },
       { id: 3, name: "나", relation: "자녀", avatar: "🧑", contributed: false, letterDate: null, isMe: true },
+    ],
+  },
+  "3": {
+    id: 3,
+    title: "오빠 가석방 축하",
+    recipient: "박민수 (오빠)",
+    facility: "의정부교도소",
+    targetDate: "2024-12-20",
+    daysLeft: 0,
+    letterCount: 3,
+    targetLetters: 3,
+    inviteCode: "DEL123AB",
+    myLetter: "오빠, 드디어 나오는 날이네! 정말 기다렸어. 그동안 힘들었지? 이제 다 끝났어. 우리 가족 모두 오빠 기다리고 있어. 나오면 맛있는 것 먹으러 가자!",
+    status: "delivered",
+    deliveredDate: "2024-12-20",
+    contributors: [
+      { id: 1, name: "나", relation: "동생", avatar: "😊", contributed: true, letterDate: "2024-12-15", isMe: true },
+      { id: 2, name: "어머니", relation: "부모", avatar: "👩", contributed: true, letterDate: "2024-12-16", isMe: false },
+      { id: 3, name: "아버지", relation: "부모", avatar: "👨", contributed: true, letterDate: "2024-12-18", isMe: false },
     ],
   },
 };
@@ -134,20 +157,35 @@ export default function TimeCapsuleDetail() {
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-br from-primary to-primary/80 rounded-3xl p-6 text-primary-foreground shadow-lg"
+            className={`rounded-3xl p-6 shadow-lg ${
+              capsule.status === "delivered" 
+                ? "bg-gradient-to-br from-green-500 to-emerald-500 text-white" 
+                : "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"
+            }`}
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-primary-foreground/70 text-sm mb-1">To.</p>
+                <p className="opacity-70 text-sm mb-1">To.</p>
                 <h2 className="text-xl font-bold mb-1">{capsule.recipient}</h2>
-                <p className="text-primary-foreground/70 text-sm">{capsule.facility}</p>
+                <p className="opacity-70 text-sm">{capsule.facility}</p>
               </div>
               <div className="text-right">
-                <div className="bg-primary-foreground/20 backdrop-blur rounded-xl px-4 py-3">
-                  <p className="text-primary-foreground/70 text-xs mb-0.5">전달까지</p>
-                  <p className="text-2xl font-bold">D-{capsule.daysLeft}</p>
-                  <p className="text-primary-foreground/70 text-xs mt-0.5">{capsule.targetDate}</p>
-                </div>
+                {capsule.status === "delivered" ? (
+                  <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-3">
+                    <p className="opacity-70 text-xs mb-0.5">전달 완료</p>
+                    <p className="text-xl font-bold flex items-center gap-1">
+                      <Check className="w-5 h-5" />
+                      완료
+                    </p>
+                    <p className="opacity-70 text-xs mt-0.5">{capsule.deliveredDate}</p>
+                  </div>
+                ) : (
+                  <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-3">
+                    <p className="opacity-70 text-xs mb-0.5">전달까지</p>
+                    <p className="text-2xl font-bold">D-{capsule.daysLeft}</p>
+                    <p className="opacity-70 text-xs mt-0.5">{capsule.targetDate}</p>
+                  </div>
+                )}
               </div>
             </div>
           </motion.section>
@@ -161,13 +199,20 @@ export default function TimeCapsuleDetail() {
           >
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-foreground">편지 모음 현황</h3>
-              <span className="text-lg font-bold text-primary">{capsule.letterCount}/{capsule.targetLetters}통</span>
+              <span className={`text-lg font-bold ${capsule.status === "delivered" ? "text-green-500" : "text-primary"}`}>
+                {capsule.letterCount}/{capsule.targetLetters}통
+              </span>
             </div>
-            <Progress value={progressPercent} className="h-3 mb-2" />
+            <Progress 
+              value={progressPercent} 
+              className={`h-3 mb-2 ${capsule.status === "delivered" ? "[&>div]:bg-green-500" : ""}`} 
+            />
             <p className="text-sm text-muted-foreground">
-              {capsule.letterCount < capsule.targetLetters 
-                ? `목표까지 ${capsule.targetLetters - capsule.letterCount}통 남았어요. 조금만 더 모아볼까요?`
-                : "목표를 달성했어요! 🎉"
+              {capsule.status === "delivered" 
+                ? `${capsule.deliveredDate}에 ${capsule.letterCount}통의 편지가 전달되었어요 🎉`
+                : capsule.letterCount < capsule.targetLetters 
+                  ? `목표까지 ${capsule.targetLetters - capsule.letterCount}통 남았어요. 조금만 더 모아볼까요?`
+                  : "목표를 달성했어요! 🎉"
               }
             </p>
           </motion.section>
@@ -181,13 +226,15 @@ export default function TimeCapsuleDetail() {
           >
             <div className="flex items-center justify-between p-5 border-b border-border/60">
               <h3 className="font-semibold text-foreground">참여자</h3>
-              <button 
-                onClick={() => setShowInviteModal(true)}
-                className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium"
-              >
-                <Plus className="w-4 h-4" />
-                초대하기
-              </button>
+              {capsule.status !== "delivered" && (
+                <button 
+                  onClick={() => setShowInviteModal(true)}
+                  className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium"
+                >
+                  <Plus className="w-4 h-4" />
+                  초대하기
+                </button>
+              )}
             </div>
 
             <div className="divide-y divide-border/40">
@@ -296,8 +343,8 @@ export default function TimeCapsuleDetail() {
           </motion.section>
         </main>
 
-        {/* 하단 고정 버튼 - 편지 미작성 시 */}
-        {!capsule.myLetter && (
+        {/* 하단 고정 버튼 - 편지 미작성 시 (완료된 캡슐이 아닐 때만) */}
+        {!capsule.myLetter && capsule.status !== "delivered" && (
           <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border/60 p-4">
             <div className="max-w-lg mx-auto">
               <Button 
