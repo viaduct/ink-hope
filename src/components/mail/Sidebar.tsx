@@ -89,7 +89,10 @@ export function Sidebar({
     >
       {/* Logo & Toggle */}
       <div className="h-14 flex items-center px-4 border-b border-border/40 justify-between">
-        <div className="flex items-center overflow-hidden">
+        <button 
+          onClick={onCompose}
+          className="flex items-center overflow-hidden hover:opacity-80 transition-opacity"
+        >
           {!isCollapsed && (
             <motion.span
               initial={{ opacity: 0 }}
@@ -103,7 +106,7 @@ export function Sidebar({
           {isCollapsed && (
             <span className="text-base font-bold text-primary">To.</span>
           )}
-        </div>
+        </button>
         <motion.button
           onClick={onToggleCollapse}
           whileHover={{ scale: 1.05 }}
