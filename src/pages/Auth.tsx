@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { Mail, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import logo from "@/assets/logo.png";
 
 type AuthMode = "login" | "signup";
 
@@ -63,11 +64,8 @@ const Auth = () => {
         >
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-orange-500 shadow-lg mb-4">
-              <Mail className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-foreground">Orange Mail</h1>
-            <p className="text-sm text-muted-foreground mt-1">
+            <img src={logo} alt="To.orange" className="h-10 mx-auto mb-4" />
+            <p className="text-sm text-muted-foreground">
               소중한 사람에게 마음을 전하세요
             </p>
           </div>
