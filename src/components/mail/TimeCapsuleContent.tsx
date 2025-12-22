@@ -85,7 +85,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
       </header>
 
       <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-lg mx-auto space-y-6">
           {/* 상단 타이틀 + CTA */}
           <section className="flex items-start justify-between">
             <div>
