@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { 
   ChevronLeft, Home, Sparkles, Cake, Heart, Calendar, 
-  ChevronDown, Plus, X, Info, Loader2
+  ChevronDown, Plus, X, Info, Loader2, User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useFamilyMembers } from "@/hooks/useFamilyMembers";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -26,6 +32,10 @@ const capsuleTypes = [
   { id: "birthday", label: "생일 축하", icon: Cake, iconBg: "bg-muted", iconColor: "text-muted-foreground" },
   { id: "encouragement", label: "응원 메시지", icon: Heart, iconBg: "bg-muted", iconColor: "text-muted-foreground" },
   { id: "anniversary", label: "기념일", icon: Calendar, iconBg: "bg-muted", iconColor: "text-muted-foreground" },
+];
+
+const relationOptions = [
+  "배우자", "자녀", "부모", "형제", "친구", "친척", "지인", "기타"
 ];
 
 export default function TimeCapsuleCreate() {
@@ -40,6 +50,13 @@ export default function TimeCapsuleCreate() {
   const [participants, setParticipants] = useState<string[]>([]);
   const [newParticipant, setNewParticipant] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // 새 수신자 추가 모달 상태
+  const [showAddRecipientModal, setShowAddRecipientModal] = useState(false);
+  const [newRecipientName, setNewRecipientName] = useState("");
+  const [newRecipientPhone, setNewRecipientPhone] = useState("");
+  const [newRecipientEmail, setNewRecipientEmail] = useState("");
+  const [newRecipientRelation, setNewRecipientRelation] = useState("");
 
   const handleAddParticipant = () => {
     if (newParticipant.trim() && !participants.includes(newParticipant.trim())) {
@@ -50,6 +67,25 @@ export default function TimeCapsuleCreate() {
 
   const handleRemoveParticipant = (participant: string) => {
     setParticipants(participants.filter(p => p !== participant));
+  };
+
+  const handleAddNewRecipient = () => {
+    if (!newRecipientName.trim()) {
+      toast.error("이름을 입력해주세요");
+      return;
+    }
+    if (!newRecipientRelation) {
+      toast.error("관계를 선택해주세요");
+      return;
+    }
+    
+    // 실제로는 DB에 저장
+    toast.success(`${newRecipientName}님이 수신자로 등록되었습니다`);
+    setShowAddRecipientModal(false);
+    setNewRecipientName("");
+    setNewRecipientPhone("");
+    setNewRecipientEmail("");
+    setNewRecipientRelation("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -164,7 +200,7 @@ export default function TimeCapsuleCreate() {
               </Select>
               <button 
                 type="button"
-                onClick={() => navigate("/")} // 실제로는 수신자 추가 모달
+                onClick={() => setShowAddRecipientModal(true)}
                 className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80 mt-2"
               >
                 <Plus className="w-4 h-4" />
@@ -285,6 +321,125 @@ export default function TimeCapsuleCreate() {
           </form>
         </main>
       </div>
+
+      {/* 새 수신자 추가 모달 */}
+      <Dialog open={showAddRecipientModal} onOpenChange={setShowAddRecipientModal}>
+        <DialogContent className="max-w-md rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User className="w-5 h-5 text-primary" />
+              새 수신자 등록
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 pt-2">
+            {/* 이름 */}
+            <div>
+              <Label htmlFor="recipientName" className="text-sm font-medium text-foreground mb-1.5 block">
+                이름 <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="recipientName"
+                type="text"
+                placeholder="받는 분의 이름"
+                value={newRecipientName}
+                onChange={(e) => setNewRecipientName(e.target.value)}
+                className="w-full"
+              />
+            </div>
+
+            {/* 관계 - 사이드바 편지함 드롭다운 */}
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-1.5 block">
+                관계 <span className="text-destructive">*</span>
+              </Label>
+              <Select value={newRecipientRelation} onValueChange={setNewRecipientRelation}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="관계를 선택해주세요" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50">
+                  {/* 사이드바 편지함 목록 (기존 가족 구성원) */}
+                  {familyMembers.length > 0 && (
+                    <>
+                      <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground bg-muted/50">
+                        내 편지함
+                      </div>
+                      {familyMembers.map((member) => (
+                        <SelectItem key={member.id} value={member.relation}>
+                          {member.name} ({member.relation})
+                        </SelectItem>
+                      ))}
+                      <div className="my-1 border-t border-border" />
+                    </>
+                  )}
+                  {/* 일반 관계 옵션 */}
+                  <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground bg-muted/50">
+                    직접 선택
+                  </div>
+                  {relationOptions.map((relation) => (
+                    <SelectItem key={relation} value={relation}>
+                      {relation}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* 휴대폰 번호 */}
+            <div>
+              <Label htmlFor="recipientPhone" className="text-sm font-medium text-foreground mb-1.5 block">
+                휴대폰 번호
+              </Label>
+              <Input
+                id="recipientPhone"
+                type="tel"
+                placeholder="010-0000-0000"
+                value={newRecipientPhone}
+                onChange={(e) => setNewRecipientPhone(e.target.value)}
+                className="w-full"
+              />
+            </div>
+
+            {/* 이메일 */}
+            <div>
+              <Label htmlFor="recipientEmail" className="text-sm font-medium text-foreground mb-1.5 block">
+                이메일
+              </Label>
+              <Input
+                id="recipientEmail"
+                type="email"
+                placeholder="example@email.com"
+                value={newRecipientEmail}
+                onChange={(e) => setNewRecipientEmail(e.target.value)}
+                className="w-full"
+              />
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              휴대폰 번호 또는 이메일 중 하나는 입력해주세요
+            </p>
+
+            {/* 버튼 */}
+            <div className="flex gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowAddRecipientModal(false)}
+                className="flex-1"
+              >
+                취소
+              </Button>
+              <Button
+                type="button"
+                onClick={handleAddNewRecipient}
+                className="flex-1 bg-primary hover:bg-primary/90"
+              >
+                등록하기
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
