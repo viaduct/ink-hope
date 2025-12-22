@@ -16,6 +16,7 @@ import {
   DialogTitle 
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import completedTreeImage from "@/assets/emoticons/completed-tree.png";
 
 // 목업 데이터
 const mockCapsuleData: Record<string, {
@@ -106,6 +107,7 @@ export default function TimeCapsuleDetail() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [copied, setCopied] = useState(false);
   const [inviteInput, setInviteInput] = useState("");
+  const [inviteRelation, setInviteRelation] = useState("");
 
   const capsule = mockCapsuleData[id || "1"];
 
@@ -276,6 +278,28 @@ export default function TimeCapsuleDetail() {
             </div>
           </motion.section>
 
+          {/* 완성된 나무 (전달 완료 시) */}
+          {capsule.status === "delivered" && (
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-gradient-to-b from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-200/60 shadow-sm"
+            >
+              <div className="text-center">
+                <h3 className="font-semibold text-foreground mb-2">완성된 오렌지나무</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {capsule.letterCount}통의 편지가 모여 아름다운 나무가 되었어요
+                </p>
+                <img 
+                  src={completedTreeImage} 
+                  alt="완성된 오렌지나무" 
+                  className="w-48 h-48 mx-auto object-contain"
+                />
+              </div>
+            </motion.section>
+          )}
+
           {/* 내 편지 */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -285,12 +309,14 @@ export default function TimeCapsuleDetail() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-foreground">내 편지</h3>
-              <button 
-                onClick={() => navigate(`/time-capsule/${id}/write`)}
-                className="text-sm text-primary hover:text-primary/80 font-medium"
-              >
-                {capsule.myLetter ? "수정하기" : "작성하기"}
-              </button>
+              {capsule.status !== "delivered" && (
+                <button 
+                  onClick={() => navigate(`/time-capsule/${id}/write`)}
+                  className="text-sm text-primary hover:text-primary/80 font-medium"
+                >
+                  {capsule.myLetter ? "수정하기" : "작성하기"}
+                </button>
+              )}
             </div>
             {capsule.myLetter ? (
               <div className="relative bg-primary/5 rounded-xl p-4 max-h-32 overflow-hidden">
@@ -301,13 +327,17 @@ export default function TimeCapsuleDetail() {
               </div>
             ) : (
               <div className="bg-muted/50 rounded-xl p-6 text-center">
-                <p className="text-muted-foreground text-sm mb-3">아직 편지를 작성하지 않았어요</p>
-                <Button 
-                  onClick={() => navigate(`/time-capsule/${id}/write`)}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  편지 쓰기
-                </Button>
+                <p className="text-muted-foreground text-sm mb-3">
+                  {capsule.status === "delivered" ? "편지를 작성하지 않았어요" : "아직 편지를 작성하지 않았어요"}
+                </p>
+                {capsule.status !== "delivered" && (
+                  <Button 
+                    onClick={() => navigate(`/time-capsule/${id}/write`)}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    편지 쓰기
+                  </Button>
+                )}
               </div>
             )}
           </motion.section>
@@ -402,6 +432,28 @@ export default function TimeCapsuleDetail() {
 
           <div className="border-t border-border pt-6">
             <p className="text-sm font-medium text-foreground mb-3">직접 초대하기</p>
+            
+            {/* 관계 선택 */}
+            <div className="mb-4">
+              <p className="text-xs text-muted-foreground mb-2">참여자와의 관계</p>
+              <div className="flex flex-wrap gap-2">
+                {["배우자", "자녀", "부모", "형제/자매", "친구", "지인", "기타"].map((relation) => (
+                  <button
+                    key={relation}
+                    type="button"
+                    onClick={() => setInviteRelation(relation)}
+                    className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                      inviteRelation === relation
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    }`}
+                  >
+                    {relation}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="flex gap-2">
               <Input 
                 type="text" 
@@ -410,10 +462,16 @@ export default function TimeCapsuleDetail() {
                 onChange={(e) => setInviteInput(e.target.value)}
                 className="flex-1"
               />
-              <Button className="px-5 bg-primary hover:bg-primary/90">
+              <Button 
+                className="px-5 bg-primary hover:bg-primary/90"
+                disabled={!inviteRelation}
+              >
                 초대
               </Button>
             </div>
+            {!inviteRelation && inviteInput && (
+              <p className="text-xs text-destructive mt-2">관계를 먼저 선택해주세요</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
