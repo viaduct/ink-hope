@@ -85,6 +85,22 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/time-capsule/create"
+                element={
+                  <ProtectedRoute>
+                    <TimeCapsuleCreate />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/time-capsule/:id/write"
+                element={
+                  <ProtectedRoute>
+                    <TimeCapsuleWrite />
+                  </ProtectedRoute>
+                }
+              />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
