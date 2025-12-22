@@ -16,6 +16,7 @@ import {
   DialogTitle 
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { AppLayout } from "@/components/layout/AppLayout";
 import completedTreeImage from "@/assets/emoticons/completed-tree.png";
 
 // 목업 데이터
@@ -132,12 +133,12 @@ export default function TimeCapsuleDetail() {
   };
 
   return (
-    <>
+    <AppLayout>
       <Helmet>
         <title>{capsule.title} - Orange Mail</title>
       </Helmet>
 
-      <div className="min-h-screen bg-muted/30">
+      <div className="h-full overflow-auto bg-muted/30">
         {/* Header */}
         <header className="bg-background border-b border-border/60 sticky top-0 z-50">
           <div className="max-w-lg mx-auto px-6 h-14 flex items-center justify-between">
@@ -474,6 +475,6 @@ export default function TimeCapsuleDetail() {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </AppLayout>
   );
 }

@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { TimeCapsuleContent } from "@/components/mail/TimeCapsuleContent";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 export default function TimeCapsuleMain() {
   const navigate = useNavigate();
 
   return (
-    <>
+    <AppLayout>
       <Helmet>
         <title>타임캡슐 - Orange Mail</title>
         <meta
@@ -16,9 +17,9 @@ export default function TimeCapsuleMain() {
         <link rel="canonical" href={`${window.location.origin}/time-capsule`} />
       </Helmet>
 
-      <main className="min-h-screen">
+      <div className="h-full overflow-auto">
         <TimeCapsuleContent onClose={() => navigate("/")} />
-      </main>
-    </>
+      </div>
+    </AppLayout>
   );
 }

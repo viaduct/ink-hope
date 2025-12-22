@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useFamilyMembers } from "@/hooks/useFamilyMembers";
 import { toast } from "sonner";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const capsuleTypes = [
   { id: "release", label: "출소 축하", icon: Home, iconBg: "bg-primary/10", iconColor: "text-primary" },
@@ -70,12 +71,12 @@ export default function TimeCapsuleCreate() {
   };
 
   return (
-    <>
+    <AppLayout>
       <Helmet>
         <title>새 타임캡슐 만들기 - Orange Mail</title>
       </Helmet>
 
-      <div className="min-h-screen bg-muted/30">
+      <div className="h-full overflow-auto bg-muted/30">
         {/* Header */}
         <header className="bg-background border-b border-border/60 sticky top-0 z-50">
           <div className="max-w-lg mx-auto px-6 h-14 flex items-center justify-between">
@@ -284,6 +285,6 @@ export default function TimeCapsuleCreate() {
           </form>
         </main>
       </div>
-    </>
+    </AppLayout>
   );
 }

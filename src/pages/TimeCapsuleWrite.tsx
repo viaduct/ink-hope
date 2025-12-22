@@ -22,6 +22,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const aiStyles = [
   { id: "warm", emoji: "🌸", label: "더 따뜻하게", description: "감성적이고 부드러운 표현으로" },
@@ -95,12 +96,12 @@ export default function TimeCapsuleWrite() {
   };
 
   return (
-    <>
+    <AppLayout>
       <Helmet>
         <title>편지 작성하기 - Orange Mail</title>
       </Helmet>
 
-      <div className="min-h-screen bg-muted/30 flex flex-col">
+      <div className="h-full overflow-auto bg-muted/30 flex flex-col">
         {/* Header */}
         <header className="bg-background border-b border-border/60 sticky top-0 z-50">
           <div className="max-w-lg mx-auto px-6 h-14 flex items-center justify-between">
@@ -310,6 +311,6 @@ export default function TimeCapsuleWrite() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </AppLayout>
   );
 }
