@@ -2,8 +2,9 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { 
   Leaf, Calendar, ChevronRight, Plus, 
-  Home, Scale, Users, GraduationCap, Send, 
-  Heart, PenLine, ChevronDown
+  Home, Scale, Users, GraduationCap,
+  Heart, PenLine, ChevronDown, Cake, 
+  Briefcase, Stethoscope, TreeDeciduous
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddSpecialDayModal } from "./AddSpecialDayModal";
@@ -31,32 +32,100 @@ interface OrangeTreeContentProps {
   onCompose?: () => void;
 }
 
-// 소중한 날들 타입 아이콘
-const getSpecialDayIcon = (type: SpecialDay["type"]) => {
-  switch (type) {
-    case "release": return <Home className="w-4 h-4 text-orange-500" />;
-    case "parole": return <Home className="w-4 h-4 text-orange-500" />;
-    case "birthday": return <Calendar className="w-4 h-4 text-pink-500" />;
-    case "anniversary": return <Heart className="w-4 h-4 text-red-500" />;
-    case "visit": return <Users className="w-4 h-4 text-blue-500" />;
-    case "trial": return <Scale className="w-4 h-4 text-gray-500" />;
-    case "education": return <GraduationCap className="w-4 h-4 text-purple-500" />;
-    default: return <Calendar className="w-4 h-4 text-gray-500" />;
-  }
+// 소중한 날들 타입별 아이콘 및 색상 매핑
+const specialDayStyles: Record<SpecialDay["type"], { 
+  icon: React.ReactNode; 
+  bg: string; 
+  iconColor: string;
+  label: string;
+}> = {
+  release: { 
+    icon: <Home className="w-4 h-4" />, 
+    bg: "bg-gradient-to-br from-orange-100 to-amber-100", 
+    iconColor: "text-orange-600",
+    label: "출소"
+  },
+  parole: { 
+    icon: <Home className="w-4 h-4" />, 
+    bg: "bg-gradient-to-br from-orange-100 to-amber-100", 
+    iconColor: "text-orange-600",
+    label: "가석방"
+  },
+  birthday: { 
+    icon: <Cake className="w-4 h-4" />, 
+    bg: "bg-gradient-to-br from-pink-100 to-rose-100", 
+    iconColor: "text-pink-600",
+    label: "생일"
+  },
+  anniversary: { 
+    icon: <Heart className="w-4 h-4" />, 
+    bg: "bg-gradient-to-br from-red-100 to-pink-100", 
+    iconColor: "text-red-500",
+    label: "기념일"
+  },
+  visit: { 
+    icon: <Users className="w-4 h-4" />, 
+    bg: "bg-gradient-to-br from-blue-100 to-sky-100", 
+    iconColor: "text-blue-600",
+    label: "면회"
+  },
+  trial: { 
+    icon: <Scale className="w-4 h-4" />, 
+    bg: "bg-gradient-to-br from-slate-100 to-gray-100", 
+    iconColor: "text-slate-600",
+    label: "재판"
+  },
+  education: { 
+    icon: <GraduationCap className="w-4 h-4" />, 
+    bg: "bg-gradient-to-br from-purple-100 to-violet-100", 
+    iconColor: "text-purple-600",
+    label: "교육"
+  },
+  other: { 
+    icon: <Calendar className="w-4 h-4" />, 
+    bg: "bg-gradient-to-br from-gray-100 to-slate-100", 
+    iconColor: "text-gray-600",
+    label: "기타"
+  },
 };
 
-const getSpecialDayLabel = (type: SpecialDay["type"]) => {
-  switch (type) {
-    case "release": return "출소";
-    case "parole": return "가석방";
-    case "birthday": return "생일";
-    case "anniversary": return "기념일";
-    case "visit": return "면회";
-    case "trial": return "재판";
-    case "education": return "교육";
-    default: return "기타";
-  }
+// 소중한 날들 아이콘 컴포넌트
+const SpecialDayIcon = ({ type }: { type: SpecialDay["type"] }) => {
+  const style = specialDayStyles[type] || specialDayStyles.other;
+  return (
+    <div className={`w-9 h-9 rounded-xl ${style.bg} flex items-center justify-center shadow-sm`}>
+      <span className={style.iconColor}>{style.icon}</span>
+    </div>
+  );
 };
+
+// 잎사귀 아이콘 컴포넌트
+const LeafIcon = () => (
+  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-sm">
+    <Leaf className="w-4 h-4 text-white" />
+  </div>
+);
+
+// 열매(오렌지) 아이콘 컴포넌트
+const OrangeIcon = ({ size = "md" }: { size?: "sm" | "md" }) => {
+  const sizeClasses = size === "sm" ? "w-6 h-6" : "w-8 h-8";
+  const iconSize = size === "sm" ? "w-3 h-3" : "w-4 h-4";
+  return (
+    <div className={`${sizeClasses} rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center shadow-sm relative`}>
+      <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-1 h-1.5 bg-green-500 rounded-full" />
+      <svg viewBox="0 0 24 24" fill="none" className={iconSize}>
+        <circle cx="12" cy="12" r="8" fill="white" fillOpacity="0.3" />
+      </svg>
+    </div>
+  );
+};
+
+// 나무 아이콘 컴포넌트 (헤더용)
+const TreeIcon = () => (
+  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center shadow-sm">
+    <TreeDeciduous className="w-4 h-4 text-white" />
+  </div>
+);
 
 // D-Day 계산
 const getDaysRemaining = (dateStr: string): number => {
@@ -141,8 +210,10 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
         
         {/* 나무 선택 드롭다운 (중앙) */}
         <Select value={selectedTreeId} onValueChange={setSelectedTreeId}>
-          <SelectTrigger className="w-auto h-9 gap-2 border border-border bg-white font-medium px-4 rounded-full">
-            <Leaf className="w-4 h-4 text-primary" />
+          <SelectTrigger className="w-auto h-9 gap-2 border border-border bg-white font-medium px-4 rounded-full shadow-sm hover:shadow transition-shadow">
+            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center">
+              <TreeDeciduous className="w-3 h-3 text-white" />
+            </div>
             <SelectValue />
             <ChevronDown className="w-4 h-4 text-muted-foreground" />
           </SelectTrigger>
@@ -167,11 +238,15 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-4 bg-orange-50 rounded-xl border border-orange-100 p-4"
+            className="flex items-center gap-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200/60 p-4"
           >
-            <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-lg">🍊</span>
-            </div>
+            <motion.div 
+              className="flex-shrink-0"
+              animate={{ rotate: [0, -5, 5, -5, 0] }}
+              transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
+            >
+              <OrangeIcon size="md" />
+            </motion.div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground">
                 이번 주 아직 편지를 보내지 않았어요
@@ -183,7 +258,7 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
             <Button 
               size="sm" 
               onClick={onCompose}
-              className="bg-primary hover:bg-primary/90 text-white flex-shrink-0"
+              className="bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white flex-shrink-0 shadow-sm"
             >
               <PenLine className="w-4 h-4 mr-1" />
               편지 쓰기
@@ -207,9 +282,11 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
                 </div>
                 {selectedTree.daysRemaining && (
                   <div className="text-right">
-                    <div className="flex items-center gap-1 text-primary">
-                      <Calendar className="w-4 h-4" />
-                      <span className="font-bold">D-{selectedTree.daysRemaining}</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary/10 to-orange-100 flex items-center justify-center">
+                        <Calendar className="w-3.5 h-3.5 text-primary" />
+                      </div>
+                      <span className="font-bold text-primary">D-{selectedTree.daysRemaining}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-0.5">출소 예정일</p>
                   </div>
@@ -266,10 +343,10 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
             </div>
 
             {/* 하단 통계 (잎사귀 + 열매) */}
-            <div className="grid grid-cols-2 border-t border-border/40">
+            <div className="grid grid-cols-2 border-t border-border/40 bg-gradient-to-b from-white to-gray-50/50">
               <div className="p-4 text-center border-r border-border/40">
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <Leaf className="w-4 h-4 text-green-500" />
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <LeafIcon />
                   <span className="text-2xl font-bold text-foreground">{selectedTree.totalLetters}</span>
                   <span className="text-sm text-muted-foreground">장</span>
                 </div>
@@ -279,8 +356,8 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
                 </p>
               </div>
               <div className="p-4 text-center">
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <OrangeIcon size="md" />
                   <span className="text-2xl font-bold text-foreground">{allTreeSpecialDays.length}</span>
                   <span className="text-sm text-muted-foreground">개</span>
                 </div>
@@ -298,13 +375,13 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
             className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
           >
             <div className="px-5 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+              <div className="flex items-center gap-3">
+                <OrangeIcon size="sm" />
                 <h3 className="font-semibold text-foreground">소중한 날들</h3>
               </div>
               <button 
                 onClick={() => setShowAddDayModal(true)}
-                className="text-sm text-primary font-medium flex items-center gap-1 hover:underline"
+                className="text-sm text-primary font-medium flex items-center gap-1 hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 새 날짜 추가
@@ -322,9 +399,7 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
                       className="px-5 py-3 flex items-center gap-3 hover:bg-muted/30 transition-colors cursor-pointer"
                       onClick={() => handleDayClick(day)}
                     >
-                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                        {getSpecialDayIcon(day.type)}
-                      </div>
+                      <SpecialDayIcon type={day.type} />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-foreground text-sm">{day.title}</p>
                         <p className="text-xs text-muted-foreground">{day.date}</p>
@@ -333,7 +408,9 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
                         <p className={`text-sm font-semibold ${daysRemaining <= 7 ? 'text-primary' : 'text-foreground'}`}>
                           D-{daysRemaining}
                         </p>
-                        <p className="text-xs text-muted-foreground">{getSpecialDayLabel(day.type)}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {(specialDayStyles[day.type] || specialDayStyles.other).label}
+                        </p>
                       </div>
                       <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     </div>
@@ -372,9 +449,15 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
             <div className="divide-y divide-border/40">
               {recentActivities.slice(0, 2).map((activity) => (
                 <div key={activity.id} className="px-5 py-3 flex items-center gap-3">
-                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                    activity.type === "sent" ? "bg-orange-500" : "bg-green-500"
-                  }`}></span>
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    activity.type === "sent" 
+                      ? "bg-gradient-to-br from-orange-100 to-amber-100" 
+                      : "bg-gradient-to-br from-green-100 to-emerald-100"
+                  }`}>
+                    <div className={`w-2 h-2 rounded-full ${
+                      activity.type === "sent" ? "bg-orange-500" : "bg-green-500"
+                    }`} />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-sm">
                       <span className="font-medium text-foreground">
@@ -386,7 +469,7 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
                     </span>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className={`text-xs px-2 py-0.5 rounded ${
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                       activity.type === "sent" 
                         ? "bg-orange-100 text-orange-600" 
                         : "bg-green-100 text-green-600"
