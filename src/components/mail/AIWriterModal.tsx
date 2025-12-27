@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 type WriterType = "intro" | "middle" | "conclusion";
@@ -93,42 +92,44 @@ const modalConfig = {
   },
 };
 
-const promptMap: Record<string, Record<string, string>> = {
+// Static content templates based on type and option
+const staticContent: Record<string, Record<string, string>> = {
   intro: {
-    warm_greeting: "따뜻하고 다정한 인사로 시작하는 처음",
-    ask_wellbeing: "상대방의 안부를 묻는 처음",
-    reason: "편지를 쓰게 된 계기를 말하는 처음",
-    seasonal: "계절과 날씨를 언급하며 시작하는 처음",
-    long_time: "오랜만에 연락한다는 내용의 처음",
+    warm_greeting: "안녕하세요, 오랜만에 펜을 들었어요. 요즘 잘 지내고 계신가요? 항상 마음속으로 응원하고 있답니다.",
+    ask_wellbeing: "건강은 어떠세요? 요즘 날씨가 많이 추워졌는데, 감기 조심하시고 따뜻하게 지내셨으면 좋겠어요.",
+    reason: "오늘 문득 당신 생각이 나서 편지를 쓰게 됐어요. 하고 싶은 이야기가 많아서 이렇게 펜을 들었답니다.",
+    seasonal: "어느새 계절이 바뀌었네요. 창밖으로 보이는 풍경을 보면서 당신 생각이 많이 났어요.",
+    long_time: "오랜만에 연락드려요. 그동안 어떻게 지내셨나요? 항상 안부가 궁금했어요.",
+    default: "안녕하세요, 오늘도 당신을 생각하며 편지를 씁니다.",
   },
   middle: {
-    update: "최근 근황을 전하는 본론",
-    gratitude: "감사의 마음을 표현하는 본론",
-    missing: "보고싶은 마음을 전하는 본론",
-    cheer: "응원과 격려의 메시지를 담은 본론",
-    memory: "함께했던 추억을 이야기하는 본론",
-    daily: "일상을 공유하는 본론",
+    update: "요즘 저는 잘 지내고 있어요. 매일 바쁘게 지내다 보니 시간이 정말 빠르게 가는 것 같아요. 가족들도 모두 건강하게 잘 지내고 있답니다.",
+    gratitude: "항상 고마워요. 멀리 있어도 마음만은 가까이 있다는 걸 알아요. 당신 덕분에 매일 힘을 얻고 있어요.",
+    missing: "많이 보고 싶어요. 함께했던 시간들이 자꾸 생각나요. 다시 만날 그날을 손꼽아 기다리고 있어요.",
+    cheer: "힘내세요! 당신은 할 수 있어요. 저도 여기서 열심히 응원하고 있을게요. 우리 함께 이겨내요.",
+    memory: "지난번에 함께했던 시간이 자꾸 떠올라요. 그때 정말 행복했었죠. 그 기억이 지금도 저에게 큰 힘이 돼요.",
+    daily: "요즘 일상을 전해드릴게요. 아침에 일어나면 창밖을 보며 당신 생각을 해요. 저녁에는 오늘 하루를 되돌아보며 편안하게 지내고 있어요.",
+    default: "전하고 싶은 이야기가 많아요. 하나하나 적다 보니 마음이 따뜻해지네요.",
   },
   conclusion: {
-    health: "건강을 당부하는 마무리",
-    promise: "다시 만날 약속을 하는 마무리",
-    love: "사랑을 표현하는 마무리",
-    encourage: "응원과 격려로 마무리",
-    waiting: "기다리겠다는 마음을 담은 마무리",
-    hope: "희망적인 메시지로 마무리",
+    health: "건강 잘 챙기세요. 무엇보다 건강이 제일 중요해요. 맛있는 것 많이 먹고, 충분히 쉬면서 지내세요.",
+    promise: "다음에 만나면 하고 싶은 것들이 정말 많아요. 그날을 기다리며 오늘도 열심히 지낼게요. 우리 꼭 다시 만나요.",
+    love: "사랑해요. 이 마음 변하지 않을 거예요. 항상 당신 곁에 있을게요.",
+    encourage: "힘든 일이 있어도 포기하지 마세요. 저는 언제나 당신 편이에요. 함께 이겨낼 수 있어요.",
+    waiting: "기다릴게요. 서두르지 않아도 괜찮아요. 천천히, 그리고 건강하게 돌아와 주세요.",
+    hope: "좋은 날이 분명 올 거예요. 희망을 잃지 말아요. 우리의 내일은 오늘보다 더 밝을 거예요.",
+    default: "항상 응원하고 있어요. 다음에 또 편지할게요.",
   },
 };
 
-export function AIWriterModal({ 
+export function AIWriterModal({
   type,
-  isOpen, 
-  onClose, 
+  isOpen,
+  onClose,
   onInsert,
-  currentContent = ""
 }: AIWriterModalProps) {
   const [userInput, setUserInput] = useState("");
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const config = modalConfig[type];
 
@@ -136,41 +137,22 @@ export function AIWriterModal({
     setSelectedOption(selectedOption === value ? null : value);
   };
 
-  const handleGenerate = async () => {
-    setIsLoading(true);
-    
-    try {
-      let prompt = userInput;
-      
-      if (!prompt && selectedOption) {
-        prompt = promptMap[type][selectedOption] || selectedOption;
-      }
+  const handleGenerate = () => {
+    // Get static content based on selected option or use user input
+    let content = "";
 
-      const { data, error } = await supabase.functions.invoke('ai-letter-helper', {
-        body: { 
-          type: type,
-          context: { 
-            userInput: prompt,
-            currentContent 
-          }
-        }
-      });
-
-      if (error) throw error;
-      
-      if (data.content) {
-        onInsert(data.content);
-        toast.success(`${config.title.replace(' 작성', '')} 부분이 추가되었습니다!`);
-        handleClose();
-      } else if (data.error) {
-        toast.error(data.error);
-      }
-    } catch (error) {
-      console.error('Error generating content:', error);
-      toast.error("생성에 실패했습니다. 다시 시도해주세요.");
-    } finally {
-      setIsLoading(false);
+    if (selectedOption) {
+      content = staticContent[type][selectedOption] || staticContent[type].default;
+    } else if (userInput) {
+      // If user provided custom input, create a simple response
+      content = userInput;
+    } else {
+      content = staticContent[type].default;
     }
+
+    onInsert(content);
+    toast.success(`${config.title.replace(' 작성', '')} 부분이 추가되었습니다!`);
+    handleClose();
   };
 
   const handleClose = () => {
@@ -202,16 +184,6 @@ export function AIWriterModal({
         </div>
 
         <div className="px-6 pb-6 -mt-4 space-y-5">
-          {/* 현재 편지 내용 미리보기 */}
-          {currentContent && (
-            <div className="bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-950/40 dark:to-gray-950/40 rounded-2xl p-4 border border-slate-100/50 dark:border-slate-800/30 shadow-sm">
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">현재 편지 내용</p>
-              <p className="text-foreground text-sm leading-relaxed line-clamp-2">
-                {currentContent.substring(0, 100)}{currentContent.length > 100 ? '...' : ''}
-              </p>
-            </div>
-          )}
-
           {/* 카드 형태의 메인 컨텐츠 */}
           <div className="bg-card rounded-2xl p-5 shadow-sm border border-border/50 space-y-5">
             {/* 사용자 입력 */}
@@ -265,26 +237,16 @@ export function AIWriterModal({
               variant="ghost"
               onClick={handleClose}
               className="flex-1 h-12 text-base font-medium hover:bg-muted"
-              disabled={isLoading}
             >
               취소
             </Button>
             <Button
               onClick={handleGenerate}
-              disabled={isLoading || (!userInput && !selectedOption)}
+              disabled={!userInput && !selectedOption}
               className={`flex-[2] h-12 text-base font-semibold bg-gradient-to-r ${config.buttonGradientFrom} ${config.buttonGradientTo} hover:opacity-90 text-white border-0 shadow-lg ${config.shadowColor} disabled:opacity-50 disabled:shadow-none`}
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  생성 중...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  {config.buttonText}
-                </>
-              )}
+              <Sparkles className="w-5 h-5 mr-2" />
+              {config.buttonText}
             </Button>
           </div>
         </div>

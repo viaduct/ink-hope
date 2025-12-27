@@ -1,6 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
+import { orangeTrees as initialOrangeTrees } from "@/data/mockData";
+
+const STORAGE_KEY = "ink-hope-orange-trees";
 
 export interface OrangeTreeDB {
   id: string;
@@ -16,57 +18,92 @@ export interface OrangeTreeDB {
   updated_at: string;
 }
 
+function loadFromStorage(userId: string): OrangeTreeDB[] {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      return parsed.filter((t: OrangeTreeDB) => t.user_id === userId && !t.is_archived);
+    } catch {
+      return [];
+    }
+  }
+  // Initialize with mock data on first load
+  const initial: OrangeTreeDB[] = initialOrangeTrees.map((t) => ({
+    id: t.id,
+    user_id: userId,
+    family_member_id: t.personId,
+    person_name: t.personName,
+    relation: t.relation,
+    sent_letters: t.sentLetters,
+    received_letters: t.receivedLetters,
+    total_letters: t.totalLetters,
+    is_archived: t.isArchived,
+    created_at: t.createdAt,
+    updated_at: new Date().toISOString(),
+  }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+  return initial;
+}
+
+function saveToStorage(trees: OrangeTreeDB[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(trees));
+}
+
 export function useOrangeTrees() {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
+  const [orangeTrees, setOrangeTrees] = useState<OrangeTreeDB[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const query = useQuery({
-    queryKey: ["orange_trees", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      
-      const { data, error } = await supabase
-        .from("orange_trees")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("is_archived", false)
-        .order("created_at", { ascending: false });
+  useEffect(() => {
+    if (user) {
+      const trees = loadFromStorage(user.id);
+      setOrangeTrees(trees.filter((t) => !t.is_archived));
+      setIsLoading(false);
+    } else {
+      setOrangeTrees([]);
+      setIsLoading(false);
+    }
+  }, [user]);
 
-      if (error) throw error;
-      return data as OrangeTreeDB[];
+  const incrementLetters = useCallback(
+    ({ treeId, type }: { treeId: string; type: "sent" | "received" }) => {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const all: OrangeTreeDB[] = stored ? JSON.parse(stored) : [];
+      const index = all.findIndex((t) => t.id === treeId);
+
+      if (index !== -1) {
+        if (type === "sent") {
+          all[index].sent_letters += 1;
+        } else {
+          all[index].received_letters += 1;
+        }
+        all[index].total_letters = all[index].sent_letters + all[index].received_letters;
+        all[index].updated_at = new Date().toISOString();
+
+        saveToStorage(all);
+        setOrangeTrees((prev) =>
+          prev.map((t) =>
+            t.id === treeId
+              ? {
+                  ...t,
+                  sent_letters: all[index].sent_letters,
+                  received_letters: all[index].received_letters,
+                  total_letters: all[index].total_letters,
+                }
+              : t
+          )
+        );
+      }
     },
-    enabled: !!user,
-  });
-
-  // 편지 수 증가
-  const incrementLettersMutation = useMutation({
-    mutationFn: async ({ treeId, type }: { treeId: string; type: "sent" | "received" }) => {
-      const tree = query.data?.find((t) => t.id === treeId);
-      if (!tree) throw new Error("나무를 찾을 수 없습니다");
-
-      const updates = type === "sent"
-        ? { sent_letters: tree.sent_letters + 1 }
-        : { received_letters: tree.received_letters + 1 };
-
-      const { data, error } = await supabase
-        .from("orange_trees")
-        .update(updates)
-        .eq("id", treeId)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data as OrangeTreeDB;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orange_trees"] });
-    },
-  });
+    []
+  );
 
   return {
-    orangeTrees: query.data || [],
-    isLoading: query.isLoading,
-    error: query.error,
-    incrementLetters: incrementLettersMutation.mutate,
+    orangeTrees,
+    isLoading,
+    error,
+    incrementLetters,
   };
 }
