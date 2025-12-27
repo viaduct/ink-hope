@@ -18,7 +18,7 @@ interface TimeCapsuleContentProps {
 const mockInvitations = [
   {
     id: 1,
-    title: "아버지 출소 축하 편지 모음",
+    title: "아버지 출소 축하 쪽지 모음",
     invitedBy: "어머니",
     daysLeft: 178,
     letterCount: 3,
@@ -72,14 +72,25 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/30">
       {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-background/80 backdrop-blur-sm flex items-center justify-between px-6">
-        <div className="flex items-center gap-3">
+      <header className="h-14 border-b border-border/40 bg-background/80 backdrop-blur-sm flex items-center justify-between px-4">
+        <div className="flex items-center gap-2">
           <Clock className="w-5 h-5 text-primary" />
           <h1 className="text-lg font-bold text-foreground">타임캡슐</h1>
         </div>
-        <button onClick={onClose} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-          편지함으로
-        </button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/about/time-capsule")}
+            className="text-primary hover:text-primary/80 hover:bg-primary/10 gap-1"
+          >
+            <HelpCircle className="w-4 h-4" />
+            <span className="text-sm">소개</span>
+          </Button>
+          <button onClick={onClose} className="text-sm text-muted-foreground hover:text-foreground transition-colors px-2">
+            편지함
+          </button>
+        </div>
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 md:p-6">
@@ -125,7 +136,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 >
                   <div className="pt-5 mt-5 border-t border-primary/20">
                     <p className="text-muted-foreground mb-6 leading-relaxed">
-                      가족과 지인이 <span className="text-primary font-medium">함께 편지를 모아</span><br />
+                      가족과 지인이 <span className="text-primary font-medium">함께 쪽지를 모아</span><br />
                       출소일, 생일, 기념일 등 소중한 날에 한꺼번에 전달합니다.<br />
                       흩어진 응원이 하나의 선물이 됩니다.
                     </p>
@@ -150,7 +161,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                           <Users className="w-6 h-6 text-primary" />
                         </div>
                         <p className="text-xs text-muted-foreground mb-1">STEP 2</p>
-                        <p className="text-sm font-medium text-foreground">함께 편지 쓰기</p>
+                        <p className="text-sm font-medium text-foreground">함께 쪽지 쓰기</p>
                         <p className="text-xs text-muted-foreground mt-1">초대받은 사람들이<br />각자 마음을 담아요</p>
                       </div>
 
@@ -163,7 +174,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                         </div>
                         <p className="text-xs text-muted-foreground mb-1">STEP 3</p>
                         <p className="text-sm font-medium text-foreground">특별한 날 전달</p>
-                        <p className="text-xs text-muted-foreground mt-1">모인 편지가<br />한꺼번에 전달돼요</p>
+                        <p className="text-xs text-muted-foreground mt-1">모인 쪽지가<br />한꺼번에 전달돼요</p>
                       </div>
                     </div>
                   </div>
@@ -207,10 +218,10 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                           <Progress value={(invitation.letterCount / invitation.targetLetters) * 100} className="h-1.5 w-24" />
                           <span className="text-xs text-muted-foreground">{invitation.letterCount}/{invitation.targetLetters}통</span>
                           {!invitation.myLetterWritten && (
-                            <span className="text-xs text-primary font-medium">(내 편지 미작성)</span>
+                            <span className="text-xs text-primary font-medium">(내 쪽지 미작성)</span>
                           )}
                         </div>
-                        <span className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg">편지 쓰기</span>
+                        <span className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg">쪽지 쓰기</span>
                       </div>
                     </div>
                   </div>
@@ -274,7 +285,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                         <p className="text-sm text-muted-foreground mb-2">
                           {capsule.status === "collecting" 
                             ? `To. ${capsule.recipient} · ${capsule.facility}`
-                            : `${capsule.deliveredDate} 전달 · ${capsule.letterCount}통의 편지`
+                            : `${capsule.deliveredDate} 전달 · ${capsule.letterCount}통의 쪽지`
                           }
                         </p>
                         {capsule.status === "collecting" && (
@@ -299,20 +310,6 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                 );
               })}
 
-              {/* 새 타임캡슐 만들기 카드 */}
-              <motion.div
-                whileHover={{ y: -2 }}
-                onClick={() => navigate("/time-capsule/create")}
-                className="bg-muted/50 hover:bg-primary/5 rounded-2xl p-5 border-2 border-dashed border-muted-foreground/30 hover:border-primary/40 transition-colors cursor-pointer"
-              >
-                <div className="flex flex-col items-center justify-center py-4">
-                  <div className="w-12 h-12 bg-background rounded-xl flex items-center justify-center shadow-sm mb-3">
-                    <Plus className="w-6 h-6 text-primary" />
-                  </div>
-                  <p className="font-medium text-foreground">새 타임캡슐 만들기</p>
-                  <p className="text-sm text-muted-foreground mt-1">특별한 날을 위해 편지를 모아보세요</p>
-                </div>
-              </motion.div>
             </div>
           </section>
 

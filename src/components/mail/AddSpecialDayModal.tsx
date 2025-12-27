@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { X, Plus, Calendar, Tag, Bell, Home, Cake, Heart, Users, GraduationCap, Scale, Activity } from "lucide-react";
+import { X, Plus, Calendar, Tag, Bell, Home, Cake, Heart, Users, GraduationCap, Scale, Activity, Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,24 +29,34 @@ const dayTypes = [
   { id: "program", label: "교육/프로그램", icon: GraduationCap, color: "bg-purple-100 text-purple-600 border-purple-200" },
   { id: "trial", label: "재판", icon: Scale, color: "bg-gray-100 text-gray-600 border-gray-200" },
   { id: "health", label: "건강검진", icon: Activity, color: "bg-green-100 text-green-600 border-green-200" },
+  { id: "other", label: "기타 (직접입력)", icon: Edit3, color: "bg-slate-100 text-slate-600 border-slate-200" },
 ];
 
 export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModalProps) {
   const [selectedType, setSelectedType] = useState<string>("");
-  const [title, setTitle] = useState("");
+  const [customTitle, setCustomTitle] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [reminder, setReminder] = useState(true);
 
   if (!isOpen) return null;
 
+  // 선택된 유형의 라벨을 제목으로 사용 (기타인 경우 직접 입력값 사용)
+  const getTitle = () => {
+    if (selectedType === "other") {
+      return customTitle;
+    }
+    const selectedDayType = dayTypes.find(t => t.id === selectedType);
+    return selectedDayType?.label || "";
+  };
+
   const handleSubmit = () => {
     if (!selectedType) {
       toast.error("날짜 유형을 선택해주세요.");
       return;
     }
-    if (!title.trim()) {
-      toast.error("제목을 입력해주세요.");
+    if (selectedType === "other" && !customTitle.trim()) {
+      toast.error("날짜 이름을 입력해주세요.");
       return;
     }
     if (!date) {
@@ -57,7 +67,7 @@ export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModa
     const newDay: SpecialDay = {
       id: Date.now().toString(),
       type: selectedType,
-      title,
+      title: getTitle(),
       date,
       description,
       reminder,
@@ -66,10 +76,10 @@ export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModa
     onAdd?.(newDay);
     toast.success("소중한 날이 추가되었습니다!");
     onClose();
-    
+
     // Reset form
     setSelectedType("");
-    setTitle("");
+    setCustomTitle("");
     setDate("");
     setDescription("");
     setReminder(true);
@@ -119,8 +129,8 @@ export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModa
                     key={type.id}
                     onClick={() => setSelectedType(type.id)}
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      isSelected 
-                        ? "border-orange-400 bg-orange-50 shadow-sm" 
+                      isSelected
+                        ? "border-orange-400 bg-orange-50 shadow-sm"
                         : "border-border/60 bg-white hover:border-orange-200"
                     }`}
                   >
@@ -134,19 +144,19 @@ export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModa
                 );
               })}
             </div>
-          </div>
 
-          {/* 제목 */}
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-              제목
-            </label>
-            <Input
-              placeholder="예: 길동이 생일"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="h-12 text-base border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-            />
+            {/* 기타 선택 시 직접 입력 필드 */}
+            {selectedType === "other" && (
+              <div className="mt-3">
+                <Input
+                  placeholder="날짜 이름을 입력하세요"
+                  value={customTitle}
+                  onChange={(e) => setCustomTitle(e.target.value)}
+                  className="h-12 text-base border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                  autoFocus
+                />
+              </div>
+            )}
           </div>
 
           {/* 날짜 */}

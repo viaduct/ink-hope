@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { 
-  ChevronLeft, Settings, Copy, Check, Users, Plus, 
-  ChevronRight, X, MessageSquare, Link2
+import {
+  ChevronLeft, Settings, Check, Users, Plus,
+  ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -45,7 +45,7 @@ const mockCapsuleData: Record<string, {
 }> = {
   "1": {
     id: 1,
-    title: "아버지 출소 축하 편지 모음",
+    title: "아버지 출소 축하 쪽지 모음",
     recipient: "홍길동 (아버지)",
     facility: "서울구치소",
     targetDate: "2025-06-15",
@@ -106,7 +106,6 @@ export default function TimeCapsuleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [inviteInput, setInviteInput] = useState("");
   const [inviteRelation, setInviteRelation] = useState("");
 
@@ -124,13 +123,6 @@ export default function TimeCapsuleDetail() {
   }
 
   const progressPercent = Math.round((capsule.letterCount / capsule.targetLetters) * 100);
-
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(capsule.inviteCode);
-    setCopied(true);
-    toast.success("초대 코드가 복사되었습니다!");
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <AppLayout>
@@ -166,7 +158,7 @@ export default function TimeCapsuleDetail() {
               <div className="text-center">
                 <h3 className="font-semibold text-foreground mb-1">완성된 오렌지나무</h3>
                 <p className="text-sm text-muted-foreground mb-2">
-                  {capsule.letterCount}통의 편지가 모여 아름다운 나무가 되었어요
+                  {capsule.letterCount}통의 쪽지가 모여 아름다운 나무가 되었어요
                 </p>
                 <img 
                   src={completedTreeImage} 
@@ -221,7 +213,7 @@ export default function TimeCapsuleDetail() {
             className="bg-background rounded-2xl p-5 border border-border/60 shadow-sm"
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-foreground">편지 모음 현황</h3>
+              <h3 className="font-semibold text-foreground">쪽지 모음 현황</h3>
               <span className={`text-lg font-bold ${capsule.status === "delivered" ? "text-green-500" : "text-primary"}`}>
                 {capsule.letterCount}/{capsule.targetLetters}통
               </span>
@@ -231,8 +223,8 @@ export default function TimeCapsuleDetail() {
               className={`h-3 mb-2 ${capsule.status === "delivered" ? "[&>div]:bg-green-500" : ""}`} 
             />
             <p className="text-sm text-muted-foreground">
-              {capsule.status === "delivered" 
-                ? `${capsule.deliveredDate}에 ${capsule.letterCount}통의 편지가 전달되었어요 🎉`
+              {capsule.status === "delivered"
+                ? `${capsule.deliveredDate}에 ${capsule.letterCount}통의 쪽지가 전달되었어요 🎉`
                 : capsule.letterCount < capsule.targetLetters 
                   ? `목표까지 ${capsule.targetLetters - capsule.letterCount}통 남았어요. 조금만 더 모아볼까요?`
                   : "목표를 달성했어요! 🎉"
@@ -308,7 +300,7 @@ export default function TimeCapsuleDetail() {
             className="bg-background rounded-2xl p-5 border border-border/60 shadow-sm"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-foreground">내 편지</h3>
+              <h3 className="font-semibold text-foreground">내 쪽지</h3>
               {capsule.status !== "delivered" && (
                 <button 
                   onClick={() => navigate(`/time-capsule/${id}/write`)}
@@ -328,49 +320,20 @@ export default function TimeCapsuleDetail() {
             ) : (
               <div className="bg-muted/50 rounded-xl p-6 text-center">
                 <p className="text-muted-foreground text-sm mb-3">
-                  {capsule.status === "delivered" ? "편지를 작성하지 않았어요" : "아직 편지를 작성하지 않았어요"}
+                  {capsule.status === "delivered" ? "쪽지를 작성하지 않았어요" : "아직 쪽지를 작성하지 않았어요"}
                 </p>
                 {capsule.status !== "delivered" && (
                   <Button 
                     onClick={() => navigate(`/time-capsule/${id}/write`)}
                     className="bg-primary hover:bg-primary/90"
                   >
-                    편지 쓰기
+                    쪽지 쓰기
                   </Button>
                 )}
               </div>
             )}
           </motion.section>
 
-          {/* 초대 코드 */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-background rounded-2xl p-5 border border-border/60 shadow-sm"
-          >
-            <h3 className="font-semibold text-foreground mb-4">초대 코드</h3>
-            <div className="flex items-center gap-3">
-              <div className="flex-1 bg-muted rounded-xl px-4 py-3 font-mono text-foreground text-center tracking-wider">
-                {capsule.inviteCode}
-              </div>
-              <Button 
-                variant="outline" 
-                onClick={handleCopyCode}
-                className={`px-4 py-3 ${copied ? "border-green-500 text-green-500" : ""}`}
-              >
-                {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                <span className="ml-2">{copied ? "완료!" : "복사"}</span>
-              </Button>
-              <Button className="px-4 py-3 bg-yellow-400 hover:bg-yellow-500 text-yellow-900">
-                <MessageSquare className="w-5 h-5" />
-                <span className="ml-2">공유</span>
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-3 text-center">
-              이 코드를 공유하면 누구나 캡슐에 참여할 수 있어요
-            </p>
-          </motion.section>
         </main>
 
         {/* 하단 고정 버튼 - 편지 미작성 시 (완료된 캡슐이 아닐 때만) */}
@@ -381,7 +344,7 @@ export default function TimeCapsuleDetail() {
                 onClick={() => navigate(`/time-capsule/${id}/write`)}
                 className="w-full py-6 bg-primary hover:bg-primary/90 text-lg font-semibold rounded-2xl shadow-lg"
               >
-                내 편지 쓰기
+                내 쪽지 쓰기
               </Button>
             </div>
           </div>
@@ -394,43 +357,8 @@ export default function TimeCapsuleDetail() {
           <DialogHeader>
             <DialogTitle>참여자 초대하기</DialogTitle>
           </DialogHeader>
-          
-          <div className="space-y-3 mb-6">
-            <button className="w-full flex items-center gap-4 p-4 bg-yellow-50 hover:bg-yellow-100 rounded-2xl transition-colors">
-              <div className="w-12 h-12 bg-yellow-400 rounded-xl flex items-center justify-center">
-                <MessageSquare className="w-6 h-6 text-yellow-900" />
-              </div>
-              <div className="text-left">
-                <p className="font-semibold text-foreground">카카오톡으로 초대</p>
-                <p className="text-sm text-muted-foreground">가장 빠르게 초대할 수 있어요</p>
-              </div>
-            </button>
 
-            <button 
-              onClick={handleCopyCode}
-              className="w-full flex items-center gap-4 p-4 bg-muted hover:bg-muted/80 rounded-2xl transition-colors"
-            >
-              <div className="w-12 h-12 bg-muted-foreground/20 rounded-xl flex items-center justify-center">
-                <Copy className="w-6 h-6 text-muted-foreground" />
-              </div>
-              <div className="text-left">
-                <p className="font-semibold text-foreground">초대 코드 복사</p>
-                <p className="text-sm text-muted-foreground">{capsule.inviteCode}</p>
-              </div>
-            </button>
-
-            <button className="w-full flex items-center gap-4 p-4 bg-muted hover:bg-muted/80 rounded-2xl transition-colors">
-              <div className="w-12 h-12 bg-muted-foreground/20 rounded-xl flex items-center justify-center">
-                <Link2 className="w-6 h-6 text-muted-foreground" />
-              </div>
-              <div className="text-left">
-                <p className="font-semibold text-foreground">링크 복사</p>
-                <p className="text-sm text-muted-foreground">초대 링크를 직접 공유해요</p>
-              </div>
-            </button>
-          </div>
-
-          <div className="border-t border-border pt-6">
+          <div>
             <p className="text-sm font-medium text-foreground mb-3">직접 초대하기</p>
             
             {/* 관계 선택 */}

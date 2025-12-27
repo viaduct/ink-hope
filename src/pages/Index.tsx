@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Sidebar } from "@/components/mail/Sidebar";
 import { MobileSidebar } from "@/components/mail/MobileSidebar";
@@ -25,9 +26,23 @@ type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule
 
 const Index = () => {
   const isMobile = useIsMobile();
+  const location = useLocation();
   const [activeFolder, setActiveFolder] = useState<FolderType | null>("inbox");
   const [selectedMail, setSelectedMail] = useState<Mail | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("compose");
+
+  // Handle navigation state (e.g., from AboutOrangeTree page)
+  useEffect(() => {
+    const state = location.state as { viewMode?: ViewMode } | null;
+    if (state?.viewMode) {
+      setViewMode(state.viewMode);
+      if (state.viewMode === "orangetree") {
+        setActiveFolder("orangetree");
+      }
+      // Clear the state to prevent re-triggering on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   const [mails, setMails] = useState<Mail[]>(mockMails);

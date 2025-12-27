@@ -3,18 +3,36 @@ import { Helmet } from "react-helmet-async";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  Clock, 
-  Users, 
-  Heart, 
-  Gift, 
+import {
+  Clock,
+  Users,
+  Heart,
+  Gift,
   ChevronRight,
   Sparkles,
   Calendar,
   Mail
 } from "lucide-react";
 import { motion } from "framer-motion";
-import timeCapsuleGif from "@/assets/emoticons/time-capsule.gif";
+
+// 쪽지 일러스트 SVG 컴포넌트
+const NoteIllustration = ({ className = "w-24 h-24" }: { className?: string }) => (
+  <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    {/* 메인 쪽지 */}
+    <rect x="18" y="20" width="60" height="56" rx="4" fill="#FFF7ED" stroke="#FB923C" strokeWidth="2"/>
+    {/* 쪽지 접힌 부분 */}
+    <path d="M18 28 L78 28" stroke="#FDBA74" strokeWidth="1.5" strokeDasharray="4 3"/>
+    {/* 하트 마크 */}
+    <path d="M48 40 C44 34, 36 36, 36 42 C36 50, 48 56, 48 56 C48 56, 60 50, 60 42 C60 36, 52 34, 48 40Z" fill="#FB923C" opacity="0.2" stroke="#FB923C" strokeWidth="1.5"/>
+    {/* 텍스트 라인들 */}
+    <line x1="30" y1="64" x2="66" y2="64" stroke="#FDBA74" strokeWidth="2" strokeLinecap="round"/>
+    <line x1="34" y1="70" x2="62" y2="70" stroke="#FED7AA" strokeWidth="2" strokeLinecap="round"/>
+    {/* 작은 하트들 */}
+    <circle cx="22" cy="16" r="3" fill="#FB923C" opacity="0.4"/>
+    <circle cx="76" cy="24" r="2" fill="#FB923C" opacity="0.3"/>
+    <circle cx="82" cy="44" r="2.5" fill="#FB923C" opacity="0.5"/>
+  </svg>
+);
 
 export default function AboutTimeCapsule() {
   const navigate = useNavigate();
@@ -28,7 +46,7 @@ export default function AboutTimeCapsule() {
     {
       icon: Calendar,
       title: "특별한 날에 전달",
-      description: "생일, 출소일 등 의미있는 날짜에 맞춰 편지가 전달됩니다."
+      description: "생일, 출소일 등 의미있는 날짜에 맞춰 쪽지가 전달됩니다."
     },
     {
       icon: Heart,
@@ -56,12 +74,12 @@ export default function AboutTimeCapsule() {
     {
       number: "3",
       title: "마음 담기",
-      description: "각자 편지를 작성해 담아요"
+      description: "각자 쪽지를 작성해 담아요"
     },
     {
       number: "4",
       title: "전달되는 날",
-      description: "모인 편지가 한꺼번에 전달돼요"
+      description: "모인 쪽지가 한꺼번에 전달돼요"
     }
   ];
 
@@ -79,18 +97,19 @@ export default function AboutTimeCapsule() {
       <div className="h-full overflow-auto">
         <div className="max-w-3xl mx-auto px-4 py-8 space-y-10">
           {/* Hero Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center space-y-4"
           >
-            <div className="w-24 h-24 mx-auto">
-              <img 
-                src={timeCapsuleGif} 
-                alt="타임캡슐" 
-                className="w-full h-full object-contain"
-              />
-            </div>
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1, type: "spring" }}
+              className="w-24 h-24 mx-auto"
+            >
+              <NoteIllustration className="w-full h-full" />
+            </motion.div>
             <h1 className="text-3xl font-bold text-foreground">타임캡슐</h1>
             <p className="text-lg text-muted-foreground">
               여러 사람의 마음을 모아<br />
@@ -114,9 +133,9 @@ export default function AboutTimeCapsule() {
                   <div>
                     <h2 className="text-lg font-semibold text-foreground mb-2">타임캡슐이 뭐예요?</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      타임캡슐은 수감 중인 가족에게 보내는 <strong>단체 편지</strong>예요. 
-                      여러 가족과 친구들이 각자 편지를 작성하면, 지정한 날짜에 모든 편지가 
-                      한꺼번에 전달됩니다. 생일이나 출소일 같은 특별한 날에 
+                      타임캡슐은 수감 중인 가족에게 보내는 <strong>단체 쪽지</strong>예요.
+                      여러 가족과 친구들이 각자 쪽지를 작성하면, 지정한 날짜에 모든 쪽지가
+                      한꺼번에 전달됩니다. 생일이나 출소일 같은 특별한 날에
                       깜짝 선물처럼 받아볼 수 있어요.
                     </p>
                   </div>

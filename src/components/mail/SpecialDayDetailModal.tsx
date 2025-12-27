@@ -108,8 +108,8 @@ export function SpecialDayDetailModal({ isOpen, onClose, specialDay, onWriteLett
               <Clock className="w-5 h-5 text-orange-500" />
               <span className="text-sm text-foreground">남은 시간</span>
             </div>
-            <div className={`text-lg font-bold ${daysRemaining <= 7 ? "text-red-500" : "text-orange-600"}`}>
-              {daysRemaining === 0 ? "D-Day 🎉" : daysRemaining > 0 ? `D-${daysRemaining}` : `D+${Math.abs(daysRemaining)}`}
+            <div className={`text-xl font-bold ${daysRemaining <= 0 ? "text-green-500" : daysRemaining <= 7 ? "text-red-500" : "text-orange-600"}`}>
+              {daysRemaining === 0 ? "D-Day" : daysRemaining > 0 ? `D-${daysRemaining}` : `D-Day (${Math.abs(daysRemaining)}일 지남)`}
             </div>
           </div>
         </div>
@@ -177,27 +177,27 @@ export function SpecialDayDetailModal({ isOpen, onClose, specialDay, onWriteLett
 
         {/* Footer */}
         <div className="px-6 py-4 bg-gray-50 border-t border-border/40 flex items-center justify-between">
-          <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
               size="sm"
               onClick={onEdit}
-              className="text-muted-foreground hover:text-foreground"
+              className="border-gray-300 text-foreground hover:bg-gray-100"
             >
-              <Edit2 className="w-4 h-4 mr-1" />
+              <Edit2 className="w-4 h-4 mr-1.5" />
               수정
             </Button>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={handleDelete}
-              className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              className="border-red-200 text-red-500 hover:text-red-600 hover:bg-red-50 hover:border-red-300"
             >
-              <Trash2 className="w-4 h-4 mr-1" />
+              <Trash2 className="w-4 h-4 mr-1.5" />
               삭제
             </Button>
           </div>
-          <Button 
+          <Button
             onClick={() => {
               onWriteLetter?.();
               onClose();

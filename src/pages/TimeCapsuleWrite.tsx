@@ -1,16 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, Sparkles, User, Check, Loader2 } from "lucide-react";
+import { ChevronLeft, User, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,18 +18,11 @@ import {
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
 
-const aiStyles = [
-  { id: "warm", emoji: "🌸", label: "더 따뜻하게", description: "감성적이고 부드러운 표현으로" },
-  { id: "polish", emoji: "✨", label: "문장 다듬기", description: "맞춤법과 문장을 자연스럽게" },
-  { id: "expand", emoji: "📝", label: "내용 보충하기", description: "더 풍부한 내용으로 확장" },
-];
-
 export default function TimeCapsuleWrite() {
   const { id } = useParams();
   const navigate = useNavigate();
   
   const [content, setContent] = useState("");
-  const [showAIModal, setShowAIModal] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -43,7 +30,7 @@ export default function TimeCapsuleWrite() {
 
   // 캡슐 정보 (실제로는 API에서 가져옴)
   const capsuleInfo = {
-    title: "아버지 출소 축하 편지 모음",
+    title: "아버지 출소 축하 쪽지 모음",
     recipient: "홍길동 (아버지)",
   };
 
@@ -68,7 +55,7 @@ export default function TimeCapsuleWrite() {
 
   const handleSubmit = async () => {
     if (!content.trim()) {
-      toast.error("편지 내용을 입력해주세요");
+      toast.error("쪽지 내용을 입력해주세요");
       return;
     }
     
@@ -78,27 +65,10 @@ export default function TimeCapsuleWrite() {
     setIsSaving(false);
   };
 
-  const handleAIStyle = async (styleId: string) => {
-    setShowAIModal(false);
-    toast.info("AI가 편지를 다듬고 있어요...");
-    
-    // 실제로는 AI API 호출
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // 데모: 약간의 텍스트 추가
-    if (styleId === "warm") {
-      setContent(prev => prev + "\n\n사랑하고 항상 응원해요. 💕");
-    } else if (styleId === "expand") {
-      setContent(prev => prev + "\n\n그동안 정말 수고 많으셨어요. 앞으로 좋은 일만 가득할 거예요.");
-    }
-    
-    toast.success("편지가 다듬어졌어요!");
-  };
-
   return (
     <AppLayout>
       <Helmet>
-        <title>편지 작성하기 - Orange Mail</title>
+        <title>쪽지 작성하기 - Orange Mail</title>
       </Helmet>
 
       <div className="h-full overflow-auto bg-muted/30 flex flex-col">
@@ -112,7 +82,7 @@ export default function TimeCapsuleWrite() {
               <ChevronLeft className="w-5 h-5" />
               <span className="text-sm">뒤로</span>
             </button>
-            <span className="font-semibold text-foreground">편지 작성</span>
+            <span className="font-semibold text-foreground">쪽지 작성</span>
             <button 
               onClick={handleSaveDraft}
               disabled={isSaving}
@@ -140,12 +110,12 @@ export default function TimeCapsuleWrite() {
             </div>
           </section>
 
-          {/* 편지 작성 영역 */}
+          {/* 쪽지 작성 영역 */}
           <section className="bg-background rounded-3xl border border-border/60 shadow-sm overflow-hidden flex-1 flex flex-col">
-            {/* 편지지 헤더 */}
+            {/* 쪽지 헤더 */}
             <div className="px-6 py-4 border-b border-border/60 bg-gradient-to-r from-primary/5 to-amber-50">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-muted-foreground">마음을 담아 편지를 작성해주세요</span>
+                <span className="text-sm font-medium text-muted-foreground">마음을 담아 쪽지를 작성해주세요</span>
               </div>
             </div>
 
@@ -161,21 +131,11 @@ export default function TimeCapsuleWrite() {
 
             {/* 하단 툴바 */}
             <div className="px-6 py-4 border-t border-border/60 bg-muted/30">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-end">
                 {/* 글자 수 */}
                 <div className="text-sm text-muted-foreground">
                   <span className={charCount > maxChars * 0.9 ? "text-destructive" : ""}>{charCount}</span>/{maxChars}자
                 </div>
-
-                {/* AI 도우미 */}
-                <Button
-                  type="button"
-                  onClick={() => setShowAIModal(true)}
-                  className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-sm"
-                >
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  AI 도우미로 다듬기
-                </Button>
               </div>
             </div>
           </section>
@@ -221,49 +181,6 @@ export default function TimeCapsuleWrite() {
         </AnimatePresence>
       </div>
 
-      {/* AI 도우미 모달 */}
-      <Dialog open={showAIModal} onOpenChange={setShowAIModal}>
-        <DialogContent className="max-w-md rounded-3xl">
-          <div className="px-6 py-4 border-b border-border/60 bg-gradient-to-r from-violet-50 to-purple-50 -mx-6 -mt-6 rounded-t-3xl">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-500 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-semibold text-foreground">AI 도우미</span>
-            </div>
-          </div>
-          
-          <div className="py-4">
-            <p className="text-sm text-muted-foreground mb-5">
-              AI가 편지를 더 자연스럽고 따뜻하게 다듬어드려요.<br />
-              원하는 스타일을 선택해주세요.
-            </p>
-
-            <div className="space-y-3">
-              {aiStyles.map((style) => (
-                <button
-                  key={style.id}
-                  onClick={() => handleAIStyle(style.id)}
-                  className="w-full flex items-center gap-4 p-4 bg-muted hover:bg-primary/5 rounded-2xl transition-colors text-left"
-                >
-                  <div className="w-10 h-10 bg-background rounded-xl flex items-center justify-center flex-shrink-0 text-lg">
-                    {style.emoji}
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">{style.label}</p>
-                    <p className="text-sm text-muted-foreground">{style.description}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <p className="text-xs text-muted-foreground text-center mt-5">
-              AI가 도와드려도 당신의 진심은 그대로 전해져요
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       {/* 나가기 확인 다이얼로그 */}
       <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
         <AlertDialogContent className="max-w-sm rounded-3xl">
@@ -271,7 +188,7 @@ export default function TimeCapsuleWrite() {
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-3xl">⚠️</span>
             </div>
-            <AlertDialogTitle className="text-center">작성 중인 편지가 있어요</AlertDialogTitle>
+            <AlertDialogTitle className="text-center">작성 중인 쪽지가 있어요</AlertDialogTitle>
             <AlertDialogDescription className="text-center">
               저장하지 않고 나가면 내용이 사라져요
             </AlertDialogDescription>
@@ -295,9 +212,9 @@ export default function TimeCapsuleWrite() {
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-10 h-10 text-green-500" />
             </div>
-            <AlertDialogTitle className="text-center text-xl">편지가 등록되었어요!</AlertDialogTitle>
+            <AlertDialogTitle className="text-center text-xl">쪽지가 등록되었어요!</AlertDialogTitle>
             <AlertDialogDescription className="text-center">
-              전달 예정일에 다른 가족들의 편지와 함께<br />
+              전달 예정일에 다른 가족들의 쪽지와 함께<br />
               {capsuleInfo.recipient.split(" ")[0]}에게 전달됩니다.
             </AlertDialogDescription>
           </AlertDialogHeader>

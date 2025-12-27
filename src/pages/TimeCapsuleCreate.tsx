@@ -172,7 +172,7 @@ export default function TimeCapsuleCreate() {
               <Input
                 id="title"
                 type="text"
-                placeholder="예: 아버지 출소 축하 편지 모음"
+                placeholder="예: 아버지 출소 축하 쪽지 모음"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full"
@@ -227,7 +227,7 @@ export default function TimeCapsuleCreate() {
             {/* 5. 목표 편지 수 */}
             <section>
               <Label className="block text-sm font-semibold text-foreground mb-2">
-                목표 편지 수 <span className="font-normal text-muted-foreground">(선택)</span>
+                목표 쪽지 수 <span className="font-normal text-muted-foreground">(선택)</span>
               </Label>
               <Select value={targetLetters} onValueChange={setTargetLetters}>
                 <SelectTrigger className="w-full">
@@ -315,7 +315,7 @@ export default function TimeCapsuleCreate() {
                 캡슐 만들기
               </Button>
               <p className="text-center text-sm text-muted-foreground mt-3">
-                캡슐을 만들면 바로 편지를 쓸 수 있어요
+                캡슐을 만들면 바로 쪽지를 쓸 수 있어요
               </p>
             </section>
           </form>
@@ -362,7 +362,7 @@ export default function TimeCapsuleCreate() {
                   {familyMembers.length > 0 && (
                     <>
                       <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground bg-muted/50">
-                        내 편지함
+                        내 쪽지함
                       </div>
                       {familyMembers.map((member) => (
                         <SelectItem key={member.id} value={member.relation}>
