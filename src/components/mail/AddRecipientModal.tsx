@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { User, Loader2 } from "lucide-react";
+import { HelpCircle, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -17,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useFamilyMembers } from "@/hooks/useFamilyMembers";
+import { cn } from "@/lib/utils";
 
 interface AddRecipientModalProps {
   open: boolean;
@@ -26,45 +24,55 @@ interface AddRecipientModalProps {
 
 const relations = ["아들", "딸", "남편", "아내", "아버지", "어머니", "형제", "자매", "친구", "기타"];
 
-const facilities = [
-  "서울남부교도소",
-  "서울동부구치소", 
-  "수원구치소",
-  "대전교도소",
-  "대구교도소",
-  "부산교도소",
-  "광주교도소",
-  "인천구치소",
+const facilityTypes = ["교도소", "구치소", "교정시설"];
+
+const regions = ["서울", "경기", "인천", "대전", "대구", "부산", "광주", "울산", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"];
+
+const colorOptions = [
+  { id: "orange", bg: "bg-orange-100", border: "border-orange-400" },
+  { id: "blue", bg: "bg-blue-100", border: "border-blue-400" },
+  { id: "cyan", bg: "bg-cyan-100", border: "border-cyan-400" },
+  { id: "green", bg: "bg-green-100", border: "border-green-400" },
+  { id: "yellow", bg: "bg-yellow-100", border: "border-yellow-400" },
+  { id: "pink", bg: "bg-pink-100", border: "border-pink-400" },
+  { id: "rose", bg: "bg-rose-100", border: "border-rose-400" },
+  { id: "amber", bg: "bg-amber-100", border: "border-amber-400" },
+  { id: "violet", bg: "bg-violet-100", border: "border-violet-400" },
 ];
 
 export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipientModalProps) {
   const [name, setName] = useState("");
   const [relation, setRelation] = useState("");
-  const [facility, setFacility] = useState("");
-  const [address, setAddress] = useState("");
+  const [facilityType, setFacilityType] = useState("");
+  const [region, setRegion] = useState("");
   const [prisonerNumber, setPrisonerNumber] = useState("");
+  const [selectedColor, setSelectedColor] = useState("yellow");
 
   const { createFamilyMember, isCreating } = useFamilyMembers();
 
   const handleSubmit = () => {
-    if (!name.trim() || !relation || !facility) return;
+    if (!name.trim() || !relation || !facilityType || !region) return;
+    
+    const facility = `${region}${facilityType}`;
+    const colorClass = colorOptions.find(c => c.id === selectedColor);
     
     createFamilyMember(
       {
         name: name.trim(),
         relation,
         facility,
-        facility_address: address.trim(),
-        prisoner_number: prisonerNumber.trim(),
+        prisoner_number: prisonerNumber.trim() || null,
+        color: colorClass ? `${colorClass.bg} text-${selectedColor}-600` : "bg-orange-100 text-orange-600",
       },
       {
         onSuccess: () => {
           // Reset form
           setName("");
           setRelation("");
-          setFacility("");
-          setAddress("");
+          setFacilityType("");
+          setRegion("");
           setPrisonerNumber("");
+          setSelectedColor("yellow");
           onOpenChange(false);
           onSuccess?.();
         },
@@ -72,97 +80,115 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
     );
   };
 
-  const isValid = name.trim() && relation && facility;
+  const isValid = name.trim() && relation && facilityType && region;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <User className="w-4 h-4 text-primary" />
+      <DialogContent className="sm:max-w-lg p-6">
+        <div className="space-y-4">
+          {/* 이름 입력 + 아이콘 */}
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+              <HelpCircle className="w-6 h-6 text-orange-500" />
             </div>
-            새 수신자 추가
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">이름 *</Label>
             <Input
-              id="name"
-              placeholder="수신자 이름을 입력하세요"
+              placeholder="수용자 이름"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="flex-1 h-12 text-base border-gray-200"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="relation">관계 *</Label>
-            <Select value={relation} onValueChange={setRelation}>
-              <SelectTrigger>
-                <SelectValue placeholder="관계를 선택하세요" />
+          {/* 관계 선택 */}
+          <Select value={relation} onValueChange={setRelation}>
+            <SelectTrigger className="h-12 text-base border-gray-200">
+              <SelectValue placeholder="관계 선택" />
+            </SelectTrigger>
+            <SelectContent className="bg-white z-50">
+              {relations.map((rel) => (
+                <SelectItem key={rel} value={rel}>
+                  {rel}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* 시설 유형 + 지역 선택 (나란히) */}
+          <div className="flex gap-3">
+            <Select value={facilityType} onValueChange={setFacilityType}>
+              <SelectTrigger className={cn(
+                "flex-1 h-12 text-base",
+                facilityType ? "border-gray-200" : "border-orange-400 border-2"
+              )}>
+                <SelectValue placeholder="시설 유형" />
               </SelectTrigger>
-              <SelectContent>
-                {relations.map((rel) => (
-                  <SelectItem key={rel} value={rel}>
-                    {rel}
+              <SelectContent className="bg-white z-50">
+                {facilityTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={region} onValueChange={setRegion}>
+              <SelectTrigger className="flex-1 h-12 text-base border-gray-200">
+                <SelectValue placeholder="지역 선택" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                {regions.map((reg) => (
+                  <SelectItem key={reg} value={reg}>
+                    {reg}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="facility">수용 시설 *</Label>
-            <Select value={facility} onValueChange={setFacility}>
-              <SelectTrigger>
-                <SelectValue placeholder="시설을 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {facilities.map((fac) => (
-                  <SelectItem key={fac} value={fac}>
-                    {fac}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* 수용자 번호 */}
+          <Input
+            placeholder="수용자 번호 (예: 2024-12345)"
+            value={prisonerNumber}
+            onChange={(e) => setPrisonerNumber(e.target.value)}
+            className="h-12 text-base border-gray-200"
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="address">주소</Label>
-            <Input
-              id="address"
-              placeholder="시설 주소 (자동 입력됩니다)"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="prisonerNumber">수용번호</Label>
-            <Input
-              id="prisonerNumber"
-              placeholder="수용번호를 입력하세요 (선택)"
-              value={prisonerNumber}
-              onChange={(e) => setPrisonerNumber(e.target.value)}
-            />
+          {/* 색상 선택 */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">색상:</span>
+            <div className="flex gap-2">
+              {colorOptions.map((color) => (
+                <button
+                  key={color.id}
+                  type="button"
+                  onClick={() => setSelectedColor(color.id)}
+                  className={cn(
+                    "w-8 h-8 rounded-full transition-all",
+                    color.bg,
+                    selectedColor === color.id 
+                      ? `ring-2 ring-offset-2 ${color.border}` 
+                      : "hover:scale-110"
+                  )}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="flex gap-3">
+        {/* 버튼 */}
+        <div className="flex justify-end gap-3 mt-6">
           <Button
-            variant="outline"
-            className="flex-1"
+            variant="ghost"
             onClick={() => onOpenChange(false)}
             disabled={isCreating}
+            className="px-6"
           >
             취소
           </Button>
           <Button
-            className="flex-1"
             onClick={handleSubmit}
             disabled={!isValid || isCreating}
+            className="px-6 bg-orange-500 hover:bg-orange-600"
           >
             {isCreating ? (
               <>
@@ -170,7 +196,10 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
                 추가 중...
               </>
             ) : (
-              "추가하기"
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                확인
+              </>
             )}
           </Button>
         </div>

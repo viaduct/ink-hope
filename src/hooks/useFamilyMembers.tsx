@@ -23,7 +23,8 @@ export interface CreateFamilyMemberInput {
   relation: string;
   facility: string;
   facility_address?: string;
-  prisoner_number?: string;
+  prisoner_number?: string | null;
+  color?: string;
 }
 
 export function useFamilyMembers() {
@@ -52,7 +53,7 @@ export function useFamilyMembers() {
     mutationFn: async (input: CreateFamilyMemberInput) => {
       if (!user) throw new Error("로그인이 필요합니다");
 
-      // 아바타 색상 랜덤 선택
+      // 아바타 색상: 직접 지정하거나 랜덤 선택
       const colors = [
         "bg-orange-100 text-orange-600",
         "bg-blue-100 text-blue-600",
@@ -60,7 +61,7 @@ export function useFamilyMembers() {
         "bg-purple-100 text-purple-600",
         "bg-pink-100 text-pink-600",
       ];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      const selectedColor = input.color || colors[Math.floor(Math.random() * colors.length)];
 
       const { data, error } = await supabase
         .from("family_members")
@@ -72,7 +73,7 @@ export function useFamilyMembers() {
           facility_address: input.facility_address || null,
           prisoner_number: input.prisoner_number || null,
           avatar: input.name.charAt(0),
-          color: randomColor,
+          color: selectedColor,
         })
         .select()
         .single();
