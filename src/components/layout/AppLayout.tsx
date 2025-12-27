@@ -40,7 +40,6 @@ export function AppLayout({ children }: AppLayoutProps) {
         onFolderChange={handleFolderChange}
         unreadCount={0}
         draftCount={0}
-        archiveCount={0}
         trashCount={0}
         onCompose={() => navigate("/?view=compose")}
         isComposeOpen={false}

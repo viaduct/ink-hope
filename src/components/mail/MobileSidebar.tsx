@@ -12,7 +12,6 @@ interface MobileSidebarProps {
   onFolderChange: (folder: FolderType) => void;
   unreadCount: number;
   draftCount: number;
-  archiveCount: number;
   trashCount: number;
   selectedMemberId: string | null;
   onSelectMember: (memberId: string | null) => void;
@@ -49,7 +48,6 @@ export function MobileSidebar({
   onFolderChange,
   unreadCount,
   draftCount,
-  archiveCount,
   trashCount,
   selectedMemberId,
   onSelectMember,

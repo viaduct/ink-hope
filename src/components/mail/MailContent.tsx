@@ -40,7 +40,7 @@ const folderTitles: Record<FolderType, string> = {
   rewards: "내가 받은 경품",
 };
 
-type TabType = "all" | "unread" | "important" | "handwritten";
+type TabType = "all" | "unread" | "handwritten";
 
 export function MailContent({
   mails,
@@ -78,7 +78,6 @@ export function MailContent({
   };
 
   const unreadCount = mails.filter((mail) => !mail.isRead).length;
-  const importantCount = mails.filter((mail) => mail.isImportant).length;
   const handwrittenCount = mails.filter((mail) => mail.isHandwritten).length;
 
   // 선택된 멤버와의 통계 계산
@@ -90,7 +89,6 @@ export function MailContent({
 
   const filteredMails = mails.filter((mail) => {
     if (activeTab === "unread") return !mail.isRead;
-    if (activeTab === "important") return mail.isImportant;
     if (activeTab === "handwritten") return mail.isHandwritten;
     return true;
   });
@@ -175,9 +173,6 @@ export function MailContent({
               <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "inbox")}>
                 받은 편지함
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "archive")}>
-                중요 편지함
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "spam")}>
                 스팸함
               </DropdownMenuItem>
@@ -222,10 +217,6 @@ export function MailContent({
                 <DropdownMenuItem>
                   <Download className="w-4 h-4 mr-2" />
                   다운로드
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Star className="w-4 h-4 mr-2" />
-                  중요 표시
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -360,17 +351,6 @@ export function MailContent({
                 >
                   읽지않음 <span className="ml-1">{unreadCount}</span>
                 </button>
-                <button
-                  onClick={() => setActiveTab("important")}
-                  className={cn(
-                    "text-sm font-medium transition-colors pb-2 -mb-3 border-b-2",
-                    activeTab === "important"
-                      ? "text-primary border-primary"
-                      : "text-muted-foreground border-transparent hover:text-foreground"
-                  )}
-                >
-                  중요
-                </button>
                 {activeFolder === "inbox" && handwrittenCount > 0 && (
                   <button
                     onClick={() => setActiveTab("handwritten")}
@@ -417,28 +397,6 @@ export function MailContent({
                               </svg>
                             )}
                           </div>
-                        </button>
-                        {/* 중요편지함 별표 표시 */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const isCurrentlyImportant = mail.isImportant || mail.folder === "archive";
-                            if (isCurrentlyImportant) {
-                              onMoveToFolder?.(mail.id, mail.originalFolder || "inbox");
-                            } else {
-                              onMoveToFolder?.(mail.id, "archive");
-                            }
-                          }}
-                          className="p-1 rounded-full hover:bg-secondary transition-colors flex-shrink-0"
-                        >
-                          <Star
-                            className={cn(
-                              "w-4 h-4 transition-colors",
-                              mail.isImportant || mail.folder === "archive"
-                                ? "text-amber-500 fill-amber-500"
-                                : "text-muted-foreground/40 hover:text-amber-500"
-                            )}
-                          />
                         </button>
                         <div
                           className={cn(
@@ -577,16 +535,6 @@ export function MailContent({
                   <span className="text-sm text-muted-foreground mr-2">
                     {selectedMail.date}
                   </span>
-                  <button 
-                    onClick={() => onMoveToFolder?.(selectedMail.id, "archive")}
-                    className="p-2 text-muted-foreground hover:text-amber-500 hover:bg-secondary rounded-full transition-colors print:hidden"
-                    title="중요 표시"
-                  >
-                    <Star className={cn(
-                      "w-5 h-5",
-                      selectedMail.isImportant && "text-amber-500 fill-amber-500"
-                    )} />
-                  </button>
                   <button 
                     onClick={onReply}
                     className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors print:hidden"

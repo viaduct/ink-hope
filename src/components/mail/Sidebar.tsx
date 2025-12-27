@@ -18,7 +18,6 @@ interface SidebarProps {
   onFolderChange: (folder: FolderType) => void;
   unreadCount: number;
   draftCount: number;
-  archiveCount: number;
   trashCount: number;
   onCompose: () => void;
   isComposeOpen?: boolean;
@@ -67,7 +66,6 @@ export function Sidebar({
   onFolderChange,
   unreadCount,
   draftCount,
-  archiveCount,
   trashCount,
   onCompose,
   isComposeOpen = false,
@@ -248,7 +246,7 @@ export function Sidebar({
             {foldersTop.map((folder) => {
               const Icon = folder.icon;
               const isActive = activeFolder === folder.id;
-              const count = folder.id === "inbox" ? unreadCount : folder.id === "draft" ? draftCount : folder.id === "archive" ? archiveCount : folder.id === "trash" ? trashCount : 0;
+              const count = folder.id === "inbox" ? unreadCount : folder.id === "draft" ? draftCount : folder.id === "trash" ? trashCount : 0;
 
               return (
                 <li key={folder.id}>

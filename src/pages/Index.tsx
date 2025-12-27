@@ -39,28 +39,6 @@ const Index = () => {
     setMails((prevMails) =>
       prevMails.map((mail) => {
         if (mail.id !== mailId) return mail;
-        
-        // 중요편지함으로 이동 시 원래 폴더 저장
-        if (targetFolder === "archive" && mail.folder !== "archive") {
-          return { 
-            ...mail, 
-            folder: targetFolder, 
-            originalFolder: mail.folder,
-            isImportant: true 
-          };
-        }
-        
-        // 중요편지함에서 해제 시 원래 폴더로 복귀
-        if (mail.folder === "archive" && targetFolder !== "archive") {
-          const restoreFolder = mail.originalFolder || "inbox";
-          return { 
-            ...mail, 
-            folder: restoreFolder, 
-            originalFolder: undefined,
-            isImportant: false 
-          };
-        }
-        
         return { ...mail, folder: targetFolder };
       })
     );
@@ -70,7 +48,7 @@ const Index = () => {
       inbox: "받은 편지함",
       sent: "보낸 편지함",
       draft: "임시보관함",
-      archive: "중요편지함",
+      archive: "보관함",
       gallery: "갤러리",
       schedule: "스케줄 관리",
       spam: "스팸함",
@@ -95,7 +73,6 @@ const Index = () => {
 
   const unreadCount = mails.filter((m) => !m.isRead && m.folder === "inbox").length;
   const draftCount = mails.filter((m) => m.folder === "draft").length;
-  const archiveCount = mails.filter((m) => m.folder === "archive").length;
   const trashCount = mails.filter((m) => m.folder === "trash").length;
 
   // 마지막 편지 보낸 날짜 (목업)
@@ -155,7 +132,6 @@ const Index = () => {
           onFolderChange={handleFolderChange}
           unreadCount={unreadCount}
           draftCount={draftCount}
-          archiveCount={archiveCount}
           trashCount={trashCount}
           selectedMemberId={selectedMemberId}
           onSelectMember={handleSelectMember}
@@ -172,7 +148,6 @@ const Index = () => {
             onFolderChange={handleFolderChange}
             unreadCount={unreadCount}
             draftCount={draftCount}
-            archiveCount={archiveCount}
             trashCount={trashCount}
             onCompose={() => setViewMode("compose")}
             isComposeOpen={viewMode === "compose"}
