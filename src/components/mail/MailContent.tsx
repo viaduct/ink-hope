@@ -257,11 +257,6 @@ export function MailContent({
               </span>
             </>
           )}
-          {selectedMail && (
-            <h1 className="text-lg font-semibold text-foreground">
-              {selectedMail.subject}
-            </h1>
-          )}
         </div>
       </header>
 
