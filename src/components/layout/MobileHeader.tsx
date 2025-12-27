@@ -19,8 +19,8 @@ export function MobileHeader({ onCompose, children }: MobileHeaderProps) {
         {/* Left: Hamburger Menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="shrink-0">
-              <Menu className="w-5 h-5" />
+            <Button variant="ghost" size="icon" className="shrink-0 h-10 w-10">
+              <Menu className="w-7 h-7" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-[280px]">
