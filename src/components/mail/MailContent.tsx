@@ -577,12 +577,71 @@ export function MailContent({
                   <span className="text-sm text-muted-foreground mr-2">
                     {selectedMail.date}
                   </span>
-                  <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors print:hidden">
-                    <Star className="w-5 h-5" />
+                  <button 
+                    onClick={() => onMoveToFolder?.(selectedMail.id, "archive")}
+                    className="p-2 text-muted-foreground hover:text-amber-500 hover:bg-secondary rounded-full transition-colors print:hidden"
+                    title="중요 표시"
+                  >
+                    <Star className={cn(
+                      "w-5 h-5",
+                      selectedMail.isImportant && "text-amber-500 fill-amber-500"
+                    )} />
                   </button>
-                  <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors print:hidden">
+                  <button 
+                    onClick={onReply}
+                    className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors print:hidden"
+                    title="답장"
+                  >
                     <Reply className="w-5 h-5" />
                   </button>
+                  {/* 더보기 드롭다운 */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors print:hidden">
+                      <MoreHorizontal className="w-5 h-5" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 bg-white z-50">
+                      <DropdownMenuItem onClick={onReply} className="gap-3">
+                        <Reply className="w-4 h-4" />
+                        답장
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="gap-3">
+                        <Forward className="w-4 h-4" />
+                        전달
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => onMoveToFolder?.(selectedMail.id, "trash")}
+                        className="gap-3"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        삭제
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="gap-3">
+                        <EyeOff className="w-4 h-4" />
+                        읽지않음으로 표시
+                      </DropdownMenuItem>
+                      <div className="my-1 border-t border-border" />
+                      <DropdownMenuItem className="gap-3">
+                        <AlertTriangle className="w-4 h-4" />
+                        {selectedMail.sender.name}님 차단
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => onMoveToFolder?.(selectedMail.id, "spam")}
+                        className="gap-3"
+                      >
+                        <AlertTriangle className="w-4 h-4" />
+                        스팸 신고
+                      </DropdownMenuItem>
+                      <div className="my-1 border-t border-border" />
+                      <DropdownMenuItem onClick={() => window.print()} className="gap-3">
+                        <Printer className="w-4 h-4" />
+                        인쇄
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="gap-3">
+                        <Download className="w-4 h-4" />
+                        메시지 다운로드
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
 
