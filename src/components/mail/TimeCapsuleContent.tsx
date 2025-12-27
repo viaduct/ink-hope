@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Input } from "@/components/ui/input";
+
 
 
 interface TimeCapsuleContentProps {
@@ -60,7 +60,6 @@ const mockMyCapsules = [
 export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
   const navigate = useNavigate();
   const [isExplanationOpen, setIsExplanationOpen] = useState(true);
-  const [inviteCode, setInviteCode] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "collecting" | "completed">("all");
 
   const filteredCapsules = mockMyCapsules.filter(capsule => {
@@ -317,22 +316,6 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
             </div>
           </section>
 
-          {/* 초대 코드 입력 */}
-          <section className="bg-background rounded-2xl p-6 border border-border/60 shadow-sm">
-            <h3 className="font-semibold text-foreground mb-4">초대 코드로 참여</h3>
-            <div className="flex gap-3">
-              <Input 
-                type="text" 
-                placeholder="초대 코드 입력"
-                value={inviteCode}
-                onChange={(e) => setInviteCode(e.target.value)}
-                className="flex-1"
-              />
-              <Button variant="secondary" className="px-6 bg-foreground text-background hover:bg-foreground/90">
-                참여하기
-              </Button>
-            </div>
-          </section>
         </div>
       </div>
     </div>
