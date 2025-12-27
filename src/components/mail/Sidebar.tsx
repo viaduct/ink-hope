@@ -154,7 +154,7 @@ export function Sidebar({
             
             {/* 이름 & 회원등급 뱃지 */}
             <div className="flex items-center gap-2 mb-0.5">
-              <p className="text-sm font-semibold text-foreground">Bang Kyung Chang</p>
+              <p className="text-sm font-semibold text-foreground">홍길동</p>
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-medium">
                 <span>🌱</span>
                 <span>새싹회원</span>
