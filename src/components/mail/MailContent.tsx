@@ -54,6 +54,28 @@ export function MailContent({
   onEditAddressBook,
 }: MailContentProps) {
   const [activeTab, setActiveTab] = useState<TabType>("all");
+  const [selectedMailIds, setSelectedMailIds] = useState<Set<string>>(new Set());
+
+  const toggleMailSelection = (mailId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedMailIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(mailId)) {
+        newSet.delete(mailId);
+      } else {
+        newSet.add(mailId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedMailIds.size === filteredMails.length) {
+      setSelectedMailIds(new Set());
+    } else {
+      setSelectedMailIds(new Set(filteredMails.map(m => m.id)));
+    }
+  };
 
   const unreadCount = mails.filter((mail) => !mail.isRead).length;
   const importantCount = mails.filter((mail) => mail.isImportant).length;
@@ -78,6 +100,29 @@ export function MailContent({
       {/* Action Toolbar */}
       <div className="h-14 border-b border-border bg-muted/30 flex items-center justify-between px-4">
         <div className="flex items-center gap-1">
+          {/* 전체선택 체크박스 */}
+          {!selectedMail && (
+            <button
+              onClick={toggleSelectAll}
+              className="h-9 w-9 flex items-center justify-center rounded-lg hover:bg-secondary transition-colors mr-2"
+            >
+              <div className={cn(
+                "w-5 h-5 rounded border-2 flex items-center justify-center transition-colors",
+                selectedMailIds.size === filteredMails.length && filteredMails.length > 0
+                  ? "bg-primary border-primary"
+                  : selectedMailIds.size > 0
+                    ? "bg-primary/50 border-primary"
+                    : "border-muted-foreground/40"
+              )}>
+                {selectedMailIds.size > 0 && (
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+            </button>
+          )}
+
           {/* 뒤로/이전 버튼 */}
           <button
             onClick={() => selectedMail ? onSelectMail(null) : null}
@@ -346,26 +391,45 @@ export function MailContent({
               <div className="flex-1 overflow-y-auto scrollbar-thin">
                 <div className="divide-y divide-border">
                   {filteredMails.map((mail) => (
-                    <button
+                    <div
                       key={mail.id}
                       onClick={() => onSelectMail(mail)}
-                      className="w-full text-left px-6 py-4 bg-card hover:bg-secondary/50 transition-all duration-150"
+                      className={cn(
+                        "w-full text-left px-6 py-4 bg-card hover:bg-secondary/50 transition-all duration-150 cursor-pointer",
+                        selectedMailIds.has(mail.id) && "bg-primary/5"
+                      )}
                     >
                       <div className="flex items-start gap-3">
+                        {/* 체크박스 */}
+                        <button
+                          onClick={(e) => toggleMailSelection(mail.id, e)}
+                          className="p-1 -ml-1 rounded hover:bg-secondary transition-colors flex-shrink-0"
+                        >
+                          <div className={cn(
+                            "w-5 h-5 rounded border-2 flex items-center justify-center transition-colors",
+                            selectedMailIds.has(mail.id)
+                              ? "bg-primary border-primary"
+                              : "border-muted-foreground/40 hover:border-primary"
+                          )}>
+                            {selectedMailIds.has(mail.id) && (
+                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                        </button>
                         {/* 중요편지함 별표 표시 */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             const isCurrentlyImportant = mail.isImportant || mail.folder === "archive";
                             if (isCurrentlyImportant) {
-                              // 중요 해제 - 원래 폴더로 복귀
                               onMoveToFolder?.(mail.id, mail.originalFolder || "inbox");
                             } else {
-                              // 중요 표시 - archive로 이동
                               onMoveToFolder?.(mail.id, "archive");
                             }
                           }}
-                          className="p-1 -ml-1 rounded-full hover:bg-secondary transition-colors flex-shrink-0"
+                          className="p-1 rounded-full hover:bg-secondary transition-colors flex-shrink-0"
                         >
                           <Star
                             className={cn(
@@ -445,7 +509,7 @@ export function MailContent({
                           )}
                         </div>
                       </div>
-                    </button>
+                    </div>
                   ))}
                 </div>
               </div>
