@@ -152,9 +152,15 @@ export function Sidebar({
               </div>
             </div>
             
-            {/* 이름 & 이메일 */}
-            <p className="text-sm font-semibold text-foreground mb-0.5">Bang Kyung Chang</p>
-            <p className="text-xs text-muted-foreground mb-3 truncate max-w-full">webbreak@kakao...</p>
+            {/* 이름 & 회원등급 뱃지 */}
+            <div className="flex items-center gap-2 mb-0.5">
+              <p className="text-sm font-semibold text-foreground">Bang Kyung Chang</p>
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-medium">
+                <span>🌱</span>
+                <span>새싹회원</span>
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3 truncate max-w-full">050-1234-5678</p>
             
             {/* 통계 카드 - 가로 배치 */}
             <div className="flex gap-2 w-full">

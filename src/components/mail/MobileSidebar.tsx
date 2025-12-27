@@ -71,8 +71,14 @@ export function MobileSidebar({
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground truncate">Bang Kyung Chang</p>
-            <p className="text-xs text-muted-foreground truncate">webbreak@kakao...</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold text-foreground truncate">Bang Kyung Chang</p>
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-medium">
+                <span>🌱</span>
+                <span>새싹회원</span>
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground truncate">050-1234-5678</p>
           </div>
         </div>
 
