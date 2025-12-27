@@ -121,24 +121,19 @@ export function MailContent({
             </button>
           )}
 
-          {/* 뒤로/이전 버튼 */}
+          {/* 뒤로가기 버튼 */}
           <button
             onClick={() => selectedMail ? onSelectMail(null) : null}
             className="h-9 px-3 flex items-center gap-1 rounded-full border border-border bg-background text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
-            {selectedMail ? "답장" : ""}
+            {selectedMail ? "뒤로" : ""}
           </button>
 
           {selectedMail ? (
-            <>
-              <button className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                전체답장
-              </button>
-              <button className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                전달
-              </button>
-            </>
+            <button className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors">
+              전달
+            </button>
           ) : null}
 
           <button 
