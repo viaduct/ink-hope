@@ -309,12 +309,6 @@ export function Sidebar({
               </button>
               <div className="flex items-center gap-1">
                 <button
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                  title="새 편지함 추가"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
-                <button
                   onClick={() => setIsAddressBookOpen(true)}
                   className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                   title="편지함 관리"
