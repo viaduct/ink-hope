@@ -40,8 +40,8 @@ const mockMyCapsules = [
     status: "collecting",
     contributors: ["😊", "😄", "😀"],
     icon: Heart,
-    iconBg: "bg-pink-100",
-    iconColor: "text-pink-500",
+    iconBg: "bg-orange-100",
+    iconColor: "text-orange-500",
   },
   {
     id: 3,
