@@ -238,22 +238,21 @@ export function MailContent({
       </div>
 
       {/* Header */}
-      <header className="h-14 border-b border-border bg-card flex items-center justify-between px-6">
-        <div className="flex items-center gap-3">
-          {!selectedMail && (
-            <>
-              <h1 className="text-lg font-semibold text-foreground">
-                {selectedMember 
-                  ? `${selectedMember.name}님과의 편지` 
-                  : folderTitles[activeFolder]}
-              </h1>
-              <span className="text-sm text-muted-foreground">
-                {mails.length}개의 편지
-              </span>
-            </>
-          )}
-        </div>
-      </header>
+      {/* Header - 목록 뷰에서만 표시 */}
+      {!selectedMail && (
+        <header className="h-14 border-b border-border bg-card flex items-center justify-between px-6">
+          <div className="flex items-center gap-3">
+            <h1 className="text-lg font-semibold text-foreground">
+              {selectedMember 
+                ? `${selectedMember.name}님과의 편지` 
+                : folderTitles[activeFolder]}
+            </h1>
+            <span className="text-sm text-muted-foreground">
+              {mails.length}개의 편지
+            </span>
+          </div>
+        </header>
+      )}
 
       {/* Content Area */}
       <div className="flex-1 overflow-hidden">
