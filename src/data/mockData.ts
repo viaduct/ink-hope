@@ -1,4 +1,17 @@
 import type { FamilyMember, Mail, MailOption, OrangeTree, SpecialDay, RecentActivity, GrowthStage } from "@/types/mail";
+
+// Mock user for in-memory auth
+export interface MockUser {
+  id: string;
+  email: string;
+  display_name: string;
+}
+
+export const mockUser: MockUser = {
+  id: "mock-user-001",
+  email: "demo@example.com",
+  display_name: "데모 사용자",
+};
 import orangeSeed from "@/assets/emoticons/orange-seed-icon.png";
 import orangeSprout from "@/assets/emoticons/orange-sprout-icon.png";
 import orangeYoungTree from "@/assets/emoticons/orange-young-tree-icon.png";

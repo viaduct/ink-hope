@@ -1,9 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, ArrowLeft, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { Sparkles, X, ArrowLeft } from "lucide-react";
 
 interface AIWritingHelperProps {
   isOpen: boolean;
@@ -13,56 +10,49 @@ interface AIWritingHelperProps {
   currentContent?: string;
 }
 
-export function AIWritingHelper({ 
-  isOpen, 
-  onClose, 
+// Static suggestions for different relations
+const suggestionsByRelation: Record<string, string[]> = {
+  아들: [
+    "아들아, 잘 지내고 있니? 오랜만에 펜을 들었어.",
+    "요즘 건강은 어떠니? 엄마는 매일 네 생각이야.",
+    "보고 싶은 마음에 편지를 쓴단다.",
+    "이 편지가 닿을 무렵, 좋은 하루 보내고 있길 바라.",
+  ],
+  남편: [
+    "여보, 잘 지내고 있어요? 오랜만에 편지해요.",
+    "요즘 어떻게 지내요? 많이 보고 싶어요.",
+    "오늘도 당신 생각에 펜을 들었어요.",
+    "이 편지 받을 때쯤 좋은 일이 있었으면 좋겠어요.",
+  ],
+  동생: [
+    "동생아, 잘 지내고 있어? 형/누나가 편지 쓴다.",
+    "요즘 어떻게 지내? 보고 싶어서 편지해.",
+    "네 생각이 많이 나서 펜을 들었어.",
+    "이 편지가 닿으면 좋은 하루가 됐으면 좋겠어.",
+  ],
+  default: [
+    "오랜만에 펜을 들었어요. 잘 지내고 계신가요?",
+    "안녕하세요, 요즘 어떻게 지내세요?",
+    "보고 싶은 마음에 편지를 씁니다.",
+    "이 편지가 닿을 무렵, 좋은 하루 보내고 계시길 바라요.",
+  ],
+};
+
+export function AIWritingHelper({
+  isOpen,
+  onClose,
   onSelectSuggestion,
   recipientRelation = "가족",
-  currentContent = ""
 }: AIWritingHelperProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
 
-  const loadSuggestions = async () => {
-    if (hasLoaded) return;
-    
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('ai-letter-helper', {
-        body: { 
-          type: 'suggestions',
-          context: { relation: recipientRelation }
-        }
-      });
-
-      if (error) throw error;
-      
-      if (data.suggestions) {
-        setSuggestions(data.suggestions);
-        setHasLoaded(true);
-      }
-    } catch (error) {
-      console.error('Error loading suggestions:', error);
-      // 기본 제안 사용
-      setSuggestions([
-        "오랜만에 펜을 들었어요. 잘 지내고 계신가요?",
-        "안녕하세요, 요즘 어떻게 지내세요?",
-        "보고 싶은 마음에 편지를 씁니다.",
-        "이 편지가 닿을 무렵, 좋은 하루 보내고 계시길 바라요."
-      ]);
-      setHasLoaded(true);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (isOpen) {
+      // Get suggestions based on relation or use default
+      const relationSuggestions = suggestionsByRelation[recipientRelation] || suggestionsByRelation.default;
+      setSuggestions(relationSuggestions);
     }
-  };
-
-  // 열릴 때 제안 로드
-  useState(() => {
-    if (isOpen && !hasLoaded) {
-      loadSuggestions();
-    }
-  });
+  }, [isOpen, recipientRelation]);
 
   const handleSelectSuggestion = (suggestion: string) => {
     onSelectSuggestion(suggestion);
@@ -86,7 +76,7 @@ export function AIWritingHelper({
                 <Sparkles className="w-5 h-5" />
                 <span className="font-medium">AI가 도와드릴까요?</span>
               </div>
-              <button 
+              <button
                 onClick={onClose}
                 className="p-1 hover:bg-white/20 rounded-full transition-colors"
               >
@@ -96,7 +86,7 @@ export function AIWritingHelper({
 
             {/* 뒤로가기 */}
             <div className="px-4 pb-2">
-              <button 
+              <button
                 onClick={onClose}
                 className="flex items-center gap-1 text-white/70 hover:text-white text-sm transition-colors"
               >
@@ -107,24 +97,18 @@ export function AIWritingHelper({
 
             {/* 제안 목록 */}
             <div className="px-4 pb-6 space-y-2">
-              {isLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 text-white animate-spin" />
-                </div>
-              ) : (
-                suggestions.map((suggestion, index) => (
-                  <motion.button
-                    key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => handleSelectSuggestion(suggestion)}
-                    className="w-full p-3 bg-white/20 hover:bg-white/30 rounded-xl text-white text-left transition-colors"
-                  >
-                    {suggestion}
-                  </motion.button>
-                ))
-              )}
+              {suggestions.map((suggestion, index) => (
+                <motion.button
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => handleSelectSuggestion(suggestion)}
+                  className="w-full p-3 bg-white/20 hover:bg-white/30 rounded-xl text-white text-left transition-colors"
+                >
+                  {suggestion}
+                </motion.button>
+              ))}
             </div>
           </div>
         </motion.div>

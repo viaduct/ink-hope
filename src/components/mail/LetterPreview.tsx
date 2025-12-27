@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
-import { Eye, FileText, User, Send, ZoomIn, ZoomOut, Sparkles, RotateCcw, Loader2 } from "lucide-react";
+import { Eye, User, Send, ZoomIn, ZoomOut, Sparkles, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface Stationery {
@@ -46,6 +44,53 @@ const toneOptions = [
   { id: "serious", label: "진지하게", icon: "🎯", description: "진지하고 신중하게" },
 ];
 
+// Static tone transformation templates
+const toneTransformations: Record<string, (content: string) => string> = {
+  emotion: (content) => {
+    // Add emotional expressions
+    const additions = ["정말", "너무", "마음이 따뜻해지는", "진심으로"];
+    const randomAddition = additions[Math.floor(Math.random() * additions.length)];
+    return content.replace(/\./g, "요.").replace(/^/, `${randomAddition} `);
+  },
+  formal: (content) => {
+    // Make more formal
+    return content
+      .replace(/해요/g, "합니다")
+      .replace(/예요/g, "입니다")
+      .replace(/요\./g, "습니다.")
+      .replace(/\?/g, "습니까?");
+  },
+  friendly: (content) => {
+    // Make friendlier
+    return content
+      .replace(/합니다/g, "해요")
+      .replace(/입니다/g, "예요")
+      .replace(/습니다/g, "요");
+  },
+  concise: (content) => {
+    // Keep sentences shorter - just return as is since we can't really shorten without AI
+    return content;
+  },
+  mom: (content) => {
+    // Add motherly expressions
+    const prefix = "우리 ";
+    const suffix = " 엄마가 항상 응원할게.";
+    return prefix + content + suffix;
+  },
+  sibling: (content) => {
+    // Add sibling-like expressions
+    return content.replace(/요\./g, "어.").replace(/세요/g, "해");
+  },
+  friend: (content) => {
+    // Make casual like friends
+    return content.replace(/요\./g, "!").replace(/세요/g, "해").replace(/합니다/g, "해");
+  },
+  serious: (content) => {
+    // Make more serious
+    return content.replace(/!/g, ".").replace(/ㅎㅎ/g, "").replace(/~~~/g, "");
+  },
+};
+
 interface LetterPreviewProps {
   content: string;
   stationeryId: string | null;
@@ -62,29 +107,16 @@ export function LetterPreview({
   stationeryId,
   recipientName,
   recipientFacility,
-  recipientAddress,
   senderName,
   senderAddress,
   onContentChange,
 }: LetterPreviewProps) {
   const [zoom, setZoom] = useState(100);
-  const [currentPage, setCurrentPage] = useState(1);
   const [editableContent, setEditableContent] = useState(content);
   const [originalContent] = useState(content);
-  const [isConverting, setIsConverting] = useState(false);
   const [activeTone, setActiveTone] = useState<string | null>(null);
-  
+
   const stationery = stationeryId ? stationeryStyles[stationeryId] : stationeryStyles.white;
-  
-  // 편지 내용을 페이지별로 나누기 (대략 500자 기준)
-  const charsPerPage = 500;
-  const pages = [];
-  for (let i = 0; i < editableContent.length; i += charsPerPage) {
-    pages.push(editableContent.slice(i, i + charsPerPage));
-  }
-  if (pages.length === 0) pages.push("");
-  
-  const totalPages = pages.length;
 
   const handleContentChange = (newContent: string) => {
     setEditableContent(newContent);
@@ -98,47 +130,21 @@ export function LetterPreview({
     toast.success("원본으로 초기화되었습니다");
   };
 
-  const handleToneConvert = async (toneId: string) => {
+  const handleToneConvert = (toneId: string) => {
     if (!editableContent.trim()) {
       toast.error("변환할 내용이 없습니다");
       return;
     }
 
-    setIsConverting(true);
     setActiveTone(toneId);
 
-    const tonePrompts: Record<string, string> = {
-      emotion: "이 편지의 감정을 더 풍부하고 진심이 느껴지게 표현해줘. 따뜻하고 감동적으로.",
-      formal: "이 편지를 격식체로 바꿔줘. 정중하고 예의바른 표현으로.",
-      friendly: "이 편지를 친근하고 편안한 말투로 바꿔줘. 반말은 아니지만 부드럽게.",
-      concise: "이 편지의 핵심 내용만 간결하게 정리해줘. 불필요한 수식어는 줄이고.",
-      mom: "이 편지를 엄마가 자식에게 쓰는 것처럼 따뜻하고 걱정되는 마음이 담긴 말투로 바꿔줘.",
-      sibling: "이 편지를 형이나 누나가 동생에게 쓰는 것처럼 친근하면서도 챙겨주는 말투로 바꿔줘.",
-      friend: "이 편지를 친한 친구에게 쓰는 것처럼 편하고 솔직한 말투로 바꿔줘.",
-      serious: "이 편지를 진지하고 신중한 톤으로 바꿔줘. 무게감 있게.",
-    };
-
-    try {
-      const { data, error } = await supabase.functions.invoke("ai-letter-helper", {
-        body: {
-          type: "rewrite",
-          content: editableContent,
-          prompt: tonePrompts[toneId] || "이 편지를 자연스럽게 다듬어줘.",
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.content) {
-        setEditableContent(data.content);
-        onContentChange?.(data.content);
-        toast.success("말투가 변환되었습니다");
-      }
-    } catch (error) {
-      console.error("Tone conversion error:", error);
-      toast.error("말투 변환에 실패했습니다");
-    } finally {
-      setIsConverting(false);
+    // Apply static transformation
+    const transformer = toneTransformations[toneId];
+    if (transformer) {
+      const transformed = transformer(editableContent);
+      setEditableContent(transformed);
+      onContentChange?.(transformed);
+      toast.success("말투가 변환되었습니다");
     }
   };
 
@@ -180,7 +186,7 @@ export function LetterPreview({
         {/* 편지지 미리보기 영역 */}
         <div className="rounded-2xl border border-border overflow-hidden">
           {/* 에디터 영역 */}
-          <div 
+          <div
             className={cn(
               "relative min-h-[300px] p-6",
               stationery?.bgGradient || stationery?.bgColor || "bg-white"
@@ -195,7 +201,7 @@ export function LetterPreview({
               </div>
             )}
             {stationery?.pattern === "grid" && (
-              <div 
+              <div
                 className="absolute inset-0 opacity-30 pointer-events-none"
                 style={{
                   backgroundImage: 'linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)',
@@ -224,26 +230,21 @@ export function LetterPreview({
                 <Sparkles className="w-4 h-4" />
                 <span>AI로 전체 문장 다듬기</span>
               </div>
-              
+
               <div className="flex items-center gap-2 flex-wrap flex-1">
                 {toneOptions.map((tone) => (
                   <button
                     key={tone.id}
                     onClick={() => handleToneConvert(tone.id)}
-                    disabled={isConverting}
                     className={cn(
                       "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all border",
-                      activeTone === tone.id && isConverting
+                      activeTone === tone.id
                         ? "bg-primary/10 border-primary text-primary"
                         : "bg-card border-border hover:border-primary/50 hover:bg-primary/5 text-foreground"
                     )}
                     title={tone.description}
                   >
-                    {activeTone === tone.id && isConverting ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <span>{tone.icon}</span>
-                    )}
+                    <span>{tone.icon}</span>
                     {tone.label}
                   </button>
                 ))}
@@ -277,7 +278,7 @@ export function LetterPreview({
               <p className="text-muted-foreground text-sm">선택된 수신자가 없습니다</p>
             )}
           </div>
-          
+
           {/* 보내는 사람 */}
           <div className="bg-muted/30 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
@@ -298,7 +299,7 @@ export function LetterPreview({
         {/* 안내 메시지 */}
         <div className="bg-muted/50 rounded-xl p-4 text-center">
           <p className="text-sm text-muted-foreground">
-            💡 미리보기에서 직접 수정하거나, AI 버튼을 눌러 말투를 바꿀 수 있어요.
+            미리보기에서 직접 수정하거나, AI 버튼을 눌러 말투를 바꿀 수 있어요.
           </p>
         </div>
       </div>

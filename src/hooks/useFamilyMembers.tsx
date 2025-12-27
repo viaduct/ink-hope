@@ -1,7 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
+import { familyMembers as initialFamilyMembers } from "@/data/mockData";
+
+const STORAGE_KEY = "ink-hope-family-members";
 
 export interface FamilyMemberDB {
   id: string;
@@ -27,33 +29,66 @@ export interface CreateFamilyMemberInput {
   color?: string;
 }
 
+function loadFromStorage(userId: string): FamilyMemberDB[] {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      return parsed.filter((m: FamilyMemberDB) => m.user_id === userId && m.is_active);
+    } catch {
+      return [];
+    }
+  }
+  // Initialize with mock data on first load
+  const initial: FamilyMemberDB[] = initialFamilyMembers.map((m) => ({
+    id: m.id,
+    user_id: userId,
+    name: m.name,
+    relation: m.relation,
+    facility: m.facility,
+    facility_address: m.facilityAddress || null,
+    prisoner_number: m.prisonerNumber || null,
+    avatar: m.avatar,
+    color: m.color,
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+  return initial;
+}
+
+function saveToStorage(members: FamilyMemberDB[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
+}
+
 export function useFamilyMembers() {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
+  const [familyMembers, setFamilyMembers] = useState<FamilyMemberDB[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
-  const query = useQuery({
-    queryKey: ["family_members", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      
-      const { data, error } = await supabase
-        .from("family_members")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
+  useEffect(() => {
+    if (user) {
+      const members = loadFromStorage(user.id);
+      setFamilyMembers(members.filter((m) => m.is_active));
+      setIsLoading(false);
+    } else {
+      setFamilyMembers([]);
+      setIsLoading(false);
+    }
+  }, [user]);
 
-      if (error) throw error;
-      return data as FamilyMemberDB[];
-    },
-    enabled: !!user,
-  });
+  const createFamilyMember = useCallback(
+    (input: CreateFamilyMemberInput) => {
+      if (!user) {
+        toast.error("로그인이 필요합니다");
+        return;
+      }
 
-  const createMutation = useMutation({
-    mutationFn: async (input: CreateFamilyMemberInput) => {
-      if (!user) throw new Error("로그인이 필요합니다");
+      setIsCreating(true);
 
-      // 아바타 색상: 직접 지정하거나 랜덤 선택
       const colors = [
         "bg-orange-100 text-orange-600",
         "bg-blue-100 text-blue-600",
@@ -63,81 +98,71 @@ export function useFamilyMembers() {
       ];
       const selectedColor = input.color || colors[Math.floor(Math.random() * colors.length)];
 
-      const { data, error } = await supabase
-        .from("family_members")
-        .insert({
-          user_id: user.id,
-          name: input.name,
-          relation: input.relation,
-          facility: input.facility,
-          facility_address: input.facility_address || null,
-          prisoner_number: input.prisoner_number || null,
-          avatar: input.name.charAt(0),
-          color: selectedColor,
-        })
-        .select()
-        .single();
+      const newMember: FamilyMemberDB = {
+        id: `fm-${Date.now()}`,
+        user_id: user.id,
+        name: input.name,
+        relation: input.relation,
+        facility: input.facility,
+        facility_address: input.facility_address || null,
+        prisoner_number: input.prisoner_number || null,
+        avatar: input.name.charAt(0),
+        color: selectedColor,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
 
-      if (error) throw error;
-      return data as FamilyMemberDB;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["family_members"] });
-      queryClient.invalidateQueries({ queryKey: ["orange_trees"] });
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const all = stored ? JSON.parse(stored) : [];
+      all.push(newMember);
+      saveToStorage(all);
+
+      setFamilyMembers((prev) => [newMember, ...prev]);
+      setIsCreating(false);
       toast.success("소중한 사람이 추가되었습니다. 오렌지나무도 함께 생겼어요!");
     },
-    onError: (error) => {
-      toast.error("추가 실패: " + error.message);
-    },
-  });
+    [user]
+  );
 
-  const updateMutation = useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<FamilyMemberDB> & { id: string }) => {
-      const { data, error } = await supabase
-        .from("family_members")
-        .update(updates)
-        .eq("id", id)
-        .select()
-        .single();
+  const updateFamilyMember = useCallback(
+    ({ id, ...updates }: Partial<FamilyMemberDB> & { id: string }) => {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const all: FamilyMemberDB[] = stored ? JSON.parse(stored) : [];
+      const index = all.findIndex((m) => m.id === id);
 
-      if (error) throw error;
-      return data as FamilyMemberDB;
+      if (index !== -1) {
+        all[index] = { ...all[index], ...updates, updated_at: new Date().toISOString() };
+        saveToStorage(all);
+        setFamilyMembers((prev) =>
+          prev.map((m) => (m.id === id ? { ...m, ...updates } : m))
+        );
+        toast.success("정보가 수정되었습니다");
+      }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["family_members"] });
-      toast.success("정보가 수정되었습니다");
-    },
-    onError: (error) => {
-      toast.error("수정 실패: " + error.message);
-    },
-  });
+    []
+  );
 
-  // 소프트 삭제 (is_active = false)
-  const deactivateMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("family_members")
-        .update({ is_active: false })
-        .eq("id", id);
+  const deactivateFamilyMember = useCallback((id: string) => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const all: FamilyMemberDB[] = stored ? JSON.parse(stored) : [];
+    const index = all.findIndex((m) => m.id === id);
 
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["family_members"] });
+    if (index !== -1) {
+      all[index] = { ...all[index], is_active: false, updated_at: new Date().toISOString() };
+      saveToStorage(all);
+      setFamilyMembers((prev) => prev.filter((m) => m.id !== id));
       toast.success("수신자가 비활성화되었습니다");
-    },
-    onError: (error) => {
-      toast.error("비활성화 실패: " + error.message);
-    },
-  });
+    }
+  }, []);
 
   return {
-    familyMembers: query.data || [],
-    isLoading: query.isLoading,
-    error: query.error,
-    createFamilyMember: createMutation.mutate,
-    updateFamilyMember: updateMutation.mutate,
-    deactivateFamilyMember: deactivateMutation.mutate,
-    isCreating: createMutation.isPending,
+    familyMembers,
+    isLoading,
+    error,
+    createFamilyMember,
+    updateFamilyMember,
+    deactivateFamilyMember,
+    isCreating,
   };
 }
