@@ -170,19 +170,65 @@ export const orangeTrees: OrangeTree[] = [
 
 // 소중한 날들 (열매)
 export const specialDays: SpecialDay[] = [
-  { id: "sd-1", treeId: "tree-1", type: "visit", title: "가족 면회", date: "2025-01-08", description: "어머니, 여동생 면회 예정" },
-  { id: "sd-2", treeId: "tree-1", type: "trial", title: "재판일", date: "2025-02-15", description: "항소심 재판" },
-  { id: "sd-3", treeId: "tree-1", type: "birthday", title: "생일", date: "2025-03-20", description: "재원이의 생일" },
-  { id: "sd-4", treeId: "tree-1", type: "release", title: "출소 예정일", date: "2025-06-15", description: "드디어 집으로" },
-  { id: "sd-5", treeId: "tree-1", type: "anniversary", title: "결혼기념일", date: "2025-04-10", description: "10주년 결혼기념일" },
-  { id: "sd-6", treeId: "tree-2", type: "birthday", title: "생일", date: "2025-05-12", description: "은우의 생일" },
-  { id: "sd-7", treeId: "tree-2", type: "release", title: "출소 예정일", date: "2026-01-20", description: "출소 예정" },
+  // 2025년 12월 일정들
+  { id: "sd-11", treeId: "tree-1", type: "visit", title: "정기 면회", date: "2025-12-07", description: "재원이 12월 첫 면회, 간식과 책 전달 예정" },
+  { id: "sd-12", treeId: "tree-2", type: "visit", title: "가족 면회", date: "2025-12-10", description: "은우 면회, 아이들 성적표 전달" },
+  { id: "sd-13", treeId: "tree-1", type: "program", title: "직업훈련 수료식", date: "2025-12-12", description: "재원이 컴퓨터 자격증 취득 수료식" },
+  { id: "sd-14", treeId: "tree-3", type: "health", title: "건강검진", date: "2025-12-15", description: "성훈이 정기 건강검진일" },
+  { id: "sd-15", treeId: "tree-1", type: "visit", title: "크리스마스 특별면회", date: "2025-12-24", description: "크리스마스 이브 특별 면회, 케이크 전달" },
+  { id: "sd-16", treeId: "tree-2", type: "birthday", title: "아이 생일", date: "2025-12-25", description: "막내 아이 생일 - 은우에게 영상 전달 예정" },
+  { id: "sd-17", treeId: "tree-1", type: "anniversary", title: "부모님 결혼기념일", date: "2025-12-28", description: "엄마 아빠 35주년 결혼기념일" },
+  { id: "sd-9", treeId: "tree-3", type: "release", title: "출소 예정일", date: "2025-12-31", description: "성훈이 출소 예정! 새해 첫날 가족과 함께" },
+
+  // 2026년 1월 일정들
+  { id: "sd-1", treeId: "tree-1", type: "visit", title: "가족 면회", date: "2026-01-03", description: "어머니, 여동생 면회 예정" },
+  { id: "sd-8", treeId: "tree-2", type: "visit", title: "정기 면회", date: "2026-01-04", description: "아이들과 함께 면회" },
+  { id: "sd-18", treeId: "tree-1", type: "trial", title: "가석방 심사", date: "2026-01-15", description: "재원이 가석방 심사일" },
+  { id: "sd-10", treeId: "tree-1", type: "visit", title: "정기 면회", date: "2026-01-21", description: "재원이 정기 면회일" },
+  { id: "sd-19", treeId: "tree-2", type: "program", title: "인성교육 프로그램", date: "2026-01-25", description: "은우 인성교육 프로그램 참여" },
+
+  // 2026년 2월 이후 일정들
+  { id: "sd-2", treeId: "tree-1", type: "trial", title: "재판일", date: "2026-02-15", description: "항소심 재판" },
+  { id: "sd-3", treeId: "tree-1", type: "birthday", title: "생일", date: "2026-03-20", description: "재원이의 생일" },
+  { id: "sd-5", treeId: "tree-1", type: "anniversary", title: "결혼기념일", date: "2026-04-10", description: "10주년 결혼기념일" },
+  { id: "sd-6", treeId: "tree-2", type: "birthday", title: "생일", date: "2026-05-12", description: "은우의 생일" },
+  { id: "sd-4", treeId: "tree-1", type: "release", title: "출소 예정일", date: "2026-06-15", description: "드디어 집으로" },
+  { id: "sd-7", treeId: "tree-2", type: "release", title: "출소 예정일", date: "2027-01-20", description: "출소 예정" },
 ];
 
 // 최근 활동
 export const recentActivities: RecentActivity[] = [
-  { id: "act-1", type: "sent", personName: "이재원", date: "2025-01-02", status: "전달완료", mailTypes: ["편지", "사진"] },
-  { id: "act-2", type: "received", personName: "이재원", date: "2024-12-28", status: "수신완료", mailTypes: ["편지"] },
+  { id: "act-1", type: "sent", personName: "이재원", date: "2025-12-26", status: "전달완료", mailTypes: ["편지", "사진"] },
+  { id: "act-2", type: "received", personName: "이재원", date: "2025-12-24", status: "수신완료", mailTypes: ["편지"] },
+];
+
+// 타임캡슐 쪽지 발송 일정
+export interface TimeCapsuleSendSchedule {
+  id: string;
+  capsuleId: string;
+  capsuleName: string;
+  recipientId: string;
+  recipientName: string;
+  relation: string;
+  facility: string;
+  sendDate: string;
+  letterCount: number;
+  isUrgent: boolean;
+}
+
+export const timeCapsuleSendSchedules: TimeCapsuleSendSchedule[] = [
+  {
+    id: "tc-send-1",
+    capsuleId: "1",
+    capsuleName: "재원이에게 보내는 희망의 편지",
+    recipientId: "1",
+    recipientName: "이재원",
+    relation: "아들",
+    facility: "서울남부교도소",
+    sendDate: "2025-12-30",
+    letterCount: 12,
+    isUrgent: true,
+  },
 ];
 
 export const mockMails: Mail[] = [

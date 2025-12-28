@@ -56,6 +56,33 @@ export function MailContent({
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [selectedMailIds, setSelectedMailIds] = useState<Set<string>>(new Set());
 
+  const unreadCount = mails.filter((mail) => !mail.isRead).length;
+  const handwrittenCount = mails.filter((mail) => mail.isHandwritten).length;
+
+  // 선택된 멤버와의 통계 계산
+  const memberStats = selectedMember ? {
+    receivedCount: allMails.filter((mail) => mail.sender.id === selectedMember.id).length,
+    sentCount: 0, // 보낸 편지 데이터가 있으면 여기서 계산
+    lastMailDate: mails.length > 0 ? mails[0].date : "없음",
+  } : null;
+
+  // 탭에 따라 해당 항목을 상단에 정렬 (전체 리스트 유지)
+  const sortedMails = [...mails].sort((a, b) => {
+    if (activeTab === "unread") {
+      // 읽지않음 탭: 읽지않은 편지가 상단에
+      if (!a.isRead && b.isRead) return -1;
+      if (a.isRead && !b.isRead) return 1;
+      return 0;
+    }
+    if (activeTab === "handwritten") {
+      // 손편지 탭: 손편지가 상단에
+      if (a.isHandwritten && !b.isHandwritten) return -1;
+      if (!a.isHandwritten && b.isHandwritten) return 1;
+      return 0;
+    }
+    return 0; // 전체 탭은 원래 순서 유지
+  });
+
   const toggleMailSelection = (mailId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setSelectedMailIds(prev => {
@@ -70,28 +97,12 @@ export function MailContent({
   };
 
   const toggleSelectAll = () => {
-    if (selectedMailIds.size === filteredMails.length) {
+    if (selectedMailIds.size === sortedMails.length) {
       setSelectedMailIds(new Set());
     } else {
-      setSelectedMailIds(new Set(filteredMails.map(m => m.id)));
+      setSelectedMailIds(new Set(sortedMails.map(m => m.id)));
     }
   };
-
-  const unreadCount = mails.filter((mail) => !mail.isRead).length;
-  const handwrittenCount = mails.filter((mail) => mail.isHandwritten).length;
-
-  // 선택된 멤버와의 통계 계산
-  const memberStats = selectedMember ? {
-    receivedCount: allMails.filter((mail) => mail.sender.id === selectedMember.id).length,
-    sentCount: 0, // 보낸 편지 데이터가 있으면 여기서 계산
-    lastMailDate: mails.length > 0 ? mails[0].date : "없음",
-  } : null;
-
-  const filteredMails = mails.filter((mail) => {
-    if (activeTab === "unread") return !mail.isRead;
-    if (activeTab === "handwritten") return mail.isHandwritten;
-    return true;
-  });
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-background">
@@ -106,7 +117,7 @@ export function MailContent({
             >
               <div className={cn(
                 "w-5 h-5 rounded border-2 flex items-center justify-center transition-colors",
-                selectedMailIds.size === filteredMails.length && filteredMails.length > 0
+                selectedMailIds.size === sortedMails.length && sortedMails.length > 0
                   ? "bg-primary border-primary"
                   : selectedMailIds.size > 0
                     ? "bg-primary/50 border-primary"
@@ -359,7 +370,7 @@ export function MailContent({
               {/* Mail List */}
               <div className="flex-1 overflow-y-auto scrollbar-thin">
                 <div className="divide-y divide-border">
-                  {filteredMails.map((mail) => (
+                  {sortedMails.map((mail) => (
                     <div
                       key={mail.id}
                       onClick={() => onSelectMail(mail)}

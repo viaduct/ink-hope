@@ -22,14 +22,14 @@ interface SpecialDay {
 }
 
 const dayTypes = [
-  { id: "release", label: "출소일", icon: Home, color: "bg-orange-100 text-orange-600 border-orange-200" },
-  { id: "birthday", label: "생일", icon: Cake, color: "bg-pink-100 text-pink-600 border-pink-200" },
-  { id: "anniversary", label: "기념일", icon: Heart, color: "bg-red-100 text-red-600 border-red-200" },
-  { id: "visit", label: "면회", icon: Users, color: "bg-blue-100 text-blue-600 border-blue-200" },
-  { id: "program", label: "교육/프로그램", icon: GraduationCap, color: "bg-purple-100 text-purple-600 border-purple-200" },
-  { id: "trial", label: "재판", icon: Scale, color: "bg-gray-100 text-gray-600 border-gray-200" },
-  { id: "health", label: "건강검진", icon: Activity, color: "bg-green-100 text-green-600 border-green-200" },
-  { id: "other", label: "기타 (직접입력)", icon: Edit3, color: "bg-slate-100 text-slate-600 border-slate-200" },
+  { id: "release", label: "출소일", icon: Home },
+  { id: "birthday", label: "생일", icon: Cake },
+  { id: "anniversary", label: "기념일", icon: Heart },
+  { id: "visit", label: "면회", icon: Users },
+  { id: "program", label: "교육/프로그램", icon: GraduationCap },
+  { id: "trial", label: "재판", icon: Scale },
+  { id: "health", label: "건강검진", icon: Activity },
+  { id: "other", label: "기타 (직접입력)", icon: Edit3 },
 ];
 
 export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModalProps) {
@@ -134,8 +134,8 @@ export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModa
                         : "border-border/60 bg-white hover:border-orange-200"
                     }`}
                   >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${type.color}`}>
-                      <Icon className="w-4 h-4" />
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100">
+                      <Icon className="w-4 h-4 text-orange-500" />
                     </div>
                     <span className={`text-sm font-medium ${isSelected ? "text-orange-600" : "text-foreground"}`}>
                       {type.label}
