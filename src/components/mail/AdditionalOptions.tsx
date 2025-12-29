@@ -91,22 +91,22 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
 
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:space-y-6">
       {/* 헤더 */}
-      <div className="flex items-center gap-2.5">
-        <Gift className="w-5 h-5 text-primary" />
+      <div className="flex items-center gap-2">
+        <Gift className="w-4 h-4 lg:w-5 lg:h-5 text-primary" />
         <div>
-          <h2 className="text-base font-semibold text-foreground">편지와 함께 작은 바깥의 하루를 전하세요</h2>
-          <p className="text-muted-foreground text-xs">
-            안에서는 알기 어려운 소식과 정보, 그들에게 힘이 되는 것들만 골라 전달됩니다.
+          <h2 className="text-sm lg:text-base font-semibold text-foreground">편지와 함께 작은 바깥의 하루를 전하세요</h2>
+          <p className="text-muted-foreground text-[11px] lg:text-xs">
+            안에서는 알기 어려운 소식과 정보를 전달합니다.
           </p>
         </div>
       </div>
 
       {/* 흰색 라운딩 박스 - 메인 컨테이너 */}
-      <div className="bg-card rounded-3xl p-6 shadow-lg border border-border/50 space-y-6">
+      <div className="bg-card rounded-xl lg:rounded-3xl p-4 lg:p-6 shadow-md lg:shadow-lg border border-border/50 space-y-4 lg:space-y-6">
         {/* 아이템 그리드 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4">
           {additionalItems.map((item) => {
             const isSelected = selectedItems.includes(item.id);
             
@@ -115,7 +115,7 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
                 key={item.id}
                 whileHover={{ y: -2 }}
                 className={cn(
-                  "relative bg-muted/30 rounded-2xl border-2 p-5 transition-all",
+                  "relative bg-muted/30 rounded-xl lg:rounded-2xl border-2 p-3 lg:p-5 transition-all",
                   isSelected
                     ? "border-primary shadow-lg bg-primary/5"
                     : "border-transparent hover:border-primary/30"
@@ -123,7 +123,7 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
               >
                 {/* NEW 배지 */}
                 {item.isNew && (
-                  <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-full shadow-md">
+                  <div className="absolute -top-1.5 -right-1.5 lg:-top-2 lg:-right-2 px-1.5 lg:px-2 py-0.5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] lg:text-xs font-bold rounded-full shadow-md">
                     NEW
                   </div>
                 )}
@@ -133,34 +133,35 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                    className="absolute top-2 right-2 lg:top-3 lg:right-3 w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-primary flex items-center justify-center"
                   >
-                    <Check className="w-4 h-4 text-primary-foreground" />
+                    <Check className="w-3 h-3 lg:w-4 lg:h-4 text-primary-foreground" />
                   </motion.div>
                 )}
 
                 {/* 아이콘 */}
-                <div className="w-12 h-12 rounded-xl bg-card flex items-center justify-center text-3xl mb-4">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-card flex items-center justify-center text-2xl lg:text-3xl mb-2 lg:mb-4">
                   {item.icon}
                 </div>
 
                 {/* 내용 */}
-                <h3 className="font-semibold text-foreground mb-1">{item.title}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{item.description}</p>
+                <h3 className="font-semibold text-foreground mb-0.5 lg:mb-1 text-xs lg:text-base">{item.title}</h3>
+                <p className="text-[10px] lg:text-sm text-muted-foreground mb-2 lg:mb-4 line-clamp-2">{item.description}</p>
 
                 {/* 버튼들 */}
-                <div className="flex items-center gap-2 pt-3 border-t border-border/50">
+                <div className="flex items-center gap-1 lg:gap-2 pt-2 lg:pt-3 border-t border-border/50">
                   <button
                     onClick={() => setPreviewItem(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 text-sm text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1 py-1.5 lg:py-2 text-[10px] lg:text-sm text-primary hover:bg-primary/5 rounded-lg transition-colors"
                   >
-                    <Eye className="w-4 h-4" />
-                    미리보기
+                    <Eye className="w-3 h-3 lg:w-4 lg:h-4" />
+                    <span className="hidden sm:inline">미리보기</span>
+                    <span className="sm:hidden">보기</span>
                   </button>
                   <button
                     onClick={() => toggleItem(item.id)}
                     className={cn(
-                      "flex-1 flex items-center justify-center gap-1.5 py-2 text-sm rounded-lg transition-colors",
+                      "flex-1 flex items-center justify-center gap-1 py-1.5 lg:py-2 text-[10px] lg:text-sm rounded-lg transition-colors",
                       isSelected
                         ? "bg-primary/10 text-primary font-medium"
                         : "text-muted-foreground hover:bg-muted"
@@ -168,12 +169,12 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
                   >
                     {isSelected ? (
                       <>
-                        <Check className="w-4 h-4" />
-                        선택됨
+                        <Check className="w-3 h-3 lg:w-4 lg:h-4" />
+                        <span className="hidden sm:inline">선택됨</span>
                       </>
                     ) : (
                       <>
-                        <Plus className="w-4 h-4" />
+                        <Plus className="w-3 h-3 lg:w-4 lg:h-4" />
                         선택
                       </>
                     )}
@@ -189,29 +190,29 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-2xl p-4 border border-orange-200/50 dark:border-orange-800/30"
+            className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-xl lg:rounded-2xl p-3 lg:p-4 border border-orange-200/50 dark:border-orange-800/30"
           >
-            <div className="flex items-center gap-2 mb-3">
-              <span className="font-medium text-foreground">선택됨:</span>
+            <div className="flex items-center gap-2 mb-2 lg:mb-3">
+              <span className="font-medium text-foreground text-sm lg:text-base">선택됨:</span>
             </div>
 
             {/* 선택된 아이템 목록 */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 lg:gap-2">
               {selectedItems.map((itemId) => {
                 const item = additionalItems.find((i) => i.id === itemId);
                 if (!item) return null;
                 return (
                   <div
                     key={itemId}
-                    className="flex items-center gap-2 bg-white dark:bg-card px-3 py-1.5 rounded-full text-sm border border-orange-200 dark:border-orange-800/50"
+                    className="flex items-center gap-1.5 lg:gap-2 bg-white dark:bg-card px-2 lg:px-3 py-1 lg:py-1.5 rounded-full text-xs lg:text-sm border border-orange-200 dark:border-orange-800/50"
                   >
-                    <span>{item.icon}</span>
+                    <span className="text-sm lg:text-base">{item.icon}</span>
                     <span className="font-medium text-orange-600 dark:text-orange-400">{item.title}</span>
                     <button
                       onClick={() => toggleItem(itemId)}
                       className="text-muted-foreground hover:text-foreground"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                     </button>
                   </div>
                 );
@@ -221,8 +222,8 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
         )}
 
         {/* 안내 메시지 */}
-        <div className="bg-muted/50 rounded-xl p-4 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="bg-muted/50 rounded-lg lg:rounded-xl p-3 lg:p-4 text-center">
+          <p className="text-xs lg:text-sm text-muted-foreground">
             💡 추가 콘텐츠는 선택하지 않아도 편지 발송이 가능합니다.
           </p>
         </div>

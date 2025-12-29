@@ -16,13 +16,15 @@ import { ScheduleContent } from "@/components/mail/ScheduleContent";
 import { RewardsContent } from "@/components/mail/RewardsContent";
 import { FaqContent } from "@/components/mail/FaqContent";
 import { FeedbackContent } from "@/components/mail/FeedbackContent";
+import { CustomerServiceContent } from "@/components/mail/CustomerServiceContent";
 import { DealsContent } from "@/components/mail/DealsContent";
+import { NoticeContent } from "@/components/mail/NoticeContent";
 import { familyMembers as initialFamilyMembers, mockMails } from "@/data/mockData";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery" | "schedule" | "rewards" | "faq" | "feedback" | "deals";
+type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery" | "schedule" | "rewards" | "notice" | "faq" | "feedback" | "deals" | "customerService";
 
 const Index = () => {
   const isMobile = useIsMobile();
@@ -71,9 +73,11 @@ const Index = () => {
       orangetree: "오렌지 나무",
       timecapsule: "타임캡슐",
       deals: "특가 할인",
+      notice: "공지사항",
       faq: "자주 묻는 질문",
       feedback: "고객의 소리",
       rewards: "내가 받은 경품",
+      customerService: "고객센터",
     };
     toast.success(`${folderNames[targetFolder]}으로 이동했습니다.`);
   };
@@ -109,12 +113,16 @@ const Index = () => {
       setViewMode("schedule");
     } else if (folder === "rewards") {
       setViewMode("rewards");
+    } else if (folder === "notice") {
+      setViewMode("notice");
     } else if (folder === "faq") {
       setViewMode("faq");
     } else if (folder === "feedback") {
       setViewMode("feedback");
     } else if (folder === "deals") {
       setViewMode("deals");
+    } else if (folder === "customerService") {
+      setViewMode("customerService");
     } else {
       setViewMode("mail");
     }
@@ -231,11 +239,28 @@ const Index = () => {
             }}
           />
         ) : viewMode === "gallery" ? (
-          <GalleryContent />
+          <GalleryContent
+            onClose={() => {
+              setActiveFolder("inbox");
+              setViewMode("mail");
+            }}
+          />
         ) : viewMode === "schedule" ? (
-          <ScheduleContent />
+          <ScheduleContent
+            onClose={() => {
+              setActiveFolder("inbox");
+              setViewMode("mail");
+            }}
+          />
         ) : viewMode === "rewards" ? (
           <RewardsContent
+            onClose={() => {
+              setActiveFolder("inbox");
+              setViewMode("mail");
+            }}
+          />
+        ) : viewMode === "notice" ? (
+          <NoticeContent
             onClose={() => {
               setActiveFolder("inbox");
               setViewMode("mail");
@@ -257,6 +282,13 @@ const Index = () => {
           />
         ) : viewMode === "deals" ? (
           <DealsContent
+            onClose={() => {
+              setActiveFolder("inbox");
+              setViewMode("mail");
+            }}
+          />
+        ) : viewMode === "customerService" ? (
+          <CustomerServiceContent
             onClose={() => {
               setActiveFolder("inbox");
               setViewMode("mail");

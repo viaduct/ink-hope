@@ -93,54 +93,54 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
   };
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-4 lg:space-y-7">
       {/* 헤더 */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <Edit3 className="w-5 h-5 text-primary" />
-          <h2 className="font-semibold text-foreground text-base tracking-tight">편지 작성</h2>
+        <div className="flex items-center gap-2">
+          <Edit3 className="w-4 h-4 lg:w-5 lg:h-5 text-primary" />
+          <h2 className="font-semibold text-foreground text-sm lg:text-base tracking-tight">편지 작성</h2>
         </div>
-        <button 
+        <button
           onClick={() => setIsAIHelperOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-full text-xs font-medium hover:from-violet-600 hover:to-purple-600 transition-all shadow-sm"
+          className="flex items-center gap-1.5 px-3 lg:px-3.5 py-1.5 lg:py-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-full text-[11px] lg:text-xs font-medium hover:from-violet-600 hover:to-purple-600 transition-all shadow-sm"
         >
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
           AI 도우미
         </button>
       </div>
 
       {/* 흰색 라운딩 박스 - 메인 에디터 컨테이너 */}
-      <div className="bg-card rounded-2xl p-6 shadow-md border border-black/[0.05] dark:border-white/[0.05]">
-        {/* 템플릿 버튼 - 높이/패딩/간격 통일 */}
-        <div className="flex items-center gap-3 mb-6">
+      <div className="bg-card rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-md border border-black/[0.05] dark:border-white/[0.05]">
+        {/* 템플릿 버튼 - 모바일에서 더 작게 */}
+        <div className="flex items-center gap-2 lg:gap-3 mb-4 lg:mb-6">
           <button
             onClick={() => setActiveModal("intro")}
-            className="h-10 flex items-center gap-2 px-4 py-2.5 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
+            className="h-8 lg:h-10 flex items-center gap-1.5 lg:gap-2 px-3 lg:px-4 py-2 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-[11px] lg:text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
           >
-            <span>👋</span>
+            <span className="text-sm lg:text-base">👋</span>
             처음
           </button>
           <button
             onClick={() => setActiveModal("middle")}
-            className="h-10 flex items-center gap-2 px-4 py-2.5 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
+            className="h-8 lg:h-10 flex items-center gap-1.5 lg:gap-2 px-3 lg:px-4 py-2 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-[11px] lg:text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
           >
-            <span>💬</span>
+            <span className="text-sm lg:text-base">💬</span>
             중간
           </button>
           <button
             onClick={() => setActiveModal("conclusion")}
-            className="h-10 flex items-center gap-2 px-4 py-2.5 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
+            className="h-8 lg:h-10 flex items-center gap-1.5 lg:gap-2 px-3 lg:px-4 py-2 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 rounded-full text-[11px] lg:text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-950/50 hover:border-orange-300/50 transition-all"
           >
-            <span>🌟</span>
+            <span className="text-sm lg:text-base">🌟</span>
             마무리
           </button>
         </div>
 
-        {/* 툴바 - 간격 통일 및 타이포 정리 */}
-        <div className="flex items-center gap-1.5 p-2.5 bg-muted/40 rounded-xl flex-wrap mb-4 border border-border/30">
-          {/* 폰트 선택 - 작은 크기로 */}
+        {/* 툴바 - 모바일에서 스크롤 가능 */}
+        <div className="flex items-center gap-1 lg:gap-1.5 p-2 lg:p-2.5 bg-muted/40 rounded-lg lg:rounded-xl mb-3 lg:mb-4 border border-border/30 overflow-x-auto">
+          {/* 폰트 선택 - 모바일에서 숨김 */}
           <Select value={font} onValueChange={setFont}>
-            <SelectTrigger className="w-[100px] h-8 bg-card border-border/50 text-xs">
+            <SelectTrigger className="hidden lg:flex w-[100px] h-8 bg-card border-border/50 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -152,7 +152,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
             </SelectContent>
           </Select>
 
-          <div className="w-px h-5 bg-border/50 mx-0.5" />
+          <div className="hidden lg:block w-px h-5 bg-border/50 mx-0.5" />
 
           {/* 폰트 크기 */}
           <div className="flex items-center gap-0.5">
@@ -162,7 +162,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
             >
               <Minus className="w-3.5 h-3.5" />
             </button>
-            <span className="w-6 text-center text-xs font-medium text-foreground tabular-nums">
+            <span className="w-5 lg:w-6 text-center text-[10px] lg:text-xs font-medium text-foreground tabular-nums">
               {fontSize}
             </span>
             <button
@@ -180,7 +180,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
             <button
               onClick={() => setIsBold(false)}
               className={cn(
-                "w-7 h-7 flex items-center justify-center rounded-md transition-colors text-sm",
+                "w-7 h-7 flex items-center justify-center rounded-md transition-colors text-[11px] lg:text-sm",
                 !isBold ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
               )}
             >
@@ -189,7 +189,7 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
             <button
               onClick={() => setIsBold(true)}
               className={cn(
-                "w-7 h-7 flex items-center justify-center rounded-md transition-colors text-sm font-bold",
+                "w-7 h-7 flex items-center justify-center rounded-md transition-colors text-[11px] lg:text-sm font-bold",
                 isBold ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
               )}
             >
@@ -198,11 +198,6 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
           </div>
 
           <div className="w-px h-5 bg-border/50 mx-0.5" />
-
-          {/* 텍스트 스타일 */}
-          <button className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground">
-            <span className="text-sm underline">가</span>
-          </button>
 
           {/* 정렬 */}
           <div className="flex items-center gap-0.5">
@@ -235,24 +230,24 @@ export function LetterEditor({ content, onContentChange }: LetterEditorProps) {
             </button>
           </div>
 
-          <div className="w-px h-5 bg-border/50 mx-0.5" />
+          <div className="hidden lg:block w-px h-5 bg-border/50 mx-0.5" />
 
-          {/* 줄바꿈 */}
-          <button 
+          {/* 줄바꿈 - 데스크탑만 */}
+          <button
             onClick={insertLineBreak}
-            className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground"
+            className="hidden lg:flex w-7 h-7 items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground"
             title="줄바꿈"
           >
             <CornerDownLeft className="w-3.5 h-3.5" />
           </button>
 
-          {/* 이미지 */}
-          <button className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground">
+          {/* 이미지 - 데스크탑만 */}
+          <button className="hidden lg:flex w-7 h-7 items-center justify-center rounded-md hover:bg-muted transition-colors text-muted-foreground">
             <ImageIcon className="w-3.5 h-3.5" />
           </button>
 
           {/* 글자 수 */}
-          <div className="ml-auto text-xs text-muted-foreground tabular-nums">
+          <div className="ml-auto text-[10px] lg:text-xs text-muted-foreground tabular-nums whitespace-nowrap">
             {charCount}자
           </div>
         </div>

@@ -149,46 +149,46 @@ export function LetterPreview({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Eye className="w-5 h-5 text-primary" />
-          <h2 className="font-semibold text-foreground text-lg">편지 미리보기</h2>
+          <Eye className="w-4 h-4 lg:w-5 lg:h-5 text-primary" />
+          <h2 className="font-semibold text-foreground text-sm lg:text-lg">편지 미리보기</h2>
         </div>
       </div>
 
       {/* 흰색 라운딩 박스 - 메인 컨테이너 */}
-      <div className="bg-card rounded-3xl p-6 shadow-lg border border-border/50 space-y-6">
+      <div className="bg-card rounded-xl lg:rounded-3xl p-4 lg:p-6 shadow-md lg:shadow-lg border border-border/50 space-y-4 lg:space-y-6">
         {/* 줌 컨트롤 */}
         <div className="flex items-center justify-end">
-          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+          <div className="flex items-center gap-0.5 lg:gap-1 bg-muted rounded-lg p-1">
             <button
               onClick={() => setZoom(Math.max(50, zoom - 10))}
-              className="p-2 hover:bg-card rounded-md transition-colors"
+              className="p-1.5 lg:p-2 hover:bg-card rounded-md transition-colors"
               disabled={zoom <= 50}
             >
-              <ZoomOut className="w-4 h-4 text-muted-foreground" />
+              <ZoomOut className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-muted-foreground" />
             </button>
-            <span className="px-2 text-sm font-medium text-foreground min-w-[50px] text-center">
+            <span className="px-1.5 lg:px-2 text-xs lg:text-sm font-medium text-foreground min-w-[40px] lg:min-w-[50px] text-center">
               {zoom}%
             </span>
             <button
               onClick={() => setZoom(Math.min(150, zoom + 10))}
-              className="p-2 hover:bg-card rounded-md transition-colors"
+              className="p-1.5 lg:p-2 hover:bg-card rounded-md transition-colors"
               disabled={zoom >= 150}
             >
-              <ZoomIn className="w-4 h-4 text-muted-foreground" />
+              <ZoomIn className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-muted-foreground" />
             </button>
           </div>
         </div>
 
         {/* 편지지 미리보기 영역 */}
-        <div className="rounded-2xl border border-border overflow-hidden">
+        <div className="rounded-xl lg:rounded-2xl border border-border overflow-hidden">
           {/* 에디터 영역 */}
           <div
             className={cn(
-              "relative min-h-[300px] p-6",
+              "relative min-h-[240px] lg:min-h-[300px] p-4 lg:p-6",
               stationery?.bgGradient || stationery?.bgColor || "bg-white"
             )}
           >
@@ -216,45 +216,45 @@ export function LetterPreview({
               onChange={(e) => handleContentChange(e.target.value)}
               placeholder="편지 내용을 입력하거나 수정하세요..."
               className={cn(
-                "relative z-10 w-full min-h-[280px] bg-transparent border-0 resize-none focus:outline-none text-gray-800 leading-relaxed",
+                "relative z-10 w-full min-h-[220px] lg:min-h-[280px] bg-transparent border-0 resize-none focus:outline-none text-gray-800 leading-relaxed text-sm lg:text-base",
                 "placeholder:text-gray-400"
               )}
-              style={{ fontSize: "16px" }}
+              style={{ fontSize: undefined }}
             />
           </div>
 
           {/* AI 말투 변환 툴바 */}
-          <div className="border-t border-border bg-muted/30 p-4">
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Sparkles className="w-4 h-4" />
+          <div className="border-t border-border bg-muted/30 p-3 lg:p-4">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3">
+              <div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground">
+                <Sparkles className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                 <span>AI로 전체 문장 다듬기</span>
               </div>
 
-              <div className="flex items-center gap-2 flex-wrap flex-1">
+              <div className="flex items-center gap-1.5 lg:gap-2 flex-wrap flex-1 overflow-x-auto pb-1 lg:pb-0">
                 {toneOptions.map((tone) => (
                   <button
                     key={tone.id}
                     onClick={() => handleToneConvert(tone.id)}
                     className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all border",
+                      "flex items-center gap-1 lg:gap-1.5 px-2 lg:px-3 py-1 lg:py-1.5 rounded-full text-[11px] lg:text-sm font-medium transition-all border whitespace-nowrap",
                       activeTone === tone.id
                         ? "bg-primary/10 border-primary text-primary"
                         : "bg-card border-border hover:border-primary/50 hover:bg-primary/5 text-foreground"
                     )}
                     title={tone.description}
                   >
-                    <span>{tone.icon}</span>
-                    {tone.label}
+                    <span className="text-sm lg:text-base">{tone.icon}</span>
+                    <span className="hidden sm:inline">{tone.label}</span>
                   </button>
                 ))}
               </div>
 
               <button
                 onClick={handleReset}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="flex items-center gap-1 lg:gap-1.5 px-2 lg:px-3 py-1 lg:py-1.5 rounded-full text-[11px] lg:text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
                 초기화
               </button>
             </div>
@@ -262,43 +262,43 @@ export function LetterPreview({
         </div>
 
         {/* 받는 사람/보내는 사람 정보 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
           {/* 받는 사람 */}
-          <div className="bg-muted/30 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <User className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">받는 사람</span>
+          <div className="bg-muted/30 rounded-lg lg:rounded-xl p-3 lg:p-4">
+            <div className="flex items-center gap-2 mb-1.5 lg:mb-2">
+              <User className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-primary" />
+              <span className="text-xs lg:text-sm font-medium text-muted-foreground">받는 사람</span>
             </div>
             {recipientName ? (
               <div>
-                <p className="font-semibold text-foreground">{recipientName}</p>
-                {recipientFacility && <p className="text-sm text-primary">{recipientFacility}</p>}
+                <p className="font-semibold text-foreground text-sm lg:text-base">{recipientName}</p>
+                {recipientFacility && <p className="text-xs lg:text-sm text-primary">{recipientFacility}</p>}
               </div>
             ) : (
-              <p className="text-muted-foreground text-sm">선택된 수신자가 없습니다</p>
+              <p className="text-muted-foreground text-xs lg:text-sm">선택된 수신자가 없습니다</p>
             )}
           </div>
 
           {/* 보내는 사람 */}
-          <div className="bg-muted/30 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Send className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">보내는 사람</span>
+          <div className="bg-muted/30 rounded-lg lg:rounded-xl p-3 lg:p-4">
+            <div className="flex items-center gap-2 mb-1.5 lg:mb-2">
+              <Send className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-primary" />
+              <span className="text-xs lg:text-sm font-medium text-muted-foreground">보내는 사람</span>
             </div>
             {senderName ? (
               <div>
-                <p className="font-semibold text-foreground">{senderName}</p>
-                {senderAddress && <p className="text-sm text-muted-foreground">{senderAddress}</p>}
+                <p className="font-semibold text-foreground text-sm lg:text-base">{senderName}</p>
+                {senderAddress && <p className="text-xs lg:text-sm text-muted-foreground">{senderAddress}</p>}
               </div>
             ) : (
-              <p className="text-muted-foreground text-sm">선택된 발신자가 없습니다</p>
+              <p className="text-muted-foreground text-xs lg:text-sm">선택된 발신자가 없습니다</p>
             )}
           </div>
         </div>
 
         {/* 안내 메시지 */}
-        <div className="bg-muted/50 rounded-xl p-4 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="bg-muted/50 rounded-lg lg:rounded-xl p-3 lg:p-4 text-center">
+          <p className="text-xs lg:text-sm text-muted-foreground">
             미리보기에서 직접 수정하거나, AI 버튼을 눌러 말투를 바꿀 수 있어요.
           </p>
         </div>

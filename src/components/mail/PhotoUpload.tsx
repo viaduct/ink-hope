@@ -90,36 +90,36 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:space-y-6">
       {/* 헤더 */}
-      <div className="flex items-center gap-2.5">
-        <Image className="w-5 h-5 text-primary" />
+      <div className="flex items-center gap-2">
+        <Image className="w-4 h-4 lg:w-5 lg:h-5 text-primary" />
         <div>
-          <h2 className="text-base font-semibold text-foreground">사진 출력 추가</h2>
-          <p className="text-muted-foreground text-xs">편지와 함께 사진을 동봉해보세요</p>
+          <h2 className="text-sm lg:text-base font-semibold text-foreground">사진 출력 추가</h2>
+          <p className="text-muted-foreground text-[11px] lg:text-xs">편지와 함께 사진을 동봉해보세요</p>
         </div>
       </div>
 
       {/* 흰색 라운딩 박스 - 메인 컨테이너 */}
-      <div className="bg-card rounded-3xl p-6 shadow-lg border border-border/50 space-y-6">
+      <div className="bg-card rounded-xl lg:rounded-3xl p-4 lg:p-6 shadow-md lg:shadow-lg border border-border/50 space-y-4 lg:space-y-6">
         {/* 사진 인화 서비스 안내 */}
-        <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-5">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center shrink-0 text-2xl">
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-xl lg:rounded-2xl p-4 lg:p-5">
+          <div className="flex items-start gap-2.5 lg:gap-3">
+            <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl bg-white dark:bg-card flex items-center justify-center shrink-0 text-xl lg:text-2xl">
               📸
             </div>
             <div>
-              <h3 className="font-semibold text-foreground mb-1">사진 인화 서비스</h3>
-              <p className="text-sm text-muted-foreground">
-                업로드하신 사진은 <span className="text-orange-600 dark:text-orange-400 font-medium">고품질 사진 인화지에 인화</span>되어 편지와 함께 동봉됩니다. 소중한 추억을 선물하세요!
+              <h3 className="font-semibold text-foreground mb-0.5 lg:mb-1 text-sm lg:text-base">사진 인화 서비스</h3>
+              <p className="text-xs lg:text-sm text-muted-foreground">
+                업로드하신 사진은 <span className="text-orange-600 dark:text-orange-400 font-medium">고품질 사진 인화지에 인화</span>되어 편지와 함께 동봉됩니다.
               </p>
             </div>
           </div>
         </div>
 
         {/* 사진 그리드 */}
-        <div className="bg-muted/30 rounded-2xl p-6">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="bg-muted/30 rounded-xl lg:rounded-2xl p-4 lg:p-6">
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2 lg:gap-4">
             {/* 업로드된 사진들 */}
             <AnimatePresence>
               {photos.map((photo) => (
@@ -128,7 +128,7 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="relative aspect-square rounded-xl overflow-hidden border-2 border-border group"
+                  className="relative aspect-square rounded-lg lg:rounded-xl overflow-hidden border-2 border-border group"
                 >
                   <img
                     src={photo.preview}
@@ -136,31 +136,31 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
                     className="w-full h-full object-cover transition-transform duration-300"
                     style={{ transform: `rotate(${photo.rotation}deg)` }}
                   />
-                  
+
                   {/* 호버 오버레이 */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 lg:gap-2">
                     <button
                       onClick={() => handleRotatePhoto(photo.id)}
-                      className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                      className="w-7 h-7 lg:w-9 lg:h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
                       title="회전"
                     >
-                      <RotateCw className="w-4 h-4 text-white" />
+                      <RotateCw className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-white" />
                     </button>
                     <button
                       onClick={() => setSelectedPhotoId(photo.id)}
-                      className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                      className="w-7 h-7 lg:w-9 lg:h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
                       title="확대"
                     >
-                      <ZoomIn className="w-4 h-4 text-white" />
+                      <ZoomIn className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-white" />
                     </button>
                   </div>
 
                   {/* 삭제 버튼 */}
                   <button
                     onClick={() => handleRemovePhoto(photo.id)}
-                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                    className="absolute top-1.5 right-1.5 lg:top-2 lg:right-2 w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3 h-3 lg:w-4 lg:h-4" />
                   </button>
                 </motion.div>
               ))}
@@ -170,17 +170,17 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
             {photos.length < maxPhotos && (
               <button
                 onClick={openFilePicker}
-                className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-primary bg-card"
+                className="aspect-square rounded-lg lg:rounded-xl border-2 border-dashed border-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center gap-1.5 lg:gap-2 text-muted-foreground hover:text-primary bg-card"
               >
-                <Plus className="w-8 h-8" />
-                <span className="text-sm font-medium">추가</span>
+                <Plus className="w-6 h-6 lg:w-8 lg:h-8" />
+                <span className="text-xs lg:text-sm font-medium">추가</span>
               </button>
             )}
           </div>
 
           {/* 사진 개수 표시 */}
           {photos.length > 0 && (
-            <div className="mt-4 flex items-center justify-between text-sm">
+            <div className="mt-3 lg:mt-4 flex items-center justify-between text-xs lg:text-sm">
               <span className="text-muted-foreground">
                 {photos.length} / {maxPhotos}장 업로드됨
               </span>
@@ -206,26 +206,26 @@ export function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10 }: PhotoUpl
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-xl p-4 border border-orange-200/50 dark:border-orange-800/30"
+            className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-lg lg:rounded-xl p-3 lg:p-4 border border-orange-200/50 dark:border-orange-800/30"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-foreground">사진 인화 비용</p>
-                <p className="text-sm text-muted-foreground">1장당 500원 (4x6 사이즈)</p>
+                <p className="font-medium text-foreground text-sm lg:text-base">사진 인화 비용</p>
+                <p className="text-xs lg:text-sm text-muted-foreground">1장당 500원 (4x6 사이즈)</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                <p className="text-xl lg:text-2xl font-bold text-orange-600 dark:text-orange-400">
                   +{(photos.length * 500).toLocaleString()}원
                 </p>
-                <p className="text-xs text-muted-foreground">{photos.length}장 선택</p>
+                <p className="text-[10px] lg:text-xs text-muted-foreground">{photos.length}장 선택</p>
               </div>
             </div>
           </motion.div>
         )}
 
         {/* 안내 메시지 */}
-        <div className="bg-muted/50 rounded-xl p-4 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="bg-muted/50 rounded-lg lg:rounded-xl p-3 lg:p-4 text-center">
+          <p className="text-xs lg:text-sm text-muted-foreground">
             💡 사진을 추가하지 않으셔도 진행 가능해요
           </p>
         </div>

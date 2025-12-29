@@ -1,4 +1,4 @@
-import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock, Image, CalendarDays, Tag, HelpCircle, MessageSquare, Gift, Info } from "lucide-react";
+import { Mail, Send, FileText, Settings, PenLine, ChevronDown, ChevronRight, Star, Trash2, Menu, X, Plus, Folder, FolderOpen, Bell, Inbox, AlertCircle, TreeDeciduous, Clock, Image, CalendarDays, Tag, HelpCircle, MessageSquare, Gift, Info, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
@@ -49,8 +49,8 @@ const foldersBottom = [
 
 // 고객 지원 메뉴
 const supportMenus = [
-  { id: "faq" as FolderType, label: "자주 묻는 질문", icon: HelpCircle },
-  { id: "feedback" as FolderType, label: "고객의 소리", icon: MessageSquare },
+  { id: "notice" as FolderType, label: "공지사항", icon: Bell },
+  { id: "customerService" as FolderType, label: "고객센터", icon: Phone },
   { id: "rewards" as FolderType, label: "내가 받은 경품", icon: Gift },
 ];
 

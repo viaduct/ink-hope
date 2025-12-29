@@ -62,28 +62,28 @@ export function StationerySelector({ selectedId, onSelect }: StationerySelectorP
   const filteredItems = stationeryItems.filter(item => item.category === activeCategory);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       {/* 헤더 */}
       <div className="flex items-center gap-2">
-        <FileText className="w-5 h-5 text-primary" />
-        <h2 className="font-semibold text-foreground text-base">편지지 선택</h2>
+        <FileText className="w-4 h-4 lg:w-5 lg:h-5 text-primary" />
+        <h2 className="font-semibold text-foreground text-sm lg:text-base">편지지 선택</h2>
       </div>
 
       {/* 카테고리 탭 */}
-      <div className="bg-muted/50 p-1.5 rounded-2xl">
-        <div className="flex gap-1">
+      <div className="bg-muted/50 p-1 lg:p-1.5 rounded-xl lg:rounded-2xl">
+        <div className="flex gap-0.5 lg:gap-1">
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200",
+                "flex-1 flex items-center justify-center gap-1 lg:gap-2 py-2 lg:py-3 px-2 lg:px-4 rounded-lg lg:rounded-xl text-[11px] lg:text-sm font-medium transition-all duration-200",
                 activeCategory === category.id
                   ? "bg-card text-primary shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {category.icon}
+              <span className="hidden sm:block">{category.icon}</span>
               <span>{category.label}</span>
             </button>
           ))}
@@ -96,7 +96,7 @@ export function StationerySelector({ selectedId, onSelect }: StationerySelectorP
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+        className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-4"
       >
         {filteredItems.map((item) => {
           const isSelected = selectedId === item.id;
@@ -159,20 +159,20 @@ export function StationerySelector({ selectedId, onSelect }: StationerySelectorP
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-md"
+                  className="absolute top-2 right-2 lg:top-3 lg:right-3 w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-primary flex items-center justify-center shadow-md"
                 >
-                  <Check className="w-4 h-4 text-primary-foreground" />
+                  <Check className="w-3 h-3 lg:w-4 lg:h-4 text-primary-foreground" />
                 </motion.div>
               )}
 
               {/* 배지 */}
               {item.isNew && (
-                <div className="absolute top-3 left-3 px-2 py-0.5 bg-primary text-primary-foreground text-xs font-semibold rounded-full">
+                <div className="absolute top-2 left-2 lg:top-3 lg:left-3 px-1.5 lg:px-2 py-0.5 bg-primary text-primary-foreground text-[9px] lg:text-xs font-semibold rounded-full">
                   NEW
                 </div>
               )}
               {item.isPremium && !item.isNew && (
-                <div className="absolute top-3 left-3 px-2 py-0.5 bg-amber-500 text-white text-xs font-semibold rounded-full">
+                <div className="absolute top-2 left-2 lg:top-3 lg:left-3 px-1.5 lg:px-2 py-0.5 bg-amber-500 text-white text-[9px] lg:text-xs font-semibold rounded-full">
                   PRO
                 </div>
               )}
@@ -193,11 +193,11 @@ export function StationerySelector({ selectedId, onSelect }: StationerySelectorP
           <motion.div
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium"
+            className="flex items-center gap-1.5 lg:gap-2 px-3 lg:px-4 py-1.5 lg:py-2 bg-primary/10 text-primary rounded-full text-[11px] lg:text-sm font-medium"
           >
-            <Check className="w-4 h-4" />
+            <Check className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
             <span>
-              {stationeryItems.find(s => s.id === selectedId)?.name} 편지지 선택됨
+              {stationeryItems.find(s => s.id === selectedId)?.name} 선택됨
             </span>
           </motion.div>
         )}

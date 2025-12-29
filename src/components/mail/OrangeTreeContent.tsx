@@ -6,7 +6,7 @@ import {
   Home, Scale, Users, GraduationCap,
   Heart, PenLine, ChevronDown, Cake,
   Briefcase, Stethoscope, TreeDeciduous,
-  Loader2, HelpCircle
+  Loader2, HelpCircle, Droplets, Sun, Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddSpecialDayModal } from "./AddSpecialDayModal";
@@ -31,80 +31,357 @@ import {
 } from "@/data/mockData";
 import type { SpecialDay, OrangeTree } from "@/types/mail";
 
-// SVG 일러스트 컴포넌트들
-const SeedSvgIcon = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <ellipse cx="24" cy="26" rx="14" ry="16" fill="#C4956A"/>
-    <ellipse cx="24" cy="24" rx="12" ry="14" fill="#D4A574"/>
-    <ellipse cx="19" cy="21" rx="4" ry="5" fill="#E8C4A0" opacity="0.5"/>
-  </svg>
+// 나무 잎 하나 컴포넌트 - 더 둥근 잎 형태
+const TreeLeaf = ({
+  x, y, rotation, delay, scale = 1, color = "#6BAF7C"
+}: {
+  x: number; y: number; rotation: number; delay: number; scale?: number; color?: string
+}) => (
+  <motion.g
+    initial={{ scale: 0, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    transition={{ delay, duration: 0.3, type: "spring", stiffness: 300 }}
+  >
+    {/* 메인 잎 */}
+    <ellipse
+      cx={x}
+      cy={y}
+      rx={10 * scale}
+      ry={12 * scale}
+      fill={color}
+      transform={`rotate(${rotation} ${x} ${y})`}
+    />
+    {/* 하이라이트 */}
+    <ellipse
+      cx={x - 2 * scale}
+      cy={y - 2 * scale}
+      rx={6 * scale}
+      ry={7 * scale}
+      fill={color === "#6BAF7C" ? "#8BC99B" : "#7FC48F"}
+      transform={`rotate(${rotation} ${x} ${y})`}
+      opacity={0.6}
+    />
+  </motion.g>
 );
 
-const SproutSvgIcon = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <ellipse cx="24" cy="42" rx="8" ry="4" fill="#8B7355" opacity="0.3"/>
-    <path d="M24 40 L24 28" stroke="#7CB342" strokeWidth="4" strokeLinecap="round"/>
-    <ellipse cx="24" cy="20" rx="8" ry="10" fill="#8BC34A"/>
-    <ellipse cx="21" cy="17" rx="3" ry="4" fill="#AED581" opacity="0.6"/>
-    <path d="M32 22 Q36 18 34 14" stroke="#7CB342" strokeWidth="2" fill="none" strokeLinecap="round"/>
-    <ellipse cx="35" cy="13" rx="3" ry="4" fill="#8BC34A" transform="rotate(-30 35 13)"/>
-  </svg>
+// 오렌지 열매 컴포넌트 - 더 크고 예쁘게
+const OrangeFruit = ({ x, y, delay, size = 1 }: { x: number; y: number; delay: number; size?: number }) => (
+  <motion.g
+    initial={{ scale: 0, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    transition={{ delay, duration: 0.4, type: "spring", stiffness: 200 }}
+  >
+    {/* 그림자 */}
+    <ellipse cx={x + 2} cy={y + 2} rx={10 * size} ry={9 * size} fill="#00000015"/>
+    {/* 오렌지 본체 */}
+    <circle cx={x} cy={y} r={10 * size} fill="#FF8C42"/>
+    {/* 하이라이트 */}
+    <circle cx={x - 3 * size} cy={y - 3 * size} r={6 * size} fill="#FFA559" opacity={0.8}/>
+    <circle cx={x - 4 * size} cy={y - 4 * size} r={3 * size} fill="#FFD59E" opacity={0.5}/>
+    {/* 꼭지 */}
+    <ellipse cx={x} cy={y - 9 * size} rx={3 * size} ry={2 * size} fill="#5B9A6F"/>
+    <rect x={x - 1} y={y - 12 * size} width={2} height={4} fill="#8B6914" rx={1}/>
+  </motion.g>
 );
 
-const YoungTreeSvgIcon = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <ellipse cx="24" cy="44" rx="10" ry="4" fill="#8B7355" opacity="0.3"/>
-    <path d="M24 43 L24 24" stroke="#6B8E23" strokeWidth="4" strokeLinecap="round"/>
-    <ellipse cx="14" cy="18" rx="6" ry="9" fill="#8BC34A"/>
-    <ellipse cx="24" cy="12" rx="8" ry="10" fill="#7CB342"/>
-    <ellipse cx="34" cy="18" rx="6" ry="9" fill="#8BC34A"/>
-    <ellipse cx="21" cy="10" rx="3" ry="4" fill="#AED581" opacity="0.5"/>
-    <ellipse cx="12" cy="15" rx="2" ry="3" fill="#AED581" opacity="0.5"/>
-  </svg>
-);
+// 성장하는 나무 일러스트 (레퍼런스 기반 - 뿌리 + 가지 + 잎)
+const GrowingTreeSvg = ({
+  letterCount,
+  className = "w-64 h-64"
+}: {
+  letterCount: number;
+  className?: string
+}) => {
+  // 성장 단계 계산
+  const growthProgress = Math.min(1, letterCount / 30); // 0~1 (30통 기준)
+  const trunkHeight = 60 + growthProgress * 50; // 줄기 높이
+  const branchScale = Math.min(1, letterCount / 8); // 8통 이상이면 가지 완전 표시
 
-const FullTreeSvgIcon = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <ellipse cx="24" cy="45" rx="12" ry="4" fill="#8B7355" opacity="0.3"/>
-    <path d="M24 44 L24 26" stroke="#5D4037" strokeWidth="5" strokeLinecap="round"/>
-    <path d="M24 36 L16 30" stroke="#5D4037" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 32 L32 26" stroke="#5D4037" strokeWidth="3" strokeLinecap="round"/>
-    <circle cx="24" cy="18" r="14" fill="#4CAF50"/>
-    <circle cx="24" cy="16" r="11" fill="#66BB6A"/>
-    <circle cx="19" cy="13" r="4" fill="#81C784" opacity="0.6"/>
-  </svg>
-);
+  // 잎 개수 계산 (편지당 2개, 최대 50개)
+  const leafCount = Math.min(50, Math.floor(letterCount * 2));
 
-const FruitTreeSvgIcon = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <ellipse cx="24" cy="45" rx="12" ry="4" fill="#8B7355" opacity="0.3"/>
-    <path d="M24 44 L24 26" stroke="#5D4037" strokeWidth="5" strokeLinecap="round"/>
-    <path d="M24 36 L16 30" stroke="#5D4037" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 32 L32 26" stroke="#5D4037" strokeWidth="3" strokeLinecap="round"/>
-    <circle cx="24" cy="18" r="14" fill="#4CAF50"/>
-    <circle cx="24" cy="16" r="11" fill="#66BB6A"/>
-    <circle cx="12" cy="20" r="5" fill="#FF6B35"/>
-    <circle cx="12" cy="19" r="4" fill="#FF8A50"/>
-    <ellipse cx="12" cy="16" rx="1.5" ry="1" fill="#7CB342"/>
-    <circle cx="32" cy="12" r="5" fill="#FF6B35"/>
-    <circle cx="32" cy="11" r="4" fill="#FF8A50"/>
-    <ellipse cx="32" cy="8" rx="1.5" ry="1" fill="#7CB342"/>
-    <circle cx="22" cy="6" r="4" fill="#FF6B35"/>
-    <circle cx="22" cy="5" r="3" fill="#FF8A50"/>
-    <ellipse cx="22" cy="2" rx="1" ry="0.8" fill="#7CB342"/>
-  </svg>
-);
+  // 오렌지 개수 (15통 이상부터, 최대 7개)
+  const orangeCount = letterCount >= 15 ? Math.min(7, Math.floor((letterCount - 15) / 2) + 1) : 0;
 
-// 레벨에 따른 SVG 아이콘 반환
-const getSvgIconByLevel = (level: number) => {
-  switch (level) {
-    case 1: return SeedSvgIcon;
-    case 2: return SproutSvgIcon;
-    case 3: return YoungTreeSvgIcon;
-    case 4: return FullTreeSvgIcon;
-    case 5: return FruitTreeSvgIcon;
-    default: return SeedSvgIcon;
-  }
+  // 잎 위치를 고정된 시드로 생성 (리렌더링 시 위치 유지)
+  const generateLeaves = () => {
+    const leaves: Array<{ x: number; y: number; rotation: number; delay: number; scale: number; color: string }> = [];
+    const colors = ["#5B9A6F", "#6BAF7C", "#7FC48F", "#5AAD6A"];
+
+    // 중앙 상단 영역 (나무 수관 중앙)
+    const centerLeaves = Math.min(15, leafCount);
+    for (let i = 0; i < centerLeaves; i++) {
+      const angle = (i / centerLeaves) * Math.PI * 2;
+      const radius = 15 + (i % 3) * 12;
+      leaves.push({
+        x: 150 + Math.cos(angle) * radius,
+        y: 75 + Math.sin(angle) * radius * 0.6,
+        rotation: angle * (180 / Math.PI) + 90,
+        delay: 0.4 + i * 0.03,
+        scale: 0.9 + (i % 3) * 0.15,
+        color: colors[i % colors.length]
+      });
+    }
+
+    // 왼쪽 가지 영역
+    const leftLeaves = Math.min(12, Math.max(0, leafCount - 15));
+    for (let i = 0; i < leftLeaves; i++) {
+      const angle = Math.PI * 0.7 + (i / leftLeaves) * Math.PI * 0.5;
+      const radius = 20 + (i % 4) * 10;
+      leaves.push({
+        x: 100 + Math.cos(angle) * radius,
+        y: 100 + Math.sin(angle) * radius * 0.5,
+        rotation: -30 + (i % 3) * 15,
+        delay: 0.6 + i * 0.04,
+        scale: 0.7 + (i % 3) * 0.2,
+        color: colors[i % colors.length]
+      });
+    }
+
+    // 오른쪽 가지 영역
+    const rightLeaves = Math.min(12, Math.max(0, leafCount - 27));
+    for (let i = 0; i < rightLeaves; i++) {
+      const angle = -Math.PI * 0.2 + (i / rightLeaves) * Math.PI * 0.5;
+      const radius = 20 + (i % 4) * 10;
+      leaves.push({
+        x: 200 + Math.cos(angle) * radius,
+        y: 100 + Math.sin(angle) * radius * 0.5,
+        rotation: 30 - (i % 3) * 15,
+        delay: 0.8 + i * 0.04,
+        scale: 0.7 + (i % 3) * 0.2,
+        color: colors[i % colors.length]
+      });
+    }
+
+    // 추가 잎들 (더 풍성하게)
+    const extraLeaves = Math.max(0, leafCount - 39);
+    for (let i = 0; i < extraLeaves; i++) {
+      const section = i % 3;
+      let baseX = 150, baseY = 80;
+      if (section === 1) { baseX = 90; baseY = 95; }
+      if (section === 2) { baseX = 210; baseY = 95; }
+
+      leaves.push({
+        x: baseX + ((i * 7) % 40) - 20,
+        y: baseY + ((i * 11) % 30) - 15,
+        rotation: (i * 37) % 360,
+        delay: 1.0 + i * 0.02,
+        scale: 0.6 + (i % 4) * 0.15,
+        color: colors[i % colors.length]
+      });
+    }
+
+    return leaves;
+  };
+
+  // 오렌지 위치 (잎 사이에 배치)
+  const orangePositions = [
+    { x: 145, y: 82, size: 0.9 },
+    { x: 168, y: 70, size: 1.0 },
+    { x: 105, y: 100, size: 0.85 },
+    { x: 195, y: 95, size: 0.9 },
+    { x: 130, y: 65, size: 0.8 },
+    { x: 175, y: 90, size: 0.85 },
+    { x: 155, y: 55, size: 0.95 },
+  ];
+
+  const leaves = generateLeaves();
+
+  return (
+    <svg viewBox="0 0 300 280" className={className}>
+      {/* 배경 그라데이션 원 (은은한 글로우) */}
+      <defs>
+        <radialGradient id="treeGlow" cx="50%" cy="40%" r="50%">
+          <stop offset="0%" stopColor="#FFE4B5" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#FFE4B5" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="150" cy="120" r="100" fill="url(#treeGlow)" />
+
+      {/* 뿌리 */}
+      <g opacity={Math.min(1, letterCount / 3)}>
+        {/* 중앙 뿌리들 */}
+        <motion.path
+          d="M150 210 Q145 230 138 250 Q132 268 120 280"
+          stroke="#A67C52"
+          strokeWidth="5"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        />
+        <motion.path
+          d="M150 210 Q155 235 162 255 Q168 270 180 280"
+          stroke="#A67C52"
+          strokeWidth="5"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+        />
+        {/* 좌측 뿌리 */}
+        <motion.path
+          d="M145 215 Q125 235 105 260 Q95 272 80 280"
+          stroke="#B8916B"
+          strokeWidth="4"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        />
+        {/* 우측 뿌리 */}
+        <motion.path
+          d="M155 215 Q175 235 195 260 Q205 272 220 280"
+          stroke="#B8916B"
+          strokeWidth="4"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        />
+        {/* 세부 뿌리 */}
+        <motion.path
+          d="M138 240 Q125 255 110 265"
+          stroke="#C4A070"
+          strokeWidth="2"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.4, delay: 0.25 }}
+        />
+        <motion.path
+          d="M162 240 Q175 255 190 265"
+          stroke="#C4A070"
+          strokeWidth="2"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.4, delay: 0.25 }}
+        />
+      </g>
+
+      {/* 줄기/몸통 */}
+      <motion.path
+        d={`M150 210 Q148 180 150 140 Q152 120 150 ${210 - trunkHeight}`}
+        stroke="#A67C52"
+        strokeWidth="14"
+        fill="none"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: Math.min(1, letterCount / 5) }}
+        transition={{ duration: 0.8, delay: 0 }}
+      />
+      {/* 줄기 하이라이트 */}
+      <motion.path
+        d={`M146 205 Q144 175 146 145 Q148 125 146 ${215 - trunkHeight}`}
+        stroke="#B8916B"
+        strokeWidth="4"
+        fill="none"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: Math.min(1, letterCount / 5) }}
+        transition={{ duration: 0.8, delay: 0.1 }}
+      />
+
+      {/* 가지들 */}
+      <g opacity={branchScale}>
+        {/* 왼쪽 큰 가지 */}
+        <motion.path
+          d="M148 135 Q125 125 95 115 Q75 108 60 100"
+          stroke="#A67C52"
+          strokeWidth="8"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        />
+        {/* 왼쪽 작은 가지 */}
+        <motion.path
+          d="M100 117 Q85 125 70 120"
+          stroke="#B8916B"
+          strokeWidth="4"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
+        />
+
+        {/* 오른쪽 큰 가지 */}
+        <motion.path
+          d="M152 135 Q175 125 205 115 Q225 108 240 100"
+          stroke="#A67C52"
+          strokeWidth="8"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        />
+        {/* 오른쪽 작은 가지 */}
+        <motion.path
+          d="M200 117 Q215 125 230 120"
+          stroke="#B8916B"
+          strokeWidth="4"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
+        />
+
+        {/* 상단 가지 */}
+        <motion.path
+          d="M150 110 Q150 90 150 70"
+          stroke="#A67C52"
+          strokeWidth="6"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        />
+        {/* 상단 분기 */}
+        <motion.path
+          d="M150 85 Q140 75 130 70"
+          stroke="#B8916B"
+          strokeWidth="3"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.3, delay: 0.55 }}
+        />
+        <motion.path
+          d="M150 85 Q160 75 170 70"
+          stroke="#B8916B"
+          strokeWidth="3"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.3, delay: 0.55 }}
+        />
+      </g>
+
+      {/* 잎들 */}
+      {leaves.map((leaf, i) => (
+        <TreeLeaf key={i} {...leaf} />
+      ))}
+
+      {/* 오렌지 열매 */}
+      {orangePositions.slice(0, orangeCount).map((pos, i) => (
+        <OrangeFruit key={`orange-${i}`} x={pos.x} y={pos.y} delay={1.2 + i * 0.12} size={pos.size} />
+      ))}
+    </svg>
+  );
 };
 
 interface OrangeTreeContentProps {
@@ -390,10 +667,10 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-3 md:p-4">
-        <div className="space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
+        <div className="max-w-4xl mx-auto space-y-3">
           
-          {/* 편지 발송 유도 배너 - 강조 */}
+          {/* 편지 발송 유도 배너 - 긍정적 메시지 */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -406,19 +683,9 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
             </div>
 
             <div className="relative flex items-center gap-4">
-              <motion.div
-                className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center"
-                animate={{ rotate: [0, -5, 5, -5, 0] }}
-                transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
-              >
-                <PenLine className="w-6 h-6 text-white" strokeWidth={2} />
-              </motion.div>
               <div className="flex-1 min-w-0">
                 <p className="text-base font-bold text-white">
-                  이번 주 아직 편지를 보내지 않았어요
-                </p>
-                <p className="text-sm text-white/80 mt-1">
-                  바쁜 일상 속 편지 한 통이 {selectedTree.personName}에게 큰 의지가 됩니다
+                  이틀 후면 편지 보내는 날이에요!
                 </p>
               </div>
               <Button
@@ -427,231 +694,106 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
                 className="bg-white hover:bg-white/90 text-orange-600 font-semibold flex-shrink-0 shadow-md px-6"
               >
                 <PenLine className="w-4 h-4 mr-2" />
-                편지 쓰기
+                미리 작성하기
               </Button>
             </div>
           </motion.div>
 
-          {/* 메인 나무 카드 */}
+          {/* 메인 나무 영역 - 레퍼런스 기반 새 디자인 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
+            className="bg-white rounded-3xl shadow-lg border border-border/40 overflow-hidden"
           >
-            {/* 상단 정보 */}
-            <div className="p-4 pb-0">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">{selectedTree.relation}와의 오렌지나무</p>
-                  <h2 className="text-xl font-bold text-foreground">{selectedTree.personName}</h2>
-                  <p className="text-sm text-muted-foreground">{selectedTree.facility}</p>
-                </div>
-                {selectedTree.daysRemaining && (
-                  <div className="text-right">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary/10 to-orange-100 flex items-center justify-center">
-                        <Calendar className="w-3.5 h-3.5 text-primary" />
-                      </div>
-                      <span className="font-bold text-primary">D-{selectedTree.daysRemaining}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">출소 예정일</p>
-                  </div>
-                )}
+            {/* 나무 일러스트 영역 */}
+            <div className="relative bg-gradient-to-b from-amber-50/80 to-orange-50/50 py-8 px-4">
+              {/* 나무 일러스트 - 새 일러스트로 교체 예정 */}
+              <div className="flex flex-col items-center justify-center h-72">
+                {/* 일러스트 자리 */}
               </div>
             </div>
 
-            {/* 나무 일러스트 중앙 배치 */}
-            <div className="flex flex-col items-center py-4">
-              {(() => {
-                const SvgIcon = getSvgIconByLevel(currentStage.level);
-                return (
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2, type: "spring" }}
-                  >
-                    <SvgIcon className="w-40 h-40" />
-                  </motion.div>
-                );
-              })()}
-
-              {/* 레벨 뱃지 */}
-              <span className="mt-3 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-                Lv.{currentStage.level}
-              </span>
-
-              {/* 나무 이름 */}
-              <h3 className="mt-1.5 text-xl font-bold text-foreground">{currentStage.name}</h3>
-
-              {/* 상태 메시지 */}
-              <p className="mt-1 text-sm text-muted-foreground text-center px-8 leading-relaxed">
-                {currentStage.message}
-              </p>
+            {/* 하단 정보 영역 */}
+            <div className="p-5 space-y-4">
+              {/* 이름 & 레벨 */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center shadow-md">
+                    <TreeDeciduous className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">{selectedTree.relation}의 나무</h3>
+                    <p className="text-sm text-muted-foreground">Lv.{currentStage.level} {currentStage.name}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-orange-500">{selectedTree.totalLetters}</p>
+                  <p className="text-xs text-muted-foreground">총 편지 수</p>
+                </div>
+              </div>
 
               {/* 진행 바 */}
-              {nextStageInfo.nextStage && (
-                <div className="w-full max-w-xs mt-4 px-4">
-                  <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
-                    <span>Lv.{currentStage.level} {currentStage.name}</span>
-                    <span>Lv.{nextStageInfo.nextStage.level} {nextStageInfo.nextStage.name}</span>
-                  </div>
-                  <Progress value={progressPercent} className="h-2" />
-                  <p className="text-center text-sm text-primary font-medium mt-2">
-                    {nextStageInfo.nextStage.name}까지 {nextStageInfo.lettersRemaining}통 남음
-                  </p>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">다음 레벨까지</span>
+                  <span className="font-medium text-orange-500">{nextStageInfo.lettersNeeded}통 남음</span>
                 </div>
-              )}
-
-              {/* 편지 쓰기 버튼 */}
-              <Button
-                onClick={onCompose}
-                className="mt-4 bg-primary hover:bg-primary/90 text-white px-8"
-              >
-                <PenLine className="w-4 h-4 mr-2" />
-                편지 쓰기
-              </Button>
-            </div>
-
-            {/* 하단 통계 (잎사귀 + 열매) */}
-            <div className="grid grid-cols-2 border-t border-border/40 bg-gradient-to-b from-white to-gray-50/50">
-              <div className="p-3 text-center border-r border-border/40">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <LeafIcon />
-                  <span className="text-2xl font-bold text-foreground">{selectedTree.totalLetters}</span>
-                  <span className="text-sm text-muted-foreground">장</span>
+                <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    className="absolute left-0 top-0 h-full bg-gradient-to-r from-orange-400 to-amber-400 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                  />
                 </div>
-                <p className="text-xs text-muted-foreground">잎사귀</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  보낸 {selectedTree.sentLetters} · 받은 {selectedTree.receivedLetters}
-                </p>
               </div>
-              <div className="p-3 text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <OrangeIcon size="md" />
-                  <span className="text-2xl font-bold text-foreground">{allTreeSpecialDays.length}</span>
-                  <span className="text-sm text-muted-foreground">개</span>
-                </div>
-                <p className="text-xs text-muted-foreground">열매</p>
-                <p className="text-xs text-muted-foreground mt-0.5">소중한 날들</p>
-              </div>
+
             </div>
           </motion.div>
 
-          {/* 소중한 날들 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
-          >
-            <div className="px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <h3 className="font-semibold text-foreground">소중한 날들</h3>
-              </div>
-              <button
-                onClick={() => setShowAddDayModal(true)}
-                className="text-sm text-primary font-medium flex items-center gap-1 hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                새 날짜 추가
-              </button>
-            </div>
-            
-            <div className="divide-y divide-border/40">
-              {treeSpecialDays.length > 0 ? (
-                treeSpecialDays.map((day) => {
-                  const daysRemaining = getDaysRemaining(day.date);
-                  
-                  return (
-                    <div
-                      key={day.id}
-                      className="px-5 py-3 flex items-center gap-3 hover:bg-muted/30 transition-colors cursor-pointer"
-                      onClick={() => handleDayClick(day)}
-                    >
-                      <SpecialDayIcon type={day.type} />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground text-sm">{day.title}</p>
-                        <p className="text-xs text-muted-foreground">{day.date}</p>
-                      </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className={`text-sm font-semibold ${daysRemaining <= 0 ? 'text-green-500' : daysRemaining <= 7 ? 'text-primary' : 'text-foreground'}`}>
-                          {daysRemaining === 0 ? 'D-Day' : daysRemaining > 0 ? `D-${daysRemaining}` : `D+${Math.abs(daysRemaining)}`}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {(specialDayStyles[day.type] || specialDayStyles.other).label}
-                        </p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="p-6 text-center">
-                  <p className="text-sm text-muted-foreground">등록된 소중한 날이 없어요</p>
-                </div>
-              )}
-            </div>
-            
-            {allTreeSpecialDays.length > 3 && (
-              <div className="py-3 text-center border-t border-border/40">
-                <button className="text-sm text-muted-foreground hover:text-foreground">
-                  {allTreeSpecialDays.length - 3}개 더보기
+          {/* 소중한 날들 - 간소화 */}
+          {treeSpecialDays.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
+            >
+              <div className="px-4 py-2.5 flex items-center justify-between border-b border-border/40">
+                <h3 className="text-sm font-medium text-foreground">D-DAY</h3>
+                <button
+                  onClick={() => setShowAddDayModal(true)}
+                  className="text-xs text-primary font-medium flex items-center gap-0.5 hover:bg-primary/5 px-2 py-1 rounded-lg transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  추가
                 </button>
               </div>
-            )}
-          </motion.div>
 
-          {/* 최근 활동 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
-          >
-            <div className="px-4 py-3 flex items-center justify-between">
-              <h3 className="font-semibold text-foreground">최근 활동</h3>
-              <button className="text-sm text-muted-foreground hover:text-foreground">
-                모두 보기
-              </button>
-            </div>
-            
-            <div className="divide-y divide-border/40">
-              {recentActivities.slice(0, 2).map((activity) => (
-                <div key={activity.id} className="px-5 py-3 flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    activity.type === "sent" 
-                      ? "bg-gradient-to-br from-orange-100 to-amber-100" 
-                      : "bg-gradient-to-br from-green-100 to-emerald-100"
-                  }`}>
-                    <div className={`w-2 h-2 rounded-full ${
-                      activity.type === "sent" ? "bg-orange-500" : "bg-green-500"
-                    }`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-sm">
-                      <span className="font-medium text-foreground">
-                        {activity.type === "sent" ? "편지 발송" : "편지 수신"}
+              <div className="p-3 flex gap-2 overflow-x-auto">
+                {treeSpecialDays.slice(0, 3).map((day) => {
+                  const daysRemaining = getDaysRemaining(day.date);
+
+                  return (
+                    <button
+                      key={day.id}
+                      onClick={() => handleDayClick(day)}
+                      className="flex-shrink-0 flex items-center gap-2 px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      <span className={`text-sm font-bold ${
+                        daysRemaining === 0 ? 'text-green-500' :
+                        daysRemaining <= 7 ? 'text-primary' : 'text-foreground'
+                      }`}>
+                        {daysRemaining === 0 ? 'D-Day' : daysRemaining > 0 ? `D-${daysRemaining}` : `D+${Math.abs(daysRemaining)}`}
                       </span>
-                      <span className="text-muted-foreground ml-1">
-                        {activity.type === "sent" ? `${activity.personName}에게` : `${activity.personName}로부터`}
-                      </span>
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      activity.type === "sent" 
-                        ? "bg-orange-100 text-orange-600" 
-                        : "bg-green-100 text-green-600"
-                    }`}>
-                      {activity.status}
-                    </span>
-                    <span className="text-xs text-muted-foreground">{activity.date}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                      <span className="text-sm text-muted-foreground">{day.title}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
 
         </div>
       </div>

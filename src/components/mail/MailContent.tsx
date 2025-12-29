@@ -107,13 +107,13 @@ export function MailContent({
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-background">
       {/* Action Toolbar */}
-      <div className="h-14 border-b border-border bg-muted/30 flex items-center justify-between px-4">
-        <div className="flex items-center gap-1">
+      <div className="h-14 border-b border-border bg-muted/30 flex items-center justify-between px-2 sm:px-4">
+        <div className="flex items-center gap-0.5 sm:gap-1">
           {/* 전체선택 체크박스 */}
           {!selectedMail && (
             <button
               onClick={toggleSelectAll}
-              className="h-9 w-9 flex items-center justify-center rounded-lg hover:bg-secondary transition-colors mr-2"
+              className="h-9 w-9 flex items-center justify-center rounded-lg hover:bg-secondary transition-colors sm:mr-2"
             >
               <div className={cn(
                 "w-5 h-5 rounded border-2 flex items-center justify-center transition-colors",
@@ -135,110 +135,179 @@ export function MailContent({
           {/* 뒤로가기 버튼 */}
           <button
             onClick={() => selectedMail ? onSelectMail(null) : null}
-            className="h-9 px-3 flex items-center gap-1 rounded-full border border-border bg-background text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            className="h-9 w-9 sm:w-auto sm:px-3 flex items-center justify-center sm:gap-1 rounded-full border border-border bg-background text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
-            {selectedMail ? "뒤로" : ""}
+            <span className="hidden sm:inline">{selectedMail ? "뒤로" : ""}</span>
           </button>
 
-          {selectedMail ? (
-            <button className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              전달
+          {/* 데스크탑: 개별 버튼들 표시 */}
+          <div className="hidden md:flex items-center gap-0.5">
+            {selectedMail ? (
+              <button className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                전달
+              </button>
+            ) : null}
+
+            <button
+              onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "trash")}
+              className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              삭제
             </button>
-          ) : null}
-
-          <button 
-            onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "trash")}
-            className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            삭제
-          </button>
-          <button 
-            onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "spam")}
-            className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            스팸신고
-          </button>
-
-          {!selectedMail && (
-            <button className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              전달
+            <button
+              onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "spam")}
+              className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              스팸신고
             </button>
-          )}
 
-          {/* 구분선 */}
-          <div className="w-px h-5 bg-border mx-2" />
+            {!selectedMail && (
+              <button className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                전달
+              </button>
+            )}
 
-          {/* 이동 드롭다운 */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="h-9 px-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              이동
-              <ChevronRight className="w-3 h-3 rotate-90" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white z-50">
-              <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "inbox")}>
-                받은 편지함
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "spam")}>
-                스팸함
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "trash")}>
-                휴지통
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            {/* 구분선 */}
+            <div className="w-px h-5 bg-border mx-2" />
 
-          {/* 읽음 표시 드롭다운 (리스트뷰) */}
-          {!selectedMail && (
+            {/* 이동 드롭다운 */}
             <DropdownMenu>
               <DropdownMenuTrigger className="h-9 px-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                읽음 표시
+                이동
                 <ChevronRight className="w-3 h-3 rotate-90" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white z-50">
-                <DropdownMenuItem>
-                  <Eye className="w-4 h-4 mr-2" />
-                  읽음으로 표시
+                <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "inbox")}>
+                  받은 편지함
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <EyeOff className="w-4 h-4 mr-2" />
-                  읽지않음으로 표시
+                <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "spam")}>
+                  스팸함
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "trash")}>
+                  휴지통
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          )}
 
-          {/* 추가 기능 드롭다운 (상세뷰) */}
-          {selectedMail && (
+            {/* 읽음 표시 드롭다운 (리스트뷰) */}
+            {!selectedMail && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="h-9 px-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  읽음 표시
+                  <ChevronRight className="w-3 h-3 rotate-90" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-white z-50">
+                  <DropdownMenuItem>
+                    <Eye className="w-4 h-4 mr-2" />
+                    읽음으로 표시
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <EyeOff className="w-4 h-4 mr-2" />
+                    읽지않음으로 표시
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
+            {/* 추가 기능 드롭다운 (상세뷰) */}
+            {selectedMail && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="h-9 px-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  추가 기능
+                  <ChevronRight className="w-3 h-3 rotate-90" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-white z-50">
+                  <DropdownMenuItem onClick={() => window.print()}>
+                    <Printer className="w-4 h-4 mr-2" />
+                    인쇄
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Download className="w-4 h-4 mr-2" />
+                    다운로드
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
+
+          {/* 모바일: 주요 버튼 + 더보기 */}
+          <div className="flex md:hidden items-center gap-0.5">
+            <button
+              onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "trash")}
+              className="h-9 px-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              삭제
+            </button>
+            <button
+              onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "spam")}
+              className="h-9 px-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              스팸
+            </button>
+
+            {/* 모바일 더보기 드롭다운 */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="h-9 px-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                추가 기능
-                <ChevronRight className="w-3 h-3 rotate-90" />
+              <DropdownMenuTrigger className="h-9 w-9 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors">
+                <MoreHorizontal className="w-5 h-5" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white z-50">
-                <DropdownMenuItem onClick={() => window.print()}>
-                  <Printer className="w-4 h-4 mr-2" />
-                  인쇄
-                </DropdownMenuItem>
+              <DropdownMenuContent className="bg-white z-50 min-w-[160px]">
                 <DropdownMenuItem>
-                  <Download className="w-4 h-4 mr-2" />
-                  다운로드
+                  <Forward className="w-4 h-4 mr-2" />
+                  전달
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "inbox")}>
+                  <FolderInput className="w-4 h-4 mr-2" />
+                  받은 편지함으로 이동
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => selectedMail && onMoveToFolder?.(selectedMail.id, "trash")}>
+                  <FolderInput className="w-4 h-4 mr-2" />
+                  휴지통으로 이동
+                </DropdownMenuItem>
+                {!selectedMail && (
+                  <>
+                    <div className="my-1 border-t border-border" />
+                    <DropdownMenuItem>
+                      <Eye className="w-4 h-4 mr-2" />
+                      읽음으로 표시
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <EyeOff className="w-4 h-4 mr-2" />
+                      읽지않음으로 표시
+                    </DropdownMenuItem>
+                  </>
+                )}
+                {selectedMail && (
+                  <>
+                    <div className="my-1 border-t border-border" />
+                    <DropdownMenuItem onClick={() => window.print()}>
+                      <Printer className="w-4 h-4 mr-2" />
+                      인쇄
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Download className="w-4 h-4 mr-2" />
+                      다운로드
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
-          )}
+          </div>
         </div>
 
         {/* 오른쪽: 페이지네이션 & 새로고침 */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {!selectedMail && (
             <>
-              <span className="text-sm text-muted-foreground">
-                1 / {mails.length}
+              <span className="text-xs sm:text-sm text-muted-foreground">
+                1/{mails.length}
               </span>
-              <button className="h-9 px-3 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                새로고침
+              <button
+                className="h-9 w-9 sm:w-auto sm:px-3 flex items-center justify-center sm:gap-1 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
+                title="새로고침"
+              >
                 <RefreshCw className="w-4 h-4" />
+                <span className="hidden sm:inline">새로고침</span>
               </button>
             </>
           )}

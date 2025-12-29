@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, Send, X } from "lucide-react";
+import { Menu, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import logo from "@/assets/logo.png";
@@ -41,11 +41,10 @@ export function MobileHeader({ onCompose, children }: MobileHeaderProps) {
         <div className="w-24 flex justify-end">
           <Button
             onClick={onCompose}
-            size="sm"
-            className="shrink-0 h-9 px-3 rounded-full bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 shadow-md"
+            size="icon"
+            className="shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 shadow-md"
           >
-            <Send className="w-4 h-4 mr-1.5" />
-            <span className="text-sm font-medium">편지쓰기</span>
+            <Send className="w-5 h-5" />
           </Button>
         </div>
       </header>

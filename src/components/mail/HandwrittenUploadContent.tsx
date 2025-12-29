@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { Upload, User, Loader2, Check, AlertCircle, X, FileText, Send, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { Upload, User, Loader2, Check, AlertCircle, X, FileText, Send, RotateCcw, ZoomIn, ZoomOut, PenLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -149,41 +149,36 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-gradient-to-b from-orange-50/30 to-background overflow-hidden">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
       {/* Header */}
-      <header className="px-6 py-4 border-b border-border bg-card/80 backdrop-blur-sm">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={onClose} className="mr-1">
-                <X className="w-5 h-5" />
-              </Button>
-              <h1 className="text-xl font-bold text-foreground">손편지 담기</h1>
-            </div>
-          </div>
+      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+        <div className="flex items-center gap-2">
+          <PenLine className="w-5 h-5 text-primary" />
+          <h1 className="text-lg font-semibold text-foreground">손편지 담기</h1>
         </div>
+        <Button variant="ghost" size="sm" onClick={onClose}>
+          편지함으로 돌아가기
+        </Button>
       </header>
 
-      {/* Description Section */}
-      <div className="px-6 py-4 bg-primary/5 border-b border-border">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-            <FileText className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-foreground mb-1">손편지 담기란?</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              수기로 작성된 손편지를 사진으로 찍어 업로드하면, AI가 자동으로 글씨를 인식하여 텍스트로 변환해드립니다.<br />
-              인식된 편지는 받은 편지함에 저장되며, 바로 답장 편지를 작성할 수도 있어요.
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-auto px-4 py-5 lg:px-6">
         <div className="max-w-4xl mx-auto space-y-6">
-          
+
+          {/* 타이틀 */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-foreground mb-6">
+              받은 <span className="text-primary underline underline-offset-4">손편지</span>를 담아보세요
+            </h2>
+            <div className="mb-6">
+              <p className="text-base text-muted-foreground leading-normal">
+                수기로 작성된 손편지를 사진으로 찍어 업로드하면, AI가 자동으로 글씨를 인식하여 텍스트로 변환해드립니다.
+                <br />
+                인식된 편지는 받은 편지함에 저장되며, 바로 답장 편지를 작성할 수도 있어요.
+              </p>
+            </div>
+          </div>
+
           {/* Step 1: Sender Input */}
           <section className="bg-card rounded-xl border border-border p-5">
             <div className="flex items-center gap-2 mb-4">
