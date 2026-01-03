@@ -328,7 +328,7 @@ export function NoticeContent({ onClose }: NoticeContentProps) {
     return (
       <div className="flex-1 flex flex-col bg-white overflow-hidden">
         {/* Header */}
-        <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+        <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
           <button
             onClick={() => setSelectedNotice(null)}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -336,9 +336,6 @@ export function NoticeContent({ onClose }: NoticeContentProps) {
             <ArrowLeft className="w-5 h-5" />
             <span className="text-sm">목록으로</span>
           </button>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            편지함으로 돌아가기
-          </Button>
         </header>
 
         {/* Content */}
@@ -420,11 +417,8 @@ export function NoticeContent({ onClose }: NoticeContentProps) {
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
       {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
         <h1 className="text-lg font-semibold text-foreground">공지사항</h1>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          편지함으로 돌아가기
-        </Button>
       </header>
 
       {/* Content */}
@@ -432,7 +426,7 @@ export function NoticeContent({ onClose }: NoticeContentProps) {
         <div className="max-w-4xl mx-auto">
           {/* 상단 타이틀 */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-[18px]">
               투오렌지의 <span className="text-primary underline underline-offset-4">새 소식</span>을 전해드려요
             </h2>
             <div className="mb-6">

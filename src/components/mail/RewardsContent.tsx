@@ -49,11 +49,8 @@ export function RewardsContent({ onClose }: RewardsContentProps) {
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
       {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
         <h1 className="text-lg font-semibold text-foreground">내가 받은 경품</h1>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          편지함으로 돌아가기
-        </Button>
       </header>
 
       {/* Content */}
@@ -61,7 +58,7 @@ export function RewardsContent({ onClose }: RewardsContentProps) {
         <div className="max-w-4xl mx-auto">
           {/* 타이틀 */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-[18px]">
               이벤트에 참여해서 받은 <span className="text-primary underline underline-offset-4">경품</span>이에요
             </h2>
             <div className="mb-6">

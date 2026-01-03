@@ -98,14 +98,11 @@ export function FeedbackContent({ onClose }: FeedbackContentProps) {
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-br from-orange-50/50 to-amber-50/30 overflow-hidden">
       {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
         <div className="flex items-center gap-3">
           <MessageSquare className="w-5 h-5 text-primary" />
           <h1 className="text-lg font-semibold text-foreground">고객의 소리</h1>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          편지함으로 돌아가기
-        </Button>
       </header>
 
       {/* Content */}

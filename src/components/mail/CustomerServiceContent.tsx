@@ -165,11 +165,8 @@ export function CustomerServiceContent({ onClose }: CustomerServiceContentProps)
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
       {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
         <h1 className="text-lg font-semibold text-foreground">고객센터</h1>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          편지함으로 돌아가기
-        </Button>
       </header>
 
       {/* Tabs */}
@@ -212,7 +209,7 @@ export function CustomerServiceContent({ onClose }: CustomerServiceContentProps)
             >
               {/* 타이틀 */}
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-foreground mb-6">
+                <h2 className="text-2xl font-bold text-foreground mb-[18px]">
                   무엇이든 <span className="text-primary underline underline-offset-4">물어보세요</span>
                 </h2>
                 <div className="mb-6">
@@ -255,7 +252,7 @@ export function CustomerServiceContent({ onClose }: CustomerServiceContentProps)
             >
               {/* 타이틀 */}
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-foreground mb-6">
+                <h2 className="text-2xl font-bold text-foreground mb-[18px]">
                   투오렌지의 중심은 항상 <span className="text-primary underline underline-offset-4">고객님</span>입니다.
                 </h2>
                 <div className="mb-6">

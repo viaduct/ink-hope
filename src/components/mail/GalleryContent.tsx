@@ -92,11 +92,8 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
       {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
         <h1 className="text-lg font-semibold text-foreground">갤러리</h1>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          편지함으로 돌아가기
-        </Button>
       </header>
 
       {/* Main Content */}
@@ -104,16 +101,10 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
         <div className="max-w-4xl mx-auto space-y-6">
 
           {/* 타이틀 */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">
-                소중한 <span className="text-primary underline underline-offset-4">추억</span>을 보관하세요
-              </h2>
-              <Button className="gap-2 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 shadow-[0_4px_14px_rgba(251,146,60,0.3)]">
-                <Plus className="w-4 h-4" />
-                사진 추가
-              </Button>
-            </div>
+          <div className="mb-[18px]">
+            <h2 className="text-2xl font-bold text-foreground mb-[18px]">
+              소중한 <span className="text-primary underline underline-offset-4">추억</span>을 보관하세요
+            </h2>
             <div className="mb-6">
               <p className="text-base text-muted-foreground leading-normal">
                 편지 작성 시 갤러리에서 사진을 첨부할 수 있어요.
@@ -121,10 +112,14 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
                 소중한 순간들을 이곳에 보관하고, 편지를 쓸 때 함께 전해보세요.
               </p>
             </div>
+            <Button className="gap-2 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 shadow-[0_4px_14px_rgba(251,146,60,0.3)]">
+              <Plus className="w-4 h-4" />
+              사진 추가
+            </Button>
           </div>
 
-          {/* 필터 탭 */}
-          <div className="flex gap-2">
+          {/* 필터 탭 - 타이틀 섹션과 24px 간격 */}
+          <div className="flex gap-2 mt-6">
             <button
               onClick={() => setFilter("all")}
               className={cn(

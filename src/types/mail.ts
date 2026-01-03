@@ -43,6 +43,7 @@ export interface SpecialDay {
   type: "release" | "parole" | "birthday" | "anniversary" | "visit" | "trial" | "education" | "other";
   title: string;
   date: string;
+  time?: string;
   description?: string;
   isGolden?: boolean; // 타임캡슐 연동 시 골든 오렌지
 }

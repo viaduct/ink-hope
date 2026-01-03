@@ -151,14 +151,11 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
       {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
         <div className="flex items-center gap-2">
           <PenLine className="w-5 h-5 text-primary" />
           <h1 className="text-lg font-semibold text-foreground">손편지 담기</h1>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          편지함으로 돌아가기
-        </Button>
       </header>
 
       {/* Main Content */}
@@ -167,7 +164,7 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
 
           {/* 타이틀 */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-[18px]">
               받은 <span className="text-primary underline underline-offset-4">손편지</span>를 담아보세요
             </h2>
             <div className="mb-6">

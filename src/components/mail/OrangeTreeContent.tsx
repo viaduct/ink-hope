@@ -617,9 +617,6 @@ export function OrangeTreeContent({ onClose, onCompose }: OrangeTreeContentProps
       <div className="flex-1 flex flex-col items-center justify-center bg-background gap-4">
         <TreeDeciduous className="w-16 h-16 text-muted-foreground/50" />
         <p className="text-muted-foreground">소중한 사람을 추가하면 오렌지나무가 함께 생겨요</p>
-        <Button onClick={onClose} variant="outline">
-          편지함으로 돌아가기
-        </Button>
       </div>
     );
   }

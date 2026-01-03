@@ -69,14 +69,11 @@ export function DealsContent({ onClose }: DealsContentProps) {
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
       {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
         <div className="flex items-center gap-3">
           <Tag className="w-5 h-5 text-primary" />
           <h1 className="text-lg font-semibold text-foreground">특가 할인</h1>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          편지함으로 돌아가기
-        </Button>
       </header>
 
       {/* Content */}
@@ -84,7 +81,7 @@ export function DealsContent({ onClose }: DealsContentProps) {
         <div className="max-w-4xl mx-auto">
           {/* 타이틀 */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-[18px]">
               투오렌지의 <span className="text-primary underline underline-offset-4">특별한 혜택</span>을 만나보세요
             </h2>
             <div className="mb-6">
