@@ -31,17 +31,6 @@ interface AddressBookModalProps {
 
 type TabType = "recipients" | "senders";
 
-const colorOptions = [
-  "bg-purple-100 text-purple-700",
-  "bg-blue-100 text-blue-700",
-  "bg-green-100 text-green-700",
-  "bg-orange-100 text-orange-700",
-  "bg-pink-100 text-pink-700",
-  "bg-red-100 text-red-700",
-  "bg-yellow-100 text-yellow-700",
-  "bg-indigo-100 text-indigo-700",
-];
-
 export function AddressBookModal({
   isOpen,
   onClose,
@@ -125,8 +114,8 @@ export function AddressBookModal({
       facility: "",
       facilityAddress: "",
       prisonerNumber: "",
-      avatar: "?",
-      color: colorOptions[members.length % colorOptions.length],
+      avatar: "",
+      color: "bg-gray-100 text-gray-600",
     };
     setMembers((prev) => [...prev, newMember]);
     setEditingId(newMember.id);
@@ -279,25 +268,14 @@ export function AddressBookModal({
                   >
                     {editingId === member.id ? (
                       <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={cn(
-                              "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0",
-                              editForm.color || member.color
-                            )}
-                          >
-                            {editForm.name?.charAt(0) || "?"}
-                          </div>
-                          <Input
-                            value={editForm.name || ""}
-                            onChange={(e) =>
-                              setEditForm({ ...editForm, name: e.target.value })
-                            }
-                            placeholder="수용자 이름"
-                            className="flex-1"
-                          />
-                        </div>
-                        
+                        <Input
+                          value={editForm.name || ""}
+                          onChange={(e) =>
+                            setEditForm({ ...editForm, name: e.target.value })
+                          }
+                          placeholder="수용자 이름"
+                        />
+
                         {/* 관계 선택 */}
                         <Select
                           value={editForm.relation || ""}
@@ -362,8 +340,8 @@ export function AddressBookModal({
                             value={editForm.facility || ""}
                             onValueChange={(value) => {
                               const facility = facilities.find(f => f.name === value);
-                              setEditForm({ 
-                                ...editForm, 
+                              setEditForm({
+                                ...editForm,
                                 facility: value,
                                 facilityAddress: facility?.address || ""
                               });
@@ -391,55 +369,19 @@ export function AddressBookModal({
                           placeholder="수용자 번호 (예: 2024-12345)"
                         />
 
-                        {/* 색상 선택 */}
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">색상:</span>
-                          <div className="flex gap-1 flex-wrap">
-                            {colorOptions.map((color) => (
-                              <button
-                                key={color}
-                                onClick={() => setEditForm({ ...editForm, color })}
-                                className={cn(
-                                  "w-6 h-6 rounded-full transition-all",
-                                  color.split(" ")[0],
-                                  editForm.color === color
-                                    ? "ring-2 ring-primary ring-offset-2"
-                                    : "hover:scale-110"
-                                )}
-                              />
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-end">
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
-                            onClick={() => {
-                              setEditingId(null);
-                              setEditForm({});
-                              setSelectedFacilityType("");
-                              setSelectedRegion("");
-                            }}
+                            onClick={handleSaveMemberEdit}
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300"
                           >
-                            취소
-                          </Button>
-                          <Button size="sm" onClick={handleSaveMemberEdit}>
-                            <Check className="w-4 h-4 mr-1" />
-                            확인
+                            추가
                           </Button>
                         </div>
                       </div>
                     ) : (
                       <div className="flex items-center gap-3">
-                        <div
-                          className={cn(
-                            "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0",
-                            member.color
-                          )}
-                        >
-                          {member.avatar}
-                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-foreground truncate">
                             {member.name}
@@ -503,28 +445,19 @@ export function AddressBookModal({
                           }
                           placeholder="주소"
                         />
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-end">
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
-                            onClick={() => {
-                              setEditingId(null);
-                              setSenderEditForm({});
-                            }}
+                            onClick={handleSaveSenderEdit}
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300"
                           >
-                            취소
-                          </Button>
-                          <Button size="sm" onClick={handleSaveSenderEdit}>
-                            <Check className="w-4 h-4 mr-1" />
-                            확인
+                            추가
                           </Button>
                         </div>
                       </div>
                     ) : (
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm flex-shrink-0">
-                          {sender.name.charAt(0)}
-                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-foreground truncate">
                             {sender.name}
@@ -560,19 +493,16 @@ export function AddressBookModal({
 
           {/* Footer */}
           <div className="p-4 border-t border-border flex items-center justify-between">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={activeTab === "recipients" ? handleAddNewMember : handleAddNewSender}
             >
               <Plus className="w-4 h-4 mr-2" />
               {activeTab === "recipients" ? "받는사람 추가" : "보내는사람 추가"}
             </Button>
-            <div className="flex gap-2">
-              <Button variant="ghost" onClick={handleCancel}>
-                취소
-              </Button>
-              <Button onClick={handleSaveAll}>저장</Button>
-            </div>
+            <Button onClick={handleSaveAll} className="bg-orange-500 hover:bg-orange-600">
+              저장하기
+            </Button>
           </div>
         </motion.div>
       </motion.div>

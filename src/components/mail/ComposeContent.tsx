@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
@@ -101,6 +102,7 @@ const sampleSenders = [
 ];
 
 export function ComposeContent({ familyMembers: propFamilyMembers, onClose }: ComposeContentProps) {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<StepId>(1);
   
   // DB에서 가족 구성원 가져오기
@@ -250,10 +252,10 @@ export function ComposeContent({ familyMembers: propFamilyMembers, onClose }: Co
         {/* Divider */}
         <div className="border-t border-border/40 my-3" />
 
-        {/* Step Progress - 간격 24px 고정 */}
-        <div className="flex items-center gap-6">
+        {/* Step Progress */}
+        <div className="flex items-center gap-2">
           {steps.map((step, index) => (
-            <div key={step.id} className="flex items-center gap-6">
+            <div key={step.id} className="flex items-center gap-2">
               <button
                 onClick={() => currentStep > step.id && setCurrentStep(step.id)}
                 disabled={currentStep < step.id}
@@ -292,7 +294,7 @@ export function ComposeContent({ familyMembers: propFamilyMembers, onClose }: Co
       </header>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
+      <div className="flex-1 overflow-y-auto px-4 py-4 lg:px-6 lg:py-5">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -300,10 +302,10 @@ export function ComposeContent({ familyMembers: propFamilyMembers, onClose }: Co
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
-            className="max-w-4xl mx-auto"
+            className="flex-1 max-w-4xl mx-auto"
           >
             {currentStep === 1 && (
-              <div className="space-y-4 lg:space-y-5">
+              <div className="space-y-3 lg:space-y-4">
                 {/* 받는 사람 선택 섹션 */}
                 <section className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between mb-3">
@@ -548,8 +550,8 @@ export function ComposeContent({ familyMembers: propFamilyMembers, onClose }: Co
                   setSelectedMailType(newMailType as MailType);
                 }}
                 onPayment={() => {
-                  // TODO: 결제 처리
-                  console.log("결제 진행");
+                  // 결제 완료 후 후기 작성 페이지로 이동
+                  navigate("/review");
                 }}
               />
             )}

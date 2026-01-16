@@ -11,48 +11,24 @@ import NotFound from "./pages/NotFound";
 import TimeCapsuleMain from "./pages/TimeCapsuleMain";
 import TimeCapsuleDetail from "./pages/TimeCapsuleDetail";
 import TimeCapsuleCreate from "./pages/TimeCapsuleCreate";
+import TimeCapsuleEdit from "./pages/TimeCapsuleEdit";
 import TimeCapsuleWrite from "./pages/TimeCapsuleWrite";
 import AboutTimeCapsule from "./pages/AboutTimeCapsule";
 import AboutOrangeTree from "./pages/AboutOrangeTree";
+import MyOrangeTree from "./pages/MyOrangeTree";
+import ReviewWrite from "./pages/ReviewWrite";
+import MyPage from "./pages/MyPage";
 
 const queryClient = new QueryClient();
 
-// 인증 필요 라우트 보호
+// 인증 없이 바로 접근 가능
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
   return <>{children}</>;
 }
 
-// 로그인 상태면 메인으로 리다이렉트
+// /auth 접근 시 메인으로 리다이렉트
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
-  }
-
-  if (user) {
-    return <Navigate to="/" replace />;
-  }
-
-  return <>{children}</>;
+  return <Navigate to="/" replace />;
 }
 
 const App = () => (
@@ -97,6 +73,14 @@ const App = () => (
                 }
               />
               <Route
+                path="/time-capsule/:id/edit"
+                element={
+                  <ProtectedRoute>
+                    <TimeCapsuleEdit />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/time-capsule/:id/write"
                 element={
                   <ProtectedRoute>
@@ -125,6 +109,30 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <AboutOrangeTree />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orange-tree/:id"
+                element={
+                  <ProtectedRoute>
+                    <MyOrangeTree />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/review"
+                element={
+                  <ProtectedRoute>
+                    <ReviewWrite />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/mypage"
+                element={
+                  <ProtectedRoute>
+                    <MyPage />
                   </ProtectedRoute>
                 }
               />

@@ -290,7 +290,7 @@ export function ScheduleContent({ onClose }: ScheduleContentProps) {
         </header>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto px-4 py-5 lg:px-6">
+        <div className="flex-1 overflow-auto px-4 py-10 lg:px-6">
           <div className="max-w-4xl mx-auto">
             {/* 날짜 타이틀 - 센터 정렬 */}
             <div className="mb-6 text-center">
@@ -499,7 +499,7 @@ export function ScheduleContent({ onClose }: ScheduleContentProps) {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto px-4 py-5 lg:px-6">
+      <div className="flex-1 overflow-auto px-4 py-10 lg:px-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* 타이틀 */}
           <div className="mb-[18px]">
@@ -1176,7 +1176,7 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
 
   const scheduleTypes = [
     { id: "visit", label: "면회", icon: Users },
-    { id: "consultation", label: "접견", icon: Briefcase },
+    { id: "consultation", label: "변호사접견", icon: Briefcase },
     { id: "trial", label: "재판일", icon: Scale },
     { id: "letter", label: "쪽지발송", icon: FileText },
     { id: "release", label: "출소", icon: Home },
@@ -1219,18 +1219,11 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
     setHasSearched(false);
   };
 
-  const showLocationSection = selectedType === "visit" || selectedType === "consultation" || selectedType === "trial" || selectedType === "letter";
-
-  const getLocationLabel = () => {
-    if (selectedType === "visit") return "교도소/구치소 위치";
-    if (selectedType === "consultation") return "접견장소 위치";
-    if (selectedType === "trial") return "재판장소 위치";
-    if (selectedType === "letter") return "교도소/구치소 위치";
-    return "장소";
-  };
+  const showLocationSection = selectedType === "visit" || selectedType === "consultation" || selectedType === "trial" || selectedType === "letter" || selectedType === "release";
 
   const handleSave = () => {
-    if (!customTitle.trim()) {
+    const finalTitle = selectedType === "other" ? customTitle : scheduleTypes.find(t => t.id === selectedType)?.label || customTitle;
+    if (!finalTitle.trim()) {
       toast.error("제목을 입력해주세요.");
       return;
     }
@@ -1241,16 +1234,15 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
 
     const updatedEvent: ScheduleEvent = {
       ...event,
-      title: customTitle,
+      title: finalTitle,
       date: startDate,
-      description: memo,
     };
 
     onSave?.(updatedEvent);
     onClose();
   };
 
-  const isFormValid = customTitle.trim() && startDate;
+  const isFormValid = (selectedType === "other" ? customTitle.trim() : selectedType) && startDate;
 
   return (
     <div className="flex-1 flex flex-col h-full bg-white overflow-hidden">
@@ -1271,10 +1263,10 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
           <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 lg:p-8 space-y-6">
             <h2 className="text-xl font-bold text-foreground">일정을 수정하세요.</h2>
 
-            {/* 일정 제목 */}
+            {/* 일정 유형 선택 */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">일정 제목</label>
-              {/* 아이콘 선택 */}
+              <label className="text-sm font-medium text-foreground">일정 유형</label>
+              {/* 아이콘+라벨 칩 */}
               <div className="flex flex-wrap gap-2">
                 {scheduleTypes.map((type) => {
                   const Icon = type.icon;
@@ -1282,97 +1274,134 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
                   return (
                     <button
                       key={type.id}
-                      onClick={() => handleTypeClick(type.id, type.label)}
+                      onClick={() => handleTypeClick(type.id, type.id === "other" ? "" : type.label)}
                       className={cn(
-                        "w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center",
+                        "flex items-center gap-1.5 px-3 py-2 rounded-full border-2 transition-all text-sm",
                         isSelected
                           ? "border-orange-400 bg-orange-50"
-                          : "border-border/60 hover:border-orange-200 bg-gray-50"
+                          : "border-border/60 hover:border-orange-200 bg-white"
                       )}
-                      title={type.label}
                     >
-                      <Icon className={cn("w-5 h-5", isSelected ? "text-orange-500" : "text-gray-500")} />
+                      <Icon className={cn("w-4 h-4", isSelected ? "text-orange-500" : "text-gray-500")} />
+                      <span className={cn("font-medium", isSelected ? "text-orange-600" : "text-gray-600")}>
+                        {type.id === "other" ? "직접입력" : type.label}
+                      </span>
                     </button>
                   );
                 })}
               </div>
-              <input
-                type="text"
-                placeholder="일정 제목을 입력하세요"
-                value={customTitle}
-                onChange={(e) => setCustomTitle(e.target.value)}
-                className="w-full h-12 px-4 text-base border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
-              />
+              {/* 기타(직접입력) 선택 시 인풋 표시 */}
+              {selectedType === "other" && (
+                <input
+                  type="text"
+                  placeholder="일정 제목을 입력하세요"
+                  value={customTitle}
+                  onChange={(e) => setCustomTitle(e.target.value)}
+                  className="w-full h-12 px-3 text-sm border border-border/60 rounded-xl focus:border-orange-400 focus:outline-none"
+                  autoFocus
+                />
+              )}
             </div>
 
             {/* 날짜 및 시간 선택 */}
-            <div className="space-y-4">
+            <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <CalendarDays className="w-4 h-4 text-orange-500" />
                 날짜 및 시간
               </label>
 
               {/* 시작 날짜/시간 */}
-              <div className="flex items-center gap-3">
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => {
-                    setStartDate(e.target.value);
-                    if (!endDate) setEndDate(e.target.value);
-                  }}
-                  className="flex-1 h-12 px-4 text-sm text-foreground border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
-                />
-                <select
-                  value={`${startAmPm} ${startTime}`}
-                  onChange={(e) => {
-                    const [ampm, time] = e.target.value.split(" ");
-                    setStartAmPm(ampm as "AM" | "PM");
-                    setStartTime(time);
-                  }}
-                  className="w-[130px] h-12 px-3 text-sm text-foreground border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 bg-white appearance-none"
-                >
-                  {["AM", "PM"].map((ampm) =>
-                    Array.from({ length: 12 }, (_, h) => h + 1).map((hour) =>
-                      ["00", "15", "30", "45"].map((min) => (
-                        <option key={`start-${ampm}-${hour}-${min}`} value={`${ampm} ${hour}:${min}`}>
-                          {ampm === "AM" ? "오전" : "오후"} {hour}:{min}
-                        </option>
-                      ))
-                    )
-                  )}
-                </select>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <select
+                    value={startDate ? startDate.split("-")[0] : ""}
+                    onChange={(e) => {
+                      const year = e.target.value;
+                      const month = startDate ? startDate.split("-")[1] : "01";
+                      const day = startDate ? startDate.split("-")[2] : "01";
+                      const newDate = `${year}-${month}-${day}`;
+                      setStartDate(newDate);
+                      if (!endDate) setEndDate(newDate);
+                    }}
+                    className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                  >
+                    <option value="">연도</option>
+                    {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
+                      <option key={year} value={year}>{year}년</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                </div>
+                <div className="relative flex-1">
+                  <select
+                    value={startDate ? startDate.split("-")[1] : ""}
+                    onChange={(e) => {
+                      const year = startDate ? startDate.split("-")[0] : new Date().getFullYear().toString();
+                      const month = e.target.value;
+                      const day = startDate ? startDate.split("-")[2] : "01";
+                      const newDate = `${year}-${month}-${day}`;
+                      setStartDate(newDate);
+                      if (!endDate) setEndDate(newDate);
+                    }}
+                    className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                  >
+                    <option value="">월</option>
+                    {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((month) => (
+                      <option key={month} value={month}>{parseInt(month)}월</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                </div>
+                <div className="relative flex-1">
+                  <select
+                    value={startDate ? startDate.split("-")[2] : ""}
+                    onChange={(e) => {
+                      const year = startDate ? startDate.split("-")[0] : new Date().getFullYear().toString();
+                      const month = startDate ? startDate.split("-")[1] : "01";
+                      const day = e.target.value;
+                      const newDate = `${year}-${month}-${day}`;
+                      setStartDate(newDate);
+                      if (!endDate) setEndDate(newDate);
+                    }}
+                    className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                  >
+                    <option value="">일</option>
+                    {Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0")).map((day) => (
+                      <option key={day} value={day}>{parseInt(day)}일</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                </div>
+                <div className="relative w-[130px]">
+                  <select
+                    value={`${startAmPm} ${startTime}`}
+                    onChange={(e) => {
+                      const [ampm, time] = e.target.value.split(" ");
+                      setStartAmPm(ampm as "AM" | "PM");
+                      setStartTime(time);
+                    }}
+                    className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                  >
+                    {["AM", "PM"].map((ampm) =>
+                      Array.from({ length: 12 }, (_, h) => h + 1).map((hour) =>
+                        ["00", "15", "30", "45"].map((min) => (
+                          <option key={`start-${ampm}-${hour}-${min}`} value={`${ampm} ${hour}:${min}`}>
+                            {ampm === "AM" ? "오전" : "오후"} {hour}:{min}
+                          </option>
+                        ))
+                      )
+                    )}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                </div>
               </div>
 
-              {/* 종료 날짜/시간 */}
-              <div className="flex items-center gap-3">
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  min={startDate}
-                  className="flex-1 h-12 px-4 text-sm text-foreground border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
-                />
-                <select
-                  value={`${endAmPm} ${endTime}`}
-                  onChange={(e) => {
-                    const [ampm, time] = e.target.value.split(" ");
-                    setEndAmPm(ampm as "AM" | "PM");
-                    setEndTime(time);
-                  }}
-                  className="w-[130px] h-12 px-3 text-sm text-foreground border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 bg-white appearance-none"
-                >
-                  {["AM", "PM"].map((ampm) =>
-                    Array.from({ length: 12 }, (_, h) => h + 1).map((hour) =>
-                      ["00", "15", "30", "45"].map((min) => (
-                        <option key={`end-${ampm}-${hour}-${min}`} value={`${ampm} ${hour}:${min}`}>
-                          {ampm === "AM" ? "오전" : "오후"} {hour}:{min}
-                        </option>
-                      ))
-                    )
-                  )}
-                </select>
-              </div>
+              {/* 변호사접견 팁 */}
+              {selectedType === "consultation" && (
+                <p className="text-sm text-orange-500">
+                  <span className="font-medium">[오렌지Tip]</span> 접견이 시작되기전 최소 30분안에 도착해주시는게 좋아요!
+                </p>
+              )}
             </div>
 
             {/* 장소 섹션 - 조건부 표시 */}
@@ -1380,28 +1409,16 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
               <div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-medium text-foreground">
                   <MapPin className="w-4 h-4 text-orange-500" />
-                  {getLocationLabel()}
+                  {selectedType === "trial" ? "재판장소" : "위치"}
                 </label>
 
                 {/* 장소 입력 방식 선택 */}
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => setLocationMode("search")}
-                    className={cn(
-                      "flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 transition-all text-sm",
-                      locationMode === "search"
-                        ? "border-orange-400 bg-orange-50 text-orange-700"
-                        : "border-border/60 hover:border-orange-200 text-foreground"
-                    )}
-                  >
-                    <Search className="w-4 h-4" />
-                    <span>주소 검색</span>
-                  </button>
-                  {(selectedType === "visit" || selectedType === "letter") && (
+                  {(selectedType === "visit" || selectedType === "letter" || selectedType === "consultation" || selectedType === "release") && (
                     <button
                       onClick={() => setLocationMode("prison")}
                       className={cn(
-                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 transition-all text-sm",
+                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
                         locationMode === "prison"
                           ? "border-orange-400 bg-orange-50 text-orange-700"
                           : "border-border/60 hover:border-orange-200 text-foreground"
@@ -1411,50 +1428,39 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
                       <span>교도소 선택</span>
                     </button>
                   )}
-                  <button
-                    onClick={() => setLocationMode("recipient")}
-                    className={cn(
-                      "flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 transition-all text-sm",
-                      locationMode === "recipient"
-                        ? "border-orange-400 bg-orange-50 text-orange-700"
-                        : "border-border/60 hover:border-orange-200 text-foreground"
-                    )}
-                  >
-                    <Users className="w-4 h-4" />
-                    <span>수신자 불러오기</span>
-                  </button>
+                  {(selectedType === "visit" || selectedType === "letter" || selectedType === "release") && (
+                    <button
+                      onClick={() => setLocationMode("recipient")}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
+                        locationMode === "recipient"
+                          ? "border-orange-400 bg-orange-50 text-orange-700"
+                          : "border-border/60 hover:border-orange-200 text-foreground"
+                      )}
+                    >
+                      <Users className="w-4 h-4" />
+                      <span>수신자 불러오기</span>
+                    </button>
+                  )}
+                  {selectedType === "trial" && (
+                    <button
+                      onClick={() => setLocationMode("court")}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
+                        locationMode === "court"
+                          ? "border-orange-400 bg-orange-50 text-orange-700"
+                          : "border-border/60 hover:border-orange-200 text-foreground"
+                      )}
+                    >
+                      <Scale className="w-4 h-4" />
+                      <span>재판장소 선택</span>
+                    </button>
+                  )}
                 </div>
-
-                {/* 주소 검색 */}
-                {locationMode === "search" && (
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        placeholder="주소를 입력하세요"
-                        value={searchAddress}
-                        readOnly
-                        className="flex-1 h-12 px-4 text-base border-2 border-orange-200 rounded-xl bg-gray-50 cursor-pointer"
-                        onClick={() => setShowAddressPopup(true)}
-                      />
-                      <button
-                        onClick={() => setShowAddressPopup(true)}
-                        className="px-4 h-12 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors text-sm font-medium whitespace-nowrap"
-                      >
-                        주소 찾기
-                      </button>
-                    </div>
-                    {searchAddress && (
-                      <p className="text-xs text-muted-foreground pl-1">
-                        선택된 주소: {searchAddress}
-                      </p>
-                    )}
-                  </div>
-                )}
 
                 {/* 교도소 선택 */}
                 {locationMode === "prison" && (
-                  <div className="flex gap-3">
+                  <div className="flex gap-2">
                     <div className="relative flex-1">
                       <select
                         value={selectedRegion}
@@ -1462,20 +1468,20 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
                           setSelectedRegion(e.target.value);
                           setSelectedPrison("");
                         }}
-                        className="w-full h-12 px-4 pr-10 text-base border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 bg-white appearance-none"
+                        className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
                       >
                         <option value="">지역 선택</option>
                         {regionsData.map((region) => (
                           <option key={region} value={region}>{region}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 pointer-events-none" />
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                     </div>
                     <div className="relative flex-1">
                       <select
                         value={selectedPrison}
                         onChange={(e) => setSelectedPrison(e.target.value)}
-                        className="w-full h-12 px-4 pr-10 text-base border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 bg-white appearance-none"
+                        className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
                         disabled={!selectedRegion}
                       >
                         <option value="">교도소/구치소 선택</option>
@@ -1483,7 +1489,7 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
                           <option key={prison} value={prison}>{prison}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 pointer-events-none" />
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                     </div>
                   </div>
                 )}
@@ -1497,7 +1503,7 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
                           key={member.id}
                           onClick={() => setSelectedRecipient(selectedRecipient === member.id ? null : member.id)}
                           className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-xl border-2 transition-all text-sm",
+                            "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all text-sm",
                             selectedRecipient === member.id
                               ? "border-orange-400 bg-orange-50 text-orange-700"
                               : "border-border/60 hover:border-orange-200 text-foreground"
@@ -1518,19 +1524,37 @@ function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModa
                     )}
                   </div>
                 )}
+
+                {/* 재판장소 선택 */}
+                {locationMode === "court" && (
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <select
+                        value={selectedRegion}
+                        onChange={(e) => {
+                          setSelectedRegion(e.target.value);
+                          setSelectedPrison("");
+                        }}
+                        className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                      >
+                        <option value="">지역 선택</option>
+                        {regionsData.map((region) => (
+                          <option key={region} value={region}>{region}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                    </div>
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        placeholder="재판장소 입력 (예: 서울중앙지방법원)"
+                        className="w-full h-12 px-3 text-sm border border-border/60 rounded-xl bg-white"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
-
-            {/* 메모 */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">메모 (선택)</label>
-              <textarea
-                placeholder="추가 메모를 입력하세요..."
-                value={memo}
-                onChange={(e) => setMemo(e.target.value)}
-                className="w-full min-h-[120px] px-4 py-3 text-base border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 resize-none"
-              />
-            </div>
 
             {/* 하단 버튼: 취소, 저장 */}
             <div className="flex gap-3 pt-2">
@@ -2411,7 +2435,7 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
 
   const scheduleTypes = [
     { id: "visit", label: "면회", icon: Users },
-    { id: "consultation", label: "접견", icon: Briefcase },
+    { id: "consultation", label: "변호사접견", icon: Briefcase },
     { id: "trial", label: "재판일", icon: Scale },
     { id: "letter", label: "쪽지발송", icon: FileText },
     { id: "release", label: "출소", icon: Home },
@@ -2455,17 +2479,9 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
     setHasSearched(false);
   };
 
-  const showLocationSection = selectedType === "visit" || selectedType === "consultation" || selectedType === "trial" || selectedType === "letter";
+  const showLocationSection = selectedType === "visit" || selectedType === "consultation" || selectedType === "trial" || selectedType === "letter" || selectedType === "release";
 
-  const getLocationLabel = () => {
-    if (selectedType === "visit") return "교도소/구치소 위치";
-    if (selectedType === "consultation") return "접견장소 위치";
-    if (selectedType === "trial") return "재판장소 위치";
-    if (selectedType === "letter") return "교도소/구치소 위치";
-    return "장소";
-  };
-
-  const isFormValid = customTitle.trim() && startDate;
+  const isFormValid = (selectedType === "other" ? customTitle.trim() : selectedType) && startDate;
 
   return (
     <div className="flex-1 flex flex-col h-full bg-white overflow-hidden">
@@ -2487,10 +2503,10 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
           {/* 타이틀 */}
           <h2 className="text-xl font-bold text-foreground">일정을 등록하세요.</h2>
 
-          {/* 일정 제목 입력 */}
+          {/* 일정 유형 선택 */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">일정 제목</label>
-            {/* 아이콘 선택 */}
+            <label className="text-sm font-medium text-foreground">일정 유형</label>
+            {/* 아이콘+라벨 칩 */}
             <div className="flex flex-wrap gap-2">
               {scheduleTypes.map((type) => {
                 const Icon = type.icon;
@@ -2498,126 +2514,227 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
                 return (
                   <button
                     key={type.id}
-                    onClick={() => handleTypeClick(type.id, type.label)}
+                    onClick={() => handleTypeClick(type.id, type.id === "other" ? "" : type.label)}
                     className={cn(
-                      "w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center",
+                      "flex items-center gap-1.5 px-3 py-2 rounded-full border-2 transition-all text-sm",
                       isSelected
                         ? "border-orange-400 bg-orange-50"
-                        : "border-border/60 hover:border-orange-200 bg-gray-50"
+                        : "border-border/60 hover:border-orange-200 bg-white"
                     )}
-                    title={type.label}
                   >
-                    <Icon className={cn("w-5 h-5", isSelected ? "text-orange-500" : "text-gray-500")} />
+                    <Icon className={cn("w-4 h-4", isSelected ? "text-orange-500" : "text-gray-500")} />
+                    <span className={cn("font-medium", isSelected ? "text-orange-600" : "text-gray-600")}>
+                      {type.id === "other" ? "직접입력" : type.label}
+                    </span>
                   </button>
                 );
               })}
             </div>
-            <input
-              type="text"
-              placeholder="일정 제목을 입력하세요"
-              value={customTitle}
-              onChange={(e) => setCustomTitle(e.target.value)}
-              className="w-full h-12 px-4 text-base border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
-            />
+            {/* 기타(직접입력) 선택 시 인풋 표시 */}
+            {selectedType === "other" && (
+              <input
+                type="text"
+                placeholder="일정 제목을 입력하세요"
+                value={customTitle}
+                onChange={(e) => setCustomTitle(e.target.value)}
+                className="w-full h-12 px-3 text-sm border border-border/60 rounded-xl focus:border-orange-400 focus:outline-none"
+                autoFocus
+              />
+            )}
           </div>
 
           {/* 날짜 및 시간 선택 */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-medium text-foreground">
               <CalendarDays className="w-4 h-4 text-orange-500" />
               날짜 및 시간
             </label>
 
             {/* 시작 날짜/시간 */}
-            <div className="flex items-center gap-3">
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => {
-                  setStartDate(e.target.value);
-                  if (!endDate) setEndDate(e.target.value);
-                }}
-                className="flex-1 h-12 px-4 text-sm text-gray-400 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
-              />
-              <select
-                value={`${startAmPm} ${startTime}`}
-                onChange={(e) => {
-                  const [ampm, time] = e.target.value.split(" ");
-                  setStartAmPm(ampm as "AM" | "PM");
-                  setStartTime(time);
-                }}
-                className="w-[130px] h-12 px-3 text-sm text-gray-400 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 bg-white appearance-none"
-              >
-                {["AM", "PM"].map((ampm) =>
-                  Array.from({ length: 12 }, (_, h) => h + 1).map((hour) =>
-                    ["00", "15", "30", "45"].map((min) => (
-                      <option key={`start-${ampm}-${hour}-${min}`} value={`${ampm} ${hour}:${min}`}>
-                        {ampm === "AM" ? "오전" : "오후"} {hour}:{min}
-                      </option>
-                    ))
-                  )
-                )}
-              </select>
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <select
+                  value={startDate ? startDate.split("-")[0] : ""}
+                  onChange={(e) => {
+                    const year = e.target.value;
+                    const month = startDate ? startDate.split("-")[1] : "01";
+                    const day = startDate ? startDate.split("-")[2] : "01";
+                    const newDate = `${year}-${month}-${day}`;
+                    setStartDate(newDate);
+                    if (!endDate) setEndDate(newDate);
+                  }}
+                  className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                >
+                  <option value="">연도</option>
+                  {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
+                    <option key={year} value={year}>{year}년</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
+              <div className="relative flex-1">
+                <select
+                  value={startDate ? startDate.split("-")[1] : ""}
+                  onChange={(e) => {
+                    const year = startDate ? startDate.split("-")[0] : new Date().getFullYear().toString();
+                    const month = e.target.value;
+                    const day = startDate ? startDate.split("-")[2] : "01";
+                    const newDate = `${year}-${month}-${day}`;
+                    setStartDate(newDate);
+                    if (!endDate) setEndDate(newDate);
+                  }}
+                  className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                >
+                  <option value="">월</option>
+                  {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((month) => (
+                    <option key={month} value={month}>{parseInt(month)}월</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
+              <div className="relative flex-1">
+                <select
+                  value={startDate ? startDate.split("-")[2] : ""}
+                  onChange={(e) => {
+                    const year = startDate ? startDate.split("-")[0] : new Date().getFullYear().toString();
+                    const month = startDate ? startDate.split("-")[1] : "01";
+                    const day = e.target.value;
+                    const newDate = `${year}-${month}-${day}`;
+                    setStartDate(newDate);
+                    if (!endDate) setEndDate(newDate);
+                  }}
+                  className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                >
+                  <option value="">일</option>
+                  {Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0")).map((day) => (
+                    <option key={day} value={day}>{parseInt(day)}일</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
+              <div className="relative w-[130px]">
+                <select
+                  value={`${startAmPm} ${startTime}`}
+                  onChange={(e) => {
+                    const [ampm, time] = e.target.value.split(" ");
+                    setStartAmPm(ampm as "AM" | "PM");
+                    setStartTime(time);
+                  }}
+                  className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                >
+                  {["AM", "PM"].map((ampm) =>
+                    Array.from({ length: 12 }, (_, h) => h + 1).map((hour) =>
+                      ["00", "15", "30", "45"].map((min) => (
+                        <option key={`start-${ampm}-${hour}-${min}`} value={`${ampm} ${hour}:${min}`}>
+                          {ampm === "AM" ? "오전" : "오후"} {hour}:{min}
+                        </option>
+                      ))
+                    )
+                  )}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
             </div>
 
-            {/* 종료 날짜/시간 */}
-            <div className="flex items-center gap-3">
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                min={startDate}
-                className="flex-1 h-12 px-4 text-sm text-gray-400 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
-              />
-              <select
-                value={`${endAmPm} ${endTime}`}
-                onChange={(e) => {
-                  const [ampm, time] = e.target.value.split(" ");
-                  setEndAmPm(ampm as "AM" | "PM");
-                  setEndTime(time);
-                }}
-                className="w-[130px] h-12 px-3 text-sm text-gray-400 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 bg-white appearance-none"
-              >
-                {["AM", "PM"].map((ampm) =>
-                  Array.from({ length: 12 }, (_, h) => h + 1).map((hour) =>
-                    ["00", "15", "30", "45"].map((min) => (
-                      <option key={`end-${ampm}-${hour}-${min}`} value={`${ampm} ${hour}:${min}`}>
-                        {ampm === "AM" ? "오전" : "오후"} {hour}:{min}
-                      </option>
-                    ))
-                  )
-                )}
-              </select>
-            </div>
+            {/* 변호사접견 팁 */}
+            {selectedType === "consultation" && (
+              <p className="text-sm text-orange-500">
+                <span className="font-medium">[오렌지Tip]</span> 접견이 시작되기전 최소 30분안에 도착해주시는게 좋아요!
+              </p>
+            )}
           </div>
+
+          {/* 출소 일정 팁 */}
+          {selectedType === "release" && (
+            <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 space-y-4">
+              <div className="flex items-start gap-2">
+                <span className="text-orange-500 font-semibold text-sm">Tip</span>
+                <div>
+                  <p className="text-sm font-semibold text-foreground flex items-center gap-1">
+                    <Home className="w-4 h-4 text-orange-500" />
+                    출소 일정을 선택한 경우
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+                <p>
+                  출소는 끝이 아니라, <span className="text-foreground font-medium">새로운 시작의 날</span>입니다.<br />
+                  그날을 위해 타임캡슐과 함께 준비해보세요.
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-full text-sm border border-orange-200">
+                    <span>👔</span> 출소복 선물하기
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-full text-sm border border-orange-200">
+                    <span>📚</span> 도서 선물하기
+                  </span>
+                </div>
+
+                <p>
+                  출소 이후의 생활을 바로 시작할 수 있도록,<br />
+                  실질적으로 도움이 되는 선물을 담을 수 있어요.
+                </p>
+              </div>
+
+              <button className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-medium transition-colors">
+                같이 준비하기
+              </button>
+            </div>
+          )}
+
+          {/* 생일/기념일 팁 */}
+          {(selectedType === "birthday" || selectedType === "anniversary") && (
+            <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 space-y-4">
+              <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+                <p className="text-foreground font-medium">
+                  작은 선물을 함께 전할 수 있어요.
+                </p>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-orange-500">☕</span>
+                    <span>커피 한 잔처럼 가볍게</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-orange-500">🍺</span>
+                    <span>"맥주 한잔하자" 같은 약속으로</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-orange-500">🎁</span>
+                    <span>그날을 기억하게 하는 작은 선택으로</span>
+                  </div>
+                </div>
+
+                <p>
+                  마음만 전하는 날도 좋지만,<br />
+                  상황에 따라 작은 선물이 더 오래 남기도 합니다.
+                </p>
+              </div>
+
+              <button className="w-full py-3 border-2 border-orange-400 text-orange-600 hover:bg-orange-100 rounded-xl font-medium transition-colors flex items-center justify-center gap-1">
+                선물 옵션 보러가기
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
 
           {/* 장소 섹션 - 조건부 표시 */}
           {showLocationSection && (
             <div className="space-y-3">
               <label className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <MapPin className="w-4 h-4 text-orange-500" />
-                {getLocationLabel()}
+                {selectedType === "trial" ? "재판장소" : "위치"}
               </label>
 
               {/* 장소 입력 방식 선택 */}
               <div className="flex gap-2">
-                <button
-                  onClick={() => setLocationMode("search")}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 transition-all text-sm",
-                    locationMode === "search"
-                      ? "border-orange-400 bg-orange-50 text-orange-700"
-                      : "border-border/60 hover:border-orange-200 text-foreground"
-                  )}
-                >
-                  <Search className="w-4 h-4" />
-                  <span>주소 검색</span>
-                </button>
-                {(selectedType === "visit" || selectedType === "letter") && (
+                {(selectedType === "visit" || selectedType === "letter" || selectedType === "consultation" || selectedType === "release") && (
                   <button
                     onClick={() => setLocationMode("prison")}
                     className={cn(
-                      "flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 transition-all text-sm",
+                      "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
                       locationMode === "prison"
                         ? "border-orange-400 bg-orange-50 text-orange-700"
                         : "border-border/60 hover:border-orange-200 text-foreground"
@@ -2627,50 +2744,39 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
                     <span>교도소 선택</span>
                   </button>
                 )}
-                <button
-                  onClick={() => setLocationMode("recipient")}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 transition-all text-sm",
-                    locationMode === "recipient"
-                      ? "border-orange-400 bg-orange-50 text-orange-700"
-                      : "border-border/60 hover:border-orange-200 text-foreground"
-                  )}
-                >
-                  <Users className="w-4 h-4" />
-                  <span>수신자 불러오기</span>
-                </button>
+                {(selectedType === "visit" || selectedType === "letter" || selectedType === "release") && (
+                  <button
+                    onClick={() => setLocationMode("recipient")}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
+                      locationMode === "recipient"
+                        ? "border-orange-400 bg-orange-50 text-orange-700"
+                        : "border-border/60 hover:border-orange-200 text-foreground"
+                    )}
+                  >
+                    <Users className="w-4 h-4" />
+                    <span>수신자 불러오기</span>
+                  </button>
+                )}
+                {selectedType === "trial" && (
+                  <button
+                    onClick={() => setLocationMode("court")}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
+                      locationMode === "court"
+                        ? "border-orange-400 bg-orange-50 text-orange-700"
+                        : "border-border/60 hover:border-orange-200 text-foreground"
+                    )}
+                  >
+                    <Scale className="w-4 h-4" />
+                    <span>재판장소 선택</span>
+                  </button>
+                )}
               </div>
-
-              {/* 주소 검색 */}
-              {locationMode === "search" && (
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="주소를 입력하세요"
-                      value={searchAddress}
-                      readOnly
-                      className="flex-1 h-12 px-4 text-base border border-orange-200 rounded-xl bg-gray-50 cursor-pointer"
-                      onClick={() => setShowAddressPopup(true)}
-                    />
-                    <button
-                      onClick={() => setShowAddressPopup(true)}
-                      className="px-4 h-12 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors text-sm font-medium whitespace-nowrap"
-                    >
-                      주소 찾기
-                    </button>
-                  </div>
-                  {searchAddress && (
-                    <p className="text-xs text-muted-foreground pl-1">
-                      선택된 주소: {searchAddress}
-                    </p>
-                  )}
-                </div>
-              )}
 
               {/* 교도소 선택 */}
               {locationMode === "prison" && (
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <div className="relative flex-1">
                     <select
                       value={selectedRegion}
@@ -2678,20 +2784,20 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
                         setSelectedRegion(e.target.value);
                         setSelectedPrison("");
                       }}
-                      className="w-full h-12 px-4 pr-10 text-base border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 bg-white appearance-none"
+                      className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
                     >
                       <option value="">지역 선택</option>
                       {regionsData.map((region) => (
                         <option key={region} value={region}>{region}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                   </div>
                   <div className="relative flex-1">
                     <select
                       value={selectedPrison}
                       onChange={(e) => setSelectedPrison(e.target.value)}
-                      className="w-full h-12 px-4 pr-10 text-base border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 bg-white appearance-none"
+                      className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
                       disabled={!selectedRegion}
                     >
                       <option value="">교도소/구치소 선택</option>
@@ -2699,7 +2805,7 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
                         <option key={prison} value={prison}>{prison}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
               )}
@@ -2713,7 +2819,7 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
                         key={member.id}
                         onClick={() => setSelectedRecipient(selectedRecipient === member.id ? null : member.id)}
                         className={cn(
-                          "flex items-center gap-2 px-3 py-2 rounded-xl border-2 transition-all text-sm",
+                          "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all text-sm",
                           selectedRecipient === member.id
                             ? "border-orange-400 bg-orange-50 text-orange-700"
                             : "border-border/60 hover:border-orange-200 text-foreground"
@@ -2734,19 +2840,37 @@ function AddSchedulePage({ onClose, frequentPlaces, onOpenPlaceModal }: { onClos
                   )}
                 </div>
               )}
+
+              {/* 재판장소 선택 */}
+              {locationMode === "court" && (
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <select
+                      value={selectedRegion}
+                      onChange={(e) => {
+                        setSelectedRegion(e.target.value);
+                        setSelectedPrison("");
+                      }}
+                      className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
+                    >
+                      <option value="">지역 선택</option>
+                      {regionsData.map((region) => (
+                        <option key={region} value={region}>{region}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  </div>
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder="재판장소 입력 (예: 서울중앙지방법원)"
+                      className="w-full h-12 px-3 text-sm border border-border/60 rounded-xl bg-white"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
-
-          {/* 메모 */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">메모 (선택)</label>
-            <textarea
-              placeholder="추가 메모를 입력하세요..."
-              value={memo}
-              onChange={(e) => setMemo(e.target.value)}
-              className="w-full min-h-[120px] px-4 py-3 text-base border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 resize-none"
-            />
-          </div>
 
           {/* 일정 추가 버튼 */}
           <Button

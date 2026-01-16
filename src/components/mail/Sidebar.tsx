@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { AddressBookModal } from "./AddressBookModal";
 import { AddRecipientModal } from "./AddRecipientModal";
-import { DeadlineTimer } from "./DeadlineTimer";
 import orangeRipe from "@/assets/emoticons/orange-ripe.png";
 import orangeSprout from "@/assets/emoticons/orange-sprout.png";
 import orangeCharacter from "@/assets/emoticons/orange-character.gif";
@@ -522,10 +521,6 @@ export function Sidebar({
         )}
       </nav>
 
-      {/* Deadline Timer */}
-      <div className="px-3 pb-3">
-        <DeadlineTimer deadlineHour={17} isCollapsed={isCollapsed} />
-      </div>
       {/* Address Book Modal */}
       <AddressBookModal
         isOpen={isAddressBookOpen}

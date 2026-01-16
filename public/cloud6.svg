@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 120.8 92.8" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="cloud6">
+<g id="Union" filter="url(#filter0_f_2037_3444)">
+<path d="M73.3014 21.4C81.3639 21.4 87.9 27.6223 87.9 35.2975C87.9 35.8714 87.8626 36.4371 87.7916 36.9928C88.26 36.9299 88.7385 36.8961 89.2252 36.8961C94.8444 36.8961 99.3998 41.2325 99.4 46.5816C99.4 51.931 94.8445 56.2682 89.2252 56.2682C89.0812 56.2682 88.938 56.2631 88.7955 56.2574C88.8268 56.5852 88.8453 56.9159 88.8453 57.2496C88.8453 64.9248 80.4271 71.1471 70.0436 71.1471C64.6722 71.147 59.827 69.482 56.401 66.8121C53.8856 69.6186 50.1446 71.4 45.9654 71.4C38.3916 71.4 32.2516 65.5543 32.2516 58.3443C32.2516 57.6248 32.3136 56.919 32.4312 56.2311C32.1488 56.2535 31.8633 56.2682 31.5748 56.2682C25.9555 56.2682 21.4 51.931 21.4 46.5816C21.4002 41.2325 25.9556 36.8961 31.5748 36.8961C33.7965 36.8961 35.8507 37.5758 37.524 38.7262C39.2496 32.8345 45.0417 28.5025 51.9215 28.5025C54.7315 28.5026 57.36 29.2256 59.6041 30.482C61.6615 25.1805 67.0174 21.4001 73.3014 21.4Z" fill="var(--fill-0, #FFF3E6)" fill-opacity="0.52"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_2037_3444" x="0" y="0" width="120.8" height="92.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="10.7" result="effect1_foregroundBlur_2037_3444"/>
+</filter>
+</defs>
+</svg>

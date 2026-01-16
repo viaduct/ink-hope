@@ -152,7 +152,7 @@ export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModa
                   placeholder="날짜 이름을 입력하세요"
                   value={customTitle}
                   onChange={(e) => setCustomTitle(e.target.value)}
-                  className="h-12 text-base border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                  className="h-12 text-base border-border/60"
                   autoFocus
                 />
               </div>
@@ -169,7 +169,7 @@ export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModa
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="h-12 text-base border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+              className="h-12 text-base border-border/60"
             />
           </div>
 
@@ -182,7 +182,7 @@ export function AddSpecialDayModal({ isOpen, onClose, onAdd }: AddSpecialDayModa
               placeholder="추가 메모를 입력하세요..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[80px] text-base border-orange-200 focus:border-orange-400 focus:ring-orange-400 resize-none"
+              className="min-h-[80px] text-base border-border/60 resize-none"
             />
           </div>
 

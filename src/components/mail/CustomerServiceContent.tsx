@@ -196,7 +196,7 @@ export function CustomerServiceContent({ onClose }: CustomerServiceContentProps)
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
+      <div className="flex-1 overflow-y-auto px-4 py-10 lg:px-6">
         <div className="max-w-4xl mx-auto">
         <AnimatePresence mode="wait">
           {activeTab === "faq" ? (

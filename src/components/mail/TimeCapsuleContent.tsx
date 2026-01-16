@@ -1,316 +1,166 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Clock, Plus, ChevronRight, Heart, ChevronDown, HelpCircle,
-  Home, Sparkles, Cake, Calendar, Users, Gift
-} from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-
-
 
 interface TimeCapsuleContentProps {
   onClose: () => void;
 }
 
-// 목업 데이터
-const mockInvitations = [
+// 목업 데이터 - 등록된 수신자 기반 타임캡슐
+const mockCapsules = [
   {
     id: 1,
-    title: "아버지 출소 축하 쪽지 모음",
-    invitedBy: "어머니",
-    daysLeft: 178,
-    letterCount: 3,
-    targetLetters: 5,
-    myLetterWritten: false,
-    isNew: true,
-  }
-];
-
-const mockMyCapsules = [
-  {
-    id: 2,
-    title: "엄마 면회 때 전할 응원 메시지",
-    recipient: "어머니 (김영희)",
-    facility: "청주여자교도소",
-    daysLeft: 32,
-    letterCount: 2,
-    targetLetters: 3,
-    status: "collecting",
-    contributors: ["😊", "😄", "😀"],
-    icon: Heart,
-    iconBg: "bg-orange-100",
-    iconColor: "text-orange-500",
-  },
-  {
-    id: 3,
-    title: "오빠 가석방 축하",
-    recipient: "오빠 (박민수)",
-    facility: "의정부교도소",
-    deliveredDate: "2024-12-20",
-    letterCount: 3,
-    status: "delivered",
-    icon: Sparkles,
-    iconBg: "bg-gray-100",
-    iconColor: "text-gray-400",
+    recipientName: "서은우",
+    tags: ["출소 축하"],
+    daysLeft: 180,
+    daysLeftLabel: "전달까지 180일 남았습니다",
+    collectingDays: 3,
+    collectingDaysLabel: "3일 뒤",
+    status: "collecting", // collecting, delivered
   },
 ];
 
 export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
   const navigate = useNavigate();
-  const [isExplanationOpen, setIsExplanationOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState<"all" | "collecting" | "completed">("all");
-
-  const filteredCapsules = mockMyCapsules.filter(capsule => {
-    if (activeTab === "all") return true;
-    if (activeTab === "collecting") return capsule.status === "collecting";
-    if (activeTab === "completed") return capsule.status === "delivered";
-    return true;
-  });
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/30">
-      {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-background/80 backdrop-blur-sm flex items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <Clock className="w-5 h-5 text-primary" />
-          <h1 className="text-lg font-bold text-foreground">타임캡슐</h1>
-        </div>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate("/about/time-capsule")}
-            className="text-primary hover:text-primary/80 hover:bg-primary/10 gap-1"
-          >
-            <HelpCircle className="w-4 h-4" />
-            <span className="text-sm">소개</span>
-          </Button>
-          <button onClick={onClose} className="text-sm text-muted-foreground hover:text-foreground transition-colors px-2">
-            편지함
-          </button>
-        </div>
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
+      {/* Header - 간소화 */}
+      <header className="h-14 border-b border-border/40 bg-white flex items-center justify-between px-4">
+        <h1 className="text-lg font-bold text-foreground">타임캡슐</h1>
+        <button onClick={onClose} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          편지함
+        </button>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* 상단 타이틀 + CTA */}
-          <section className="flex items-start justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground mb-1">타임캡슐</h1>
-              <p className="text-muted-foreground">여러 사람의 마음을 모아, 특별한 날에 전해요</p>
-            </div>
-            <Button 
-              onClick={() => navigate("/time-capsule/create")}
-              className="bg-primary hover:bg-primary/90 shadow-sm"
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto px-4 py-12 lg:px-6">
+
+          {/* 타이틀 섹션 */}
+          <section className="text-center mb-12">
+            <p
+              className="text-[#ff7430] text-[18px] font-bold tracking-[1.8px] uppercase mb-2"
+              style={{ fontFamily: 'Anonymous Pro, monospace' }}
             >
-              <Plus className="w-4 h-4 mr-1" />
-              새 타임캡슐
-            </Button>
+              Time Capsule
+            </p>
+            <p className="text-[#525252] text-[20px] font-normal leading-[1.5] mb-1">
+              한 사람을 위해, 여러 사람들이 모여
+            </p>
+            <h1 className="text-black text-[28px] font-semibold leading-[1.4]">
+              특별한 날에 타임캡슐을 전달해요.
+            </h1>
           </section>
 
-          {/* 타임캡슐이란? */}
-          <section className="bg-gradient-to-br from-primary/10 to-amber-100/50 rounded-3xl p-6 border border-primary/20">
-            <button 
-              onClick={() => setIsExplanationOpen(!isExplanationOpen)}
-              className="w-full flex items-center justify-between"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-background rounded-xl flex items-center justify-center shadow-sm">
-                  <HelpCircle className="w-5 h-5 text-primary" />
-                </div>
-                <span className="font-semibold text-foreground">타임캡슐이란?</span>
+          {/* 타임캡슐 카드 리스트 */}
+          {mockCapsules.length > 0 && (
+            <section className="mb-12">
+              <div className="flex flex-col items-center gap-6">
+                {mockCapsules.map((capsule) => (
+                  <motion.div
+                    key={capsule.id}
+                    whileHover={{ y: -4, boxShadow: "0px 4px 50px 0px rgba(0,0,0,0.12)" }}
+                    onClick={() => navigate(`/time-capsule/${capsule.id}`)}
+                    className="w-[290px] bg-white border border-[#f8f8f8] rounded-[20px] shadow-[0px_1px_40px_0px_rgba(0,0,0,0.09)] px-5 py-[30px] cursor-pointer transition-shadow"
+                  >
+                    {/* D-Day & Message */}
+                    <div className="flex gap-3 items-start">
+                      <div className="bg-[#ff7430] rounded-[4px] px-2 py-1.5 flex flex-col items-center justify-center flex-shrink-0">
+                        <span className="text-white text-[12px] font-bold leading-normal">{capsule.collectingDaysLabel}</span>
+                        <span className="text-white text-[12px] font-bold leading-normal" style={{ fontFamily: 'Paperlogy, sans-serif' }}>
+                          D-{capsule.collectingDays}
+                        </span>
+                      </div>
+                      <p className="text-[#3d3d3d] text-[13px] font-medium leading-[1.5] tracking-[-0.26px] flex-1">
+                        곧 마음이 모이는 날이에요.<br />
+                        지금부터 천천히 적어도 괜찮아요
+                      </p>
+                    </div>
+
+                    {/* Capsule Image */}
+                    <div className="relative w-[196px] h-[207px] mx-auto my-2">
+                      <img
+                        src="/timecapsule-orange.png"
+                        alt="타임캡슐"
+                        className="w-full h-full object-contain"
+                      />
+                      {/* 하단 그라데이션 페이드 */}
+                      <div className="absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-white to-transparent" />
+                    </div>
+
+                    {/* Recipient & Tags */}
+                    <div className="flex flex-col gap-[14px]">
+                      <p className="text-[#010101] text-[22px] font-semibold tracking-[-0.44px] leading-[1.4]">
+                        To. <span className="font-bold">{capsule.recipientName}</span>
+                      </p>
+                      <div className="flex gap-1 flex-wrap">
+                        {capsule.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-[#fdf3e3] text-[#ff7430] text-[12px] px-2.5 py-1 rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        <span className="bg-[#fdf3e3] text-[#ff7430] text-[12px] px-2.5 py-1 rounded-full">
+                          {capsule.daysLeftLabel}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-              <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${isExplanationOpen ? "" : "-rotate-180"}`} />
-            </button>
-
-            <AnimatePresence>
-              {isExplanationOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="overflow-hidden"
-                >
-                  <div className="pt-5 mt-5 border-t border-primary/20">
-                    <p className="text-muted-foreground mb-6 leading-relaxed">
-                      가족과 지인이 <span className="text-primary font-medium">함께 쪽지를 모아</span><br />
-                      출소일, 생일, 기념일 등 소중한 날에 한꺼번에 전달합니다.<br />
-                      흩어진 응원이 하나의 선물이 됩니다.
-                    </p>
-
-                    {/* 3단계 플로우 */}
-                    <div className="flex items-start justify-between gap-2">
-                      {/* Step 1 */}
-                      <div className="flex-1 text-center">
-                        <div className="w-12 h-12 bg-background rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-3">
-                          <Plus className="w-6 h-6 text-primary" />
-                        </div>
-                        <p className="text-xs text-muted-foreground mb-1">STEP 1</p>
-                        <p className="text-sm font-medium text-foreground">캡슐 만들기</p>
-                        <p className="text-xs text-muted-foreground mt-1">전달할 날짜와<br />참여자를 정해요</p>
-                      </div>
-
-                      <ChevronRight className="w-4 h-4 text-primary/40 mt-6" />
-
-                      {/* Step 2 */}
-                      <div className="flex-1 text-center">
-                        <div className="w-12 h-12 bg-background rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-3">
-                          <Users className="w-6 h-6 text-primary" />
-                        </div>
-                        <p className="text-xs text-muted-foreground mb-1">STEP 2</p>
-                        <p className="text-sm font-medium text-foreground">함께 쪽지 쓰기</p>
-                        <p className="text-xs text-muted-foreground mt-1">초대받은 사람들이<br />각자 마음을 담아요</p>
-                      </div>
-
-                      <ChevronRight className="w-4 h-4 text-primary/40 mt-6" />
-
-                      {/* Step 3 */}
-                      <div className="flex-1 text-center">
-                        <div className="w-12 h-12 bg-background rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-3">
-                          <Gift className="w-6 h-6 text-primary" />
-                        </div>
-                        <p className="text-xs text-muted-foreground mb-1">STEP 3</p>
-                        <p className="text-sm font-medium text-foreground">특별한 날 전달</p>
-                        <p className="text-xs text-muted-foreground mt-1">모인 쪽지가<br />한꺼번에 전달돼요</p>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </section>
-
-          {/* 참여 요청 */}
-          {mockInvitations.length > 0 && (
-            <section>
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="font-semibold text-foreground">참여 요청</h2>
-                <span className="animate-pulse px-2 py-0.5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full">
-                  {mockInvitations.length}
-                </span>
-              </div>
-
-              {mockInvitations.map((invitation) => (
-                <motion.div
-                  key={invitation.id}
-                  whileHover={{ y: -2 }}
-                  onClick={() => navigate(`/time-capsule/${invitation.id}`)}
-                  className="bg-background rounded-2xl p-5 border-2 border-primary/30 shadow-sm cursor-pointer hover:shadow-md transition-all"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Home className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        {invitation.isNew && (
-                          <span className="px-2 py-0.5 bg-destructive/10 text-destructive text-xs font-bold rounded">NEW</span>
-                        )}
-                        <span className="text-sm font-bold text-primary">D-{invitation.daysLeft}</span>
-                      </div>
-                      <h3 className="font-semibold text-foreground mb-1">{invitation.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{invitation.invitedBy}가 초대함</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Progress value={(invitation.letterCount / invitation.targetLetters) * 100} className="h-1.5 w-24" />
-                          <span className="text-xs text-muted-foreground">{invitation.letterCount}/{invitation.targetLetters}통</span>
-                          {!invitation.myLetterWritten && (
-                            <span className="text-xs text-primary font-medium">(내 쪽지 미작성)</span>
-                          )}
-                        </div>
-                        <span className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg">쪽지 쓰기</span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
             </section>
           )}
 
-          {/* 내 타임캡슐 */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-foreground">내 타임캡슐</h2>
-            </div>
-
-            {/* 탭 */}
-            <div className="flex gap-1 mb-4 bg-muted rounded-xl p-1">
-              {[
-                { id: "all", label: "전체" },
-                { id: "collecting", label: "진행중" },
-                { id: "completed", label: "완료" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                  className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeTab === tab.id 
-                      ? "bg-background text-primary shadow-sm" 
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="space-y-3">
-              {filteredCapsules.map((capsule) => {
-                const IconComponent = capsule.icon;
-                return (
-                  <motion.div
-                    key={capsule.id}
-                    whileHover={{ y: -2 }}
-                    onClick={() => navigate(`/time-capsule/${capsule.id}`)}
-                    className={`bg-background rounded-2xl p-5 border border-border/60 shadow-sm cursor-pointer hover:shadow-md transition-all ${
-                      capsule.status === "delivered" ? "opacity-80" : ""
-                    }`}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className={`w-10 h-10 ${capsule.iconBg} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                        <IconComponent className={`w-5 h-5 ${capsule.iconColor}`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-medium text-foreground">{capsule.title}</h3>
-                          {capsule.status === "collecting" ? (
-                            <span className="text-sm font-bold text-primary">D-{capsule.daysLeft}</span>
-                          ) : (
-                            <span className="px-2 py-0.5 bg-green-100 text-green-600 text-xs font-medium rounded">전달완료</span>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          {capsule.status === "collecting" 
-                            ? `To. ${capsule.recipient} · ${capsule.facility}`
-                            : `${capsule.deliveredDate} 전달 · ${capsule.letterCount}통의 쪽지`
-                          }
-                        </p>
-                        {capsule.status === "collecting" && (
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2">
-                              <Progress value={(capsule.letterCount / capsule.targetLetters!) * 100} className="h-1.5 w-20" />
-                              <span className="text-xs text-muted-foreground">{capsule.letterCount}/{capsule.targetLetters}통</span>
-                            </div>
-                            <div className="flex -space-x-2">
-                              {capsule.contributors?.map((emoji, idx) => (
-                                <div key={idx} className="w-6 h-6 rounded-full bg-primary/10 border-2 border-background flex items-center justify-center text-xs">
-                                  {emoji}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <ChevronRight className="w-5 h-5 text-muted-foreground/50 flex-shrink-0" />
+          {/* 타임캡슐이 없을 때 빈 상태 카드 */}
+          {mockCapsules.length === 0 && (
+            <section className="mb-12">
+              <div className="flex flex-col items-center">
+                <div className="w-[290px] bg-white border border-[#f8f8f8] rounded-[20px] shadow-[0px_1px_40px_0px_rgba(0,0,0,0.09)] px-5 py-[30px]">
+                  {/* D-Day & Message */}
+                  <div className="flex gap-3 items-start">
+                    <div className="bg-gray-300 rounded-[4px] px-2 py-1.5 flex flex-col items-center justify-center flex-shrink-0">
+                      <span className="text-white text-[12px] font-bold leading-normal">?일 뒤</span>
+                      <span className="text-white text-[12px] font-bold leading-normal">D-?</span>
                     </div>
-                  </motion.div>
-                );
-              })}
+                    <p className="text-[#3d3d3d] text-[13px] font-medium leading-[1.5] tracking-[-0.26px] flex-1">
+                      아직 타임캡슐이 없어요.<br />
+                      특별한 날을 위해 만들어보세요
+                    </p>
+                  </div>
 
-            </div>
+                  {/* Empty Capsule Image */}
+                  <div className="relative w-[196px] h-[207px] mx-auto my-2 opacity-50">
+                    <img
+                      src="/timecapsule-orange.png"
+                      alt="타임캡슐"
+                      className="w-full h-full object-contain grayscale"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-white to-transparent" />
+                  </div>
+
+                  {/* 안내 텍스트 */}
+                  <div className="text-center">
+                    <p className="text-[#010101] text-[18px] font-semibold mb-1">타임캡슐을 만들어보세요</p>
+                    <p className="text-[#808080] text-[13px]">소중한 사람을 위한 마음을 모아보세요</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* 하단 CTA 섹션 */}
+          <section className="flex flex-col items-center gap-[15px]">
+            <Button
+              onClick={() => navigate("/time-capsule/create")}
+              className="w-full max-w-[290px] bg-[#ff7512] hover:bg-[#ff6b24] text-white text-[16px] font-semibold leading-[1.5] px-8 py-2.5 rounded-[27px] h-auto"
+            >
+              + 새 타임캡슐 생성하기
+            </Button>
+            <p className="text-[#808080] text-[15px] text-center leading-[1.7]">
+              의미 있는 그 날을 위해, 지금부터 타임캡슐을 만들어 둘 수 있어요.
+            </p>
           </section>
 
         </div>

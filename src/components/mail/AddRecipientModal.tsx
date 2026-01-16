@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { HelpCircle, Loader2, Check } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -14,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useFamilyMembers } from "@/hooks/useFamilyMembers";
-import { cn } from "@/lib/utils";
+import { facilities, regions, type Region } from "@/data/facilities";
 
 interface AddRecipientModalProps {
   open: boolean;
@@ -24,60 +26,67 @@ interface AddRecipientModalProps {
 
 const relations = ["아들", "딸", "남편", "아내", "아버지", "어머니", "형제", "자매", "친구", "기타"];
 
-const facilityTypes = ["교도소", "구치소", "교정시설"];
-
-const regions = ["서울", "경기", "인천", "대전", "대구", "부산", "광주", "울산", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"];
-
-const colorOptions = [
-  { id: "orange", bg: "bg-orange-100", border: "border-orange-400" },
-  { id: "blue", bg: "bg-blue-100", border: "border-blue-400" },
-  { id: "cyan", bg: "bg-cyan-100", border: "border-cyan-400" },
-  { id: "green", bg: "bg-green-100", border: "border-green-400" },
-  { id: "yellow", bg: "bg-yellow-100", border: "border-yellow-400" },
-  { id: "pink", bg: "bg-pink-100", border: "border-pink-400" },
-  { id: "rose", bg: "bg-rose-100", border: "border-rose-400" },
-  { id: "amber", bg: "bg-amber-100", border: "border-amber-400" },
-  { id: "violet", bg: "bg-violet-100", border: "border-violet-400" },
-];
+const facilityTypes = ["교도소", "구치소"];
 
 export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipientModalProps) {
   const [name, setName] = useState("");
+  const [prisonerNumber, setPrisonerNumber] = useState("");
   const [relation, setRelation] = useState("");
   const [facilityType, setFacilityType] = useState("");
-  const [region, setRegion] = useState("");
-  const [prisonerNumber, setPrisonerNumber] = useState("");
-  const [selectedColor, setSelectedColor] = useState("yellow");
+  const [region, setRegion] = useState<Region | "">("");
+  const [selectedFacility, setSelectedFacility] = useState("");
 
   const { createFamilyMember, isCreating } = useFamilyMembers();
 
+  // 선택된 지역과 시설 유형에 맞는 시설 목록
+  const availableFacilities = useMemo(() => {
+    if (!region || !facilityType) return [];
+
+    const regionFacilities = facilities[region as Region];
+    if (!regionFacilities) return [];
+
+    // 시설 유형에 따라 필터링
+    if (facilityType === "교도소") {
+      return regionFacilities.교도소 || [];
+    } else if (facilityType === "구치소") {
+      return regionFacilities.구치소 || [];
+    }
+    return [];
+  }, [region, facilityType]);
+
+  // 지역이나 시설 유형이 바뀌면 선택된 시설 초기화
+  const handleRegionChange = (value: string) => {
+    setRegion(value as Region);
+    setSelectedFacility("");
+  };
+
+  const handleFacilityTypeChange = (value: string) => {
+    setFacilityType(value);
+    setSelectedFacility("");
+  };
+
   const handleSubmit = () => {
     if (!name.trim() || !relation || !facilityType || !region) return;
-    
-    const facility = `${region}${facilityType}`;
-    const colorClass = colorOptions.find(c => c.id === selectedColor);
-    
-    createFamilyMember(
-      {
-        name: name.trim(),
-        relation,
-        facility,
-        prisoner_number: prisonerNumber.trim() || null,
-        color: colorClass ? `${colorClass.bg} text-${selectedColor}-600` : "bg-orange-100 text-orange-600",
-      },
-      {
-        onSuccess: () => {
-          // Reset form
-          setName("");
-          setRelation("");
-          setFacilityType("");
-          setRegion("");
-          setPrisonerNumber("");
-          setSelectedColor("yellow");
-          onOpenChange(false);
-          onSuccess?.();
-        },
-      }
-    );
+
+    const facility = selectedFacility || `${region}${facilityType}`;
+
+    createFamilyMember({
+      name: name.trim(),
+      relation,
+      facility,
+      prisoner_number: prisonerNumber.trim() || null,
+      color: "bg-orange-100 text-orange-600",
+    });
+
+    // Reset form
+    setName("");
+    setPrisonerNumber("");
+    setRelation("");
+    setFacilityType("");
+    setRegion("");
+    setSelectedFacility("");
+    onOpenChange(false);
+    onSuccess?.();
   };
 
   const isValid = name.trim() && relation && facilityType && region;
@@ -85,24 +94,31 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg p-6">
-        <div className="space-y-4">
-          {/* 이름 입력 + 아이콘 */}
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-              <HelpCircle className="w-6 h-6 text-orange-500" />
-            </div>
-            <Input
-              placeholder="수용자 이름"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="flex-1 h-12 text-base border-gray-200"
-            />
-          </div>
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-lg font-semibold">수신자 등록</DialogTitle>
+        </DialogHeader>
 
-          {/* 관계 선택 */}
+        <div className="space-y-4">
+          {/* 수용자이름 */}
+          <Input
+            placeholder="수용자이름"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="h-12 text-base border-gray-200"
+          />
+
+          {/* 수용자번호 */}
+          <Input
+            placeholder="수용자번호 (예: 2024-12345)"
+            value={prisonerNumber}
+            onChange={(e) => setPrisonerNumber(e.target.value)}
+            className="h-12 text-base border-gray-200"
+          />
+
+          {/* 관계선택 */}
           <Select value={relation} onValueChange={setRelation}>
             <SelectTrigger className="h-12 text-base border-gray-200">
-              <SelectValue placeholder="관계 선택" />
+              <SelectValue placeholder="관계선택" />
             </SelectTrigger>
             <SelectContent className="bg-white z-50">
               {relations.map((rel) => (
@@ -113,14 +129,11 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
             </SelectContent>
           </Select>
 
-          {/* 시설 유형 + 지역 선택 (나란히) */}
+          {/* 받는 곳 + 지역선택 (나란히) */}
           <div className="flex gap-3">
-            <Select value={facilityType} onValueChange={setFacilityType}>
-              <SelectTrigger className={cn(
-                "flex-1 h-12 text-base",
-                facilityType ? "border-gray-200" : "border-orange-400 border-2"
-              )}>
-                <SelectValue placeholder="시설 유형" />
+            <Select value={facilityType} onValueChange={handleFacilityTypeChange}>
+              <SelectTrigger className="flex-1 h-12 text-base border-gray-200">
+                <SelectValue placeholder="받는 곳" />
               </SelectTrigger>
               <SelectContent className="bg-white z-50">
                 {facilityTypes.map((type) => (
@@ -131,9 +144,9 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
               </SelectContent>
             </Select>
 
-            <Select value={region} onValueChange={setRegion}>
+            <Select value={region} onValueChange={handleRegionChange}>
               <SelectTrigger className="flex-1 h-12 text-base border-gray-200">
-                <SelectValue placeholder="지역 선택" />
+                <SelectValue placeholder="지역선택" />
               </SelectTrigger>
               <SelectContent className="bg-white z-50">
                 {regions.map((reg) => (
@@ -145,43 +158,30 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
             </Select>
           </div>
 
-          {/* 수용자 번호 */}
-          <Input
-            placeholder="수용자 번호 (예: 2024-12345)"
-            value={prisonerNumber}
-            onChange={(e) => setPrisonerNumber(e.target.value)}
-            className="h-12 text-base border-gray-200"
-          />
-
-          {/* 색상 선택 */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">색상:</span>
-            <div className="flex gap-2">
-              {colorOptions.map((color) => (
-                <button
-                  key={color.id}
-                  type="button"
-                  onClick={() => setSelectedColor(color.id)}
-                  className={cn(
-                    "w-8 h-8 rounded-full transition-all",
-                    color.bg,
-                    selectedColor === color.id 
-                      ? `ring-2 ring-offset-2 ${color.border}` 
-                      : "hover:scale-110"
-                  )}
-                />
-              ))}
-            </div>
-          </div>
+          {/* 시설선택 - 지역과 받는 곳 선택 후 표시 */}
+          {region && facilityType && availableFacilities.length > 0 && (
+            <Select value={selectedFacility} onValueChange={setSelectedFacility}>
+              <SelectTrigger className="h-12 text-base border-gray-200">
+                <SelectValue placeholder="시설선택" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                {availableFacilities.map((fac) => (
+                  <SelectItem key={fac.name} value={fac.name}>
+                    {fac.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </div>
 
         {/* 버튼 */}
         <div className="flex justify-end gap-3 mt-6">
           <Button
-            variant="ghost"
+            variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isCreating}
-            className="px-6"
+            className="px-6 border-gray-300"
           >
             취소
           </Button>
@@ -193,7 +193,7 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
             {isCreating ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                추가 중...
+                등록 중...
               </>
             ) : (
               <>

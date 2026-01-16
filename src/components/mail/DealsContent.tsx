@@ -26,8 +26,8 @@ interface Deal {
 const mockDeals: Deal[] = [
   {
     id: "1",
-    title: "첫 편지 무료 발송",
-    description: "처음 이용하시는 분께 첫 편지 발송을 무료로 드립니다.",
+    title: "회원가입 특별 혜택",
+    description: "회원가입 시 매주 1회 무료로 편지발송 (3개월간)",
     originalPrice: 2000,
     discountPrice: 0,
     discountRate: 100,
@@ -77,7 +77,7 @@ export function DealsContent({ onClose }: DealsContentProps) {
       </header>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
+      <div className="flex-1 overflow-y-auto px-4 py-10 lg:px-6">
         <div className="max-w-4xl mx-auto">
           {/* 타이틀 */}
           <div className="mb-8">

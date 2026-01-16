@@ -339,21 +339,12 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
         {/* 오버레이 */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-        {/* 즐겨찾기 버튼 */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavorite(photo.id);
-          }}
-          className={cn(
-            "absolute top-2 right-2 p-2 rounded-full transition-all",
-            photo.isFavorite
-              ? "bg-red-500 text-white"
-              : "bg-black/30 text-white opacity-0 group-hover:opacity-100"
-          )}
-        >
-          <Heart className={cn("w-4 h-4", photo.isFavorite && "fill-current")} />
-        </button>
+        {/* 즐겨찾기 표시 */}
+        {photo.isFavorite && (
+          <div className="absolute top-2 right-2">
+            <Heart className="w-5 h-5 text-white fill-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+          </div>
+        )}
 
         {/* 발송 완료 표시 */}
         {photo.sentTo && (
@@ -520,7 +511,7 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
         </header>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-auto px-4 py-5 lg:px-6">
+        <div className="flex-1 overflow-auto px-4 py-10 lg:px-6">
           <div className="max-w-4xl mx-auto space-y-6">
             {/* 필터 탭 */}
             <div className="flex gap-2">
@@ -757,7 +748,7 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto px-4 py-5 lg:px-6">
+      <div className="flex-1 overflow-auto px-4 py-10 lg:px-6">
         <div className="max-w-4xl mx-auto space-y-6">
 
           {/* 타이틀 */}
@@ -800,8 +791,13 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
             </div>
           )}
 
-          {/* 필터 탭 - 폴더 영역 아래 */}
-          <div className="flex gap-2 mt-6">
+          {/* To. 수신자 버튼 */}
+          <button className="w-full py-3 px-4 bg-orange-50 border border-orange-200 rounded-xl text-left hover:bg-orange-100 transition-colors">
+            <span className="text-primary font-medium">To. 사랑하는 아버지께</span>
+          </button>
+
+          {/* 필터 탭 */}
+          <div className="flex gap-2">
             <button
               onClick={() => setFilter("all")}
               className={cn(
@@ -856,7 +852,9 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
             {/* 전체 타이틀 & 뷰 모드 토글 */}
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-gray-700">
-                전체 ({photos.length})
+                {filter === "all" ? "전체" :
+                 filter === "favorites" ? "즐겨찾기" :
+                 filter === "recent" ? "등록순" : "발송한 이미지"} ({filter === "all" ? unclassifiedPhotos.length : filteredPhotos.length})
               </h3>
               {/* 뷰 모드 토글 */}
               <div className="flex items-center bg-gray-100 rounded-full p-1">

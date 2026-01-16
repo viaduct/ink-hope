@@ -9,6 +9,7 @@ import { ComposeContent } from "@/components/mail/ComposeContent";
 import { FloatingComposeButton } from "@/components/mail/FloatingComposeButton";
 import { AddressBookModal } from "@/components/mail/AddressBookModal";
 import { HandwrittenUploadContent } from "@/components/mail/HandwrittenUploadContent";
+import { HandwrittenArchiveContent } from "@/components/mail/HandwrittenArchiveContent";
 import { OrangeTreeContent } from "@/components/mail/OrangeTreeContent";
 import { TimeCapsuleContent } from "@/components/mail/TimeCapsuleContent";
 import { GalleryContent } from "@/components/mail/GalleryContent";
@@ -24,7 +25,7 @@ import type { Mail, FolderType, FamilyMember } from "@/types/mail";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-type ViewMode = "compose" | "mail" | "handwritten" | "orangetree" | "timecapsule" | "gallery" | "schedule" | "rewards" | "notice" | "faq" | "feedback" | "deals" | "customerService";
+type ViewMode = "compose" | "mail" | "handwritten" | "handwrittenArchive" | "orangetree" | "timecapsule" | "gallery" | "schedule" | "rewards" | "notice" | "faq" | "feedback" | "deals" | "customerService";
 
 const Index = () => {
   const isMobile = useIsMobile();
@@ -78,6 +79,8 @@ const Index = () => {
       feedback: "고객의 소리",
       rewards: "내가 받은 경품",
       customerService: "고객센터",
+      handwrittenUpload: "손편지 담기",
+      handwrittenArchive: "손편지 보관함",
     };
     toast.success(`${folderNames[targetFolder]}으로 이동했습니다.`);
   };
@@ -123,6 +126,10 @@ const Index = () => {
       setViewMode("deals");
     } else if (folder === "customerService") {
       setViewMode("customerService");
+    } else if (folder === "handwrittenUpload") {
+      setViewMode("handwritten");
+    } else if (folder === "handwrittenArchive") {
+      setViewMode("handwrittenArchive");
     } else {
       setViewMode("mail");
     }
@@ -162,7 +169,7 @@ const Index = () => {
         />
       </MobileHeader>
 
-      <div className="flex h-screen overflow-hidden bg-background md:pt-0 pt-14">
+      <div className="flex h-screen overflow-hidden bg-background md:pt-0 pt-0">
         {/* Desktop Sidebar - hidden on mobile */}
         <div className="hidden md:block">
           <Sidebar
@@ -192,7 +199,8 @@ const Index = () => {
         ) : viewMode === "handwritten" ? (
           <HandwrittenUploadContent
             onClose={() => setViewMode("mail")}
-            onComposeWithText={(text, senderName) => {
+            onOpenArchive={() => setViewMode("handwrittenArchive")}
+            onComposeWithText={(_text, _senderName) => {
               // TODO: Pass OCR text to compose with sender context
               setViewMode("compose");
             }}
@@ -221,6 +229,13 @@ const Index = () => {
               setMails((prev) => [newMail, ...prev]);
               setActiveFolder("inbox");
               setViewMode("mail");
+            }}
+          />
+        ) : viewMode === "handwrittenArchive" ? (
+          <HandwrittenArchiveContent
+            onClose={() => setViewMode("handwritten")}
+            onReply={(_text, _senderName) => {
+              setViewMode("compose");
             }}
           />
         ) : viewMode === "orangetree" ? (
