@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface TimeCapsuleContentProps {
@@ -22,6 +24,19 @@ const mockCapsules = [
 
 export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
   const navigate = useNavigate();
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const canNavigate = mockCapsules.length > 1;
+
+  const handlePrev = () => {
+    if (!canNavigate) return;
+    setCurrentIndex((prev) => (prev === 0 ? mockCapsules.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    if (!canNavigate) return;
+    setCurrentIndex((prev) => (prev === mockCapsules.length - 1 ? 0 : prev + 1));
+  };
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
@@ -52,64 +67,116 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
             </h1>
           </section>
 
-          {/* 타임캡슐 카드 리스트 */}
+          {/* 타임캡슐 카드 캐러셀 */}
           {mockCapsules.length > 0 && (
             <section className="mb-12">
-              <div className="flex flex-col items-center gap-6">
-                {mockCapsules.map((capsule) => (
-                  <motion.div
-                    key={capsule.id}
-                    whileHover={{ y: -4, boxShadow: "0px 4px 50px 0px rgba(0,0,0,0.12)" }}
-                    onClick={() => navigate(`/time-capsule/${capsule.id}`)}
-                    className="w-[290px] bg-white border border-[#f8f8f8] rounded-[20px] shadow-[0px_1px_40px_0px_rgba(0,0,0,0.09)] px-5 py-[30px] cursor-pointer transition-shadow"
-                  >
-                    {/* D-Day & Message */}
-                    <div className="flex gap-3 items-start">
-                      <div className="bg-[#ff7430] rounded-[4px] px-2 py-1.5 flex flex-col items-center justify-center flex-shrink-0">
-                        <span className="text-white text-[12px] font-bold leading-normal">{capsule.collectingDaysLabel}</span>
-                        <span className="text-white text-[12px] font-bold leading-normal" style={{ fontFamily: 'Paperlogy, sans-serif' }}>
-                          D-{capsule.collectingDays}
-                        </span>
-                      </div>
-                      <p className="text-[#3d3d3d] text-[13px] font-medium leading-[1.5] tracking-[-0.26px] flex-1">
-                        곧 마음이 모이는 날이에요.<br />
-                        지금부터 천천히 적어도 괜찮아요
-                      </p>
-                    </div>
+              <div className="flex items-center justify-center gap-4">
+                {/* 왼쪽 화살표 */}
+                <button
+                  onClick={handlePrev}
+                  disabled={!canNavigate}
+                  className={`p-2 transition-all ${
+                    canNavigate
+                      ? "text-[#666] hover:text-[#ff7430]"
+                      : "text-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
 
-                    {/* Capsule Image */}
-                    <div className="relative w-[196px] h-[207px] mx-auto my-2">
-                      <img
-                        src="/timecapsule-orange.png"
-                        alt="타임캡슐"
-                        className="w-full h-full object-contain"
-                      />
-                      {/* 하단 그라데이션 페이드 */}
-                      <div className="absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-white to-transparent" />
-                    </div>
+                {/* 카드 */}
+                <div className="relative p-4">
+                  <AnimatePresence mode="wait">
+                    {mockCapsules.map((capsule, index) => (
+                      index === currentIndex && (
+                        <motion.div
+                          key={capsule.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          whileHover={{ y: -4, boxShadow: "0px 4px 50px 0px rgba(0,0,0,0.12)" }}
+                          onClick={() => navigate(`/time-capsule/${capsule.id}`)}
+                          className="w-[290px] bg-white border border-[#f8f8f8] rounded-[20px] shadow-[0px_1px_40px_0px_rgba(0,0,0,0.09)] px-5 py-[30px] cursor-pointer transition-shadow"
+                        >
+                          {/* D-Day & Message */}
+                          <div className="flex gap-3 items-start">
+                            <div className="bg-[#ff7430] rounded-[4px] px-2 py-1.5 flex flex-col items-center justify-center flex-shrink-0">
+                              <span className="text-white text-[12px] font-bold leading-normal">{capsule.collectingDaysLabel}</span>
+                              <span className="text-white text-[12px] font-bold leading-normal" style={{ fontFamily: 'Paperlogy, sans-serif' }}>
+                                D-{capsule.collectingDays}
+                              </span>
+                            </div>
+                            <p className="text-[#3d3d3d] text-[13px] font-medium leading-[1.5] tracking-[-0.26px] flex-1">
+                              곧 마음이 모이는 날이에요.<br />
+                              지금부터 천천히 적어도 괜찮아요
+                            </p>
+                          </div>
 
-                    {/* Recipient & Tags */}
-                    <div className="flex flex-col gap-[14px]">
-                      <p className="text-[#010101] text-[22px] font-semibold tracking-[-0.44px] leading-[1.4]">
-                        To. <span className="font-bold">{capsule.recipientName}</span>
-                      </p>
-                      <div className="flex gap-1 flex-wrap">
-                        {capsule.tags.map((tag, idx) => (
-                          <span
-                            key={idx}
-                            className="bg-[#fdf3e3] text-[#ff7430] text-[12px] px-2.5 py-1 rounded-full"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                        <span className="bg-[#fdf3e3] text-[#ff7430] text-[12px] px-2.5 py-1 rounded-full">
-                          {capsule.daysLeftLabel}
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                          {/* Capsule Image */}
+                          <div className="relative w-[196px] h-[207px] mx-auto my-2">
+                            <img
+                              src="/timecapsule-orange.png"
+                              alt="타임캡슐"
+                              className="w-full h-full object-contain"
+                            />
+                            {/* 하단 그라데이션 페이드 */}
+                            <div className="absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-white to-transparent" />
+                          </div>
+
+                          {/* Recipient & Tags */}
+                          <div className="flex flex-col gap-[14px]">
+                            <p className="text-[#010101] text-[22px] font-semibold tracking-[-0.44px] leading-[1.4]">
+                              To. <span className="font-bold">{capsule.recipientName}</span>
+                            </p>
+                            <div className="flex gap-1 flex-wrap">
+                              {capsule.tags.map((tag, idx) => (
+                                <span
+                                  key={idx}
+                                  className="bg-[#fdf3e3] text-[#ff7430] text-[12px] px-2.5 py-1 rounded-full"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                              <span className="bg-[#fdf3e3] text-[#ff7430] text-[12px] px-2.5 py-1 rounded-full">
+                                {capsule.daysLeftLabel}
+                              </span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )
+                    ))}
+                  </AnimatePresence>
+                </div>
+
+                {/* 오른쪽 화살표 */}
+                <button
+                  onClick={handleNext}
+                  disabled={!canNavigate}
+                  className={`p-2 transition-all ${
+                    canNavigate
+                      ? "text-[#666] hover:text-[#ff7430]"
+                      : "text-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
               </div>
+
+              {/* 페이지 인디케이터 (2개 이상일 때만) */}
+              {canNavigate && (
+                <div className="flex justify-center gap-2 mt-4">
+                  {mockCapsules.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentIndex(index)}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        index === currentIndex ? "bg-[#ff7430] w-4" : "bg-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </section>
           )}
 

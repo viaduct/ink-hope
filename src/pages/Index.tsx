@@ -21,7 +21,7 @@ import { CustomerServiceContent } from "@/components/mail/CustomerServiceContent
 import { DealsContent } from "@/components/mail/DealsContent";
 import { NoticeContent } from "@/components/mail/NoticeContent";
 import { familyMembers as initialFamilyMembers, mockMails } from "@/data/mockData";
-import type { Mail, FolderType, FamilyMember } from "@/types/mail";
+import type { Mail, FolderType, FamilyMember, DraftData } from "@/types/mail";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -51,6 +51,7 @@ const Index = () => {
   const [mails, setMails] = useState<Mail[]>(mockMails);
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(initialFamilyMembers);
   const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
+  const [editingDraft, setEditingDraft] = useState<{ draftData: DraftData; draftId: string } | null>(null);
 
   // 메일 폴더 이동 함수
   const moveMailToFolder = (mailId: string, targetFolder: FolderType) => {
@@ -144,6 +145,14 @@ const Index = () => {
     }
   };
 
+  // 임시저장 편지 편집 핸들러
+  const handleEditDraft = (mail: Mail) => {
+    if (mail.draftData) {
+      setEditingDraft({ draftData: mail.draftData, draftId: mail.id });
+      setViewMode("compose");
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -194,7 +203,12 @@ const Index = () => {
         {viewMode === "compose" ? (
           <ComposeContent
             familyMembers={familyMembers}
-            onClose={() => setViewMode("mail")}
+            onClose={() => {
+              setViewMode("mail");
+              setEditingDraft(null);
+            }}
+            draftData={editingDraft?.draftData}
+            draftId={editingDraft?.draftId}
           />
         ) : viewMode === "handwritten" ? (
           <HandwrittenUploadContent
@@ -204,31 +218,10 @@ const Index = () => {
               // TODO: Pass OCR text to compose with sender context
               setViewMode("compose");
             }}
-            onSaveToInbox={(data) => {
-              // 손편지를 받은 편지함에 저장
-              const newMail: Mail = {
-                id: crypto.randomUUID(),
-                sender: {
-                  id: crypto.randomUUID(),
-                  name: data.senderName,
-                  relation: "손편지 발신자",
-                  facility: "",
-                  avatar: data.senderName.charAt(0),
-                  color: "bg-orange-100 text-orange-600",
-                },
-                subject: `${data.senderName}님의 손편지`,
-                preview: data.ocrText.slice(0, 50) + "...",
-                content: data.ocrText,
-                date: "오늘",
-                isRead: false,
-                isNew: true,
-                folder: "inbox",
-                isHandwritten: true,
-                originalImage: data.originalImage,
-              };
-              setMails((prev) => [newMail, ...prev]);
-              setActiveFolder("inbox");
-              setViewMode("mail");
+            onSaveToArchive={() => {
+              // 손편지를 손편지보관함에 저장하고 보관함으로 이동
+              toast.success("손편지가 보관함에 저장되었습니다.");
+              setViewMode("handwrittenArchive");
             }}
           />
         ) : viewMode === "handwrittenArchive" ? (
@@ -320,6 +313,7 @@ const Index = () => {
             allMails={mails}
             onMoveToFolder={moveMailToFolder}
             onEditAddressBook={() => setIsAddressBookOpen(true)}
+            onEditDraft={handleEditDraft}
           />
         )}
 

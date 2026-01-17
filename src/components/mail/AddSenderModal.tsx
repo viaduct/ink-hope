@@ -25,19 +25,14 @@ export function AddSenderModal({ open, onOpenChange, onAdd }: AddSenderModalProp
   const [phone, setPhone] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [address, setAddress] = useState("");
-  const [addressDetail, setAddressDetail] = useState("");
 
   const handleSubmit = () => {
     if (!name.trim() || !phone.trim() || !address.trim()) return;
 
-    const fullAddress = addressDetail.trim()
-      ? `${address.trim()} ${addressDetail.trim()}`
-      : address.trim();
-
     onAdd({
       name: name.trim(),
       phone: phone.trim(),
-      address: fullAddress,
+      address: address.trim(),
     });
 
     // Reset form
@@ -46,7 +41,6 @@ export function AddSenderModal({ open, onOpenChange, onAdd }: AddSenderModalProp
     setPhone("");
     setZipCode("");
     setAddress("");
-    setAddressDetail("");
     onOpenChange(false);
   };
 
@@ -154,18 +148,6 @@ export function AddSenderModal({ open, onOpenChange, onAdd }: AddSenderModalProp
                 주소검색
               </Button>
             </div>
-            <Input
-              placeholder="주소를 입력하세요"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="h-12 text-base border-gray-200"
-            />
-            <Input
-              placeholder="상세주소를 입력하세요 (선택)"
-              value={addressDetail}
-              onChange={(e) => setAddressDetail(e.target.value)}
-              className="h-12 text-base border-gray-200"
-            />
           </div>
         </div>
 

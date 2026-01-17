@@ -101,10 +101,10 @@ const giftCards: GiftCard[] = [
     id: "orange",
     category: "오렌지 나무",
     name: "오렌지",
-    price: 3000,
+    price: 10000,
     description: "그날을 위해 남겨두는 마음",
-    exampleMessage: "지금 맺어주는 오렌지는 출소 후\n투오렌지에서 사용할 수 있는 형태로\n직접 전달됩니다.",
-    image: "/timecapsule-orange.png",
+    exampleMessage: "하나 선물하면 마이페이지\n내 선물내역에서 확인할 수 있어요.",
+    image: "/present-orange-thumbnail.png",
   },
 ];
 
@@ -119,13 +119,13 @@ export default function TimeCapsuleDetail() {
   const [selectedGift, setSelectedGift] = useState<GiftCard | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
-  const [userPoints, setUserPoints] = useState(50000); // 사용자 보유 포인트
+  const [userPoints, setUserPoints] = useState(10000); // 사용자 보유 포인트
   const [giftMessage, setGiftMessage] = useState("");
 
   // 선물 카드 선택 핸들러
   const handleSelectGift = (gift: GiftCard) => {
     setSelectedGift(gift);
-    setGiftMessage(gift.exampleMessage);
+    setGiftMessage("");
     setShowPaymentModal(true);
   };
 
@@ -223,7 +223,7 @@ export default function TimeCapsuleDetail() {
 
       <div className="h-full overflow-auto bg-muted/30 relative">
         {/* Header */}
-        <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
+        <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
           <button
             onClick={() => navigate("/time-capsule")}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -231,10 +231,24 @@ export default function TimeCapsuleDetail() {
             <ChevronLeft className="w-5 h-5" />
             <span className="text-sm">타임캡슐로 돌아가기</span>
           </button>
+          <div className="flex items-center gap-4">
+            <span className="text-[#ff7430] text-[14px] font-semibold">
+              전달일: {capsule.targetDate}
+            </span>
+            <button
+              onClick={() => navigate(`/time-capsule/${id}/edit`)}
+              className="bg-[#ff7d3c] text-white text-[14px] font-medium px-4 py-2 rounded-[8px] flex items-center gap-1.5 hover:bg-[#ff6b24] transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.25 12.9375V15.75H5.0625L13.3575 7.455L10.545 4.6425L2.25 12.9375ZM15.5325 5.28C15.825 4.9875 15.825 4.515 15.5325 4.2225L13.7775 2.4675C13.485 2.175 13.0125 2.175 12.72 2.4675L11.3475 3.84L14.16 6.6525L15.5325 5.28Z" fill="white"/>
+              </svg>
+              타임캡슐 수정하기
+            </button>
+          </div>
         </header>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col items-center py-9 px-4 pb-[120px]">
+        <div className="flex-1 flex flex-col items-center py-9 px-4 pb-10">
           {/* Header */}
           <div className="flex flex-col items-center gap-3 mb-8">
             <span className="bg-[#fdf3e3] text-[#ff7430] px-4 py-1.5 rounded-full text-[15px] font-medium">
@@ -501,9 +515,9 @@ export default function TimeCapsuleDetail() {
                           selectedGift?.id === gift.id ? 'border-[#ff7430]' : 'border-[#eaeaea]'
                         } rounded-[8px] p-5 flex gap-[18px] items-center cursor-pointer hover:border-[#fd752f] hover:shadow-md transition-all`}
                       >
-                        <div className="w-[117px] h-[109px] bg-[#fff8ed] rounded-[9px] flex items-center justify-center flex-shrink-0">
+                        <div className="w-[117px] h-[117px] bg-[#fff8ed] rounded-[9px] flex items-center justify-center flex-shrink-0 overflow-hidden">
                           {gift.image ? (
-                            <img src={gift.image} alt={gift.name} className="w-[32px] h-[36px]" />
+                            <img src={gift.image} alt={gift.name} className="w-full h-full object-cover" />
                           ) : (
                             <span className="text-[#5f5f63] text-[13px] tracking-[-0.26px] text-center">{gift.name}</span>
                           )}
@@ -536,21 +550,6 @@ export default function TimeCapsuleDetail() {
           </AnimatePresence>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-[#dfdfdf] shadow-[0px_-1px_4px_0px_rgba(0,0,0,0.16)] h-[94px] flex items-center justify-between px-8 z-50">
-          <p className="text-[#ff7430] text-[16px] font-semibold leading-[1.5]">
-            전달일: {capsule.targetDate}
-          </p>
-          <button
-            onClick={() => navigate(`/time-capsule/${id}/edit`)}
-            className="bg-[#ff7d3c] text-white text-[16px] font-medium px-6 py-3 rounded-[10px] flex items-center gap-1.5 hover:bg-[#ff6b24] transition-colors"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2.25 12.9375V15.75H5.0625L13.3575 7.455L10.545 4.6425L2.25 12.9375ZM15.5325 5.28C15.825 4.9875 15.825 4.515 15.5325 4.2225L13.7775 2.4675C13.485 2.175 13.0125 2.175 12.72 2.4675L11.3475 3.84L14.16 6.6525L15.5325 5.28Z" fill="white"/>
-            </svg>
-            타임캡슐 수정하기
-          </button>
-        </div>
       </div>
 
       {/* 쪽지 전송 성공 모달 */}
@@ -606,9 +605,9 @@ export default function TimeCapsuleDetail() {
                 {/* 선택한 선물 정보 */}
                 <div className="bg-[#fff8ed] rounded-[12px] p-4 mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-[60px] h-[60px] bg-white rounded-[8px] flex items-center justify-center">
+                    <div className="w-[60px] h-[60px] bg-white rounded-[8px] flex items-center justify-center overflow-hidden">
                       {selectedGift.image ? (
-                        <img src={selectedGift.image} alt={selectedGift.name} className="w-[32px] h-[36px]" />
+                        <img src={selectedGift.image} alt={selectedGift.name} className="w-[40px] h-[40px] object-contain" />
                       ) : (
                         <span className="text-[12px] text-[#5f5f63] text-center">{selectedGift.name}</span>
                       )}
@@ -622,7 +621,8 @@ export default function TimeCapsuleDetail() {
 
                 {/* 메시지 입력 */}
                 <div className="mb-6">
-                  <label className="text-[14px] font-medium text-[#333] mb-2 block">함께 보낼 메시지</label>
+                  <label className="text-[14px] font-medium text-[#333] mb-1 block">함께 마음을 전할 메시지를 입력해주세요</label>
+                  <p className="text-[12px] text-[#ff7430] mb-2">오렌지하나가 출소후 큰힘이 됩니다.</p>
                   <textarea
                     value={giftMessage}
                     onChange={(e) => setGiftMessage(e.target.value)}
@@ -675,7 +675,7 @@ export default function TimeCapsuleDetail() {
                         : 'bg-[#ccc] text-white cursor-not-allowed'
                     }`}
                   >
-                    {selectedGift.price.toLocaleString()}P 결제하기
+                    오렌지 보내기
                   </button>
                 </div>
               </div>
@@ -701,9 +701,6 @@ export default function TimeCapsuleDetail() {
             <p className="text-[15px] text-[#666] leading-[1.5]">
               {selectedGift?.name} 선물이<br />
               타임캡슐에 담겼습니다.
-            </p>
-            <p className="text-[14px] text-[#ff7430] font-semibold">
-              차감 포인트: -{selectedGift?.price.toLocaleString()}P
             </p>
 
             {/* 버튼들 */}

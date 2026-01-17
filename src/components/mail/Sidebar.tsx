@@ -43,7 +43,7 @@ const foldersBottom = [
   { id: "spam" as FolderType, label: "스팸함", icon: AlertCircle, aboutPath: null },
   { id: "trash" as FolderType, label: "휴지통", icon: Trash2, aboutPath: null },
   { id: "orangetree" as FolderType, label: "오렌지 나무", icon: TreeDeciduous, aboutPath: "/about/orange-tree" },
-  { id: "timecapsule" as FolderType, label: "타임캡슐", icon: Clock, aboutPath: "/about/time-capsule" },
+  { id: "timecapsule" as FolderType, label: "타임캡슐", icon: Clock, aboutPath: null },
 ];
 
 // 고객 지원 메뉴

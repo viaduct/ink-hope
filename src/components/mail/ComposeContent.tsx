@@ -74,9 +74,23 @@ const steps: Step[] = [
   { id: 7, label: "결제", icon: <CreditCard className="w-4 h-4" /> },
 ];
 
+interface DraftData {
+  step: number;
+  recipientId?: string;
+  senderId?: string;
+  mailType?: string;
+  stationeryId?: string;
+  letterContent?: string;
+  photos?: Array<{ id: string; preview: string; rotation: number }>;
+  additionalItems?: string[];
+  savedAt: string;
+}
+
 interface ComposeContentProps {
   familyMembers: FamilyMember[];
   onClose: () => void;
+  draftData?: DraftData;
+  draftId?: string;
 }
 
 // 샘플 보내는 사람 데이터
@@ -101,9 +115,9 @@ const sampleSenders = [
   },
 ];
 
-export function ComposeContent({ familyMembers: propFamilyMembers, onClose }: ComposeContentProps) {
+export function ComposeContent({ familyMembers: propFamilyMembers, onClose, draftData, draftId }: ComposeContentProps) {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState<StepId>(1);
+  const [currentStep, setCurrentStep] = useState<StepId>((draftData?.step || 1) as StepId);
   
   // DB에서 가족 구성원 가져오기
   const { familyMembers: dbFamilyMembers } = useFamilyMembers();
@@ -136,24 +150,36 @@ export function ComposeContent({ familyMembers: propFamilyMembers, onClose }: Co
            member.color.includes('purple') ? 'bg-purple-500' : 'bg-primary',
   }));
   
-  // 받는 사람 선택 상태
-  const [selectedRecipientId, setSelectedRecipientId] = useState<string | null>(familyMembers[0]?.id || null);
-  const [selectedMailType, setSelectedMailType] = useState<MailType>("준등기우편");
-  
+  // 받는 사람 선택 상태 (임시저장 데이터가 있으면 복원)
+  const [selectedRecipientId, setSelectedRecipientId] = useState<string | null>(
+    draftData?.recipientId || familyMembers[0]?.id || null
+  );
+  const [selectedMailType, setSelectedMailType] = useState<MailType>(
+    (draftData?.mailType as MailType) || "준등기우편"
+  );
+
   // 보내는 사람 선택 상태
-  const [selectedSenderId, setSelectedSenderId] = useState<string | null>("1");
-  
+  const [selectedSenderId, setSelectedSenderId] = useState<string | null>(
+    draftData?.senderId || "1"
+  );
+
   // 편지지 선택 상태
-  const [selectedStationeryId, setSelectedStationeryId] = useState<string | null>("white");
-  
+  const [selectedStationeryId, setSelectedStationeryId] = useState<string | null>(
+    draftData?.stationeryId || "white"
+  );
+
   // 편지 내용 상태
-  const [letterContent, setLetterContent] = useState("");
-  
-  // 사진 상태
-  const [photos, setPhotos] = useState<Array<{ id: string; file: File; preview: string; rotation: number }>>([]);
-  
+  const [letterContent, setLetterContent] = useState(draftData?.letterContent || "");
+
+  // 사진 상태 (임시저장에서 복원 - File 객체는 복원 불가하므로 preview만 사용)
+  const [photos, setPhotos] = useState<Array<{ id: string; file: File; preview: string; rotation: number }>>(
+    draftData?.photos?.map(p => ({ ...p, file: new File([], 'draft-photo') })) || []
+  );
+
   // 추가 옵션 상태
-  const [selectedAdditionalItems, setSelectedAdditionalItems] = useState<string[]>([]);
+  const [selectedAdditionalItems, setSelectedAdditionalItems] = useState<string[]>(
+    draftData?.additionalItems || []
+  );
   
   // 모달 상태
   const [isAddRecipientModalOpen, setIsAddRecipientModalOpen] = useState(false);

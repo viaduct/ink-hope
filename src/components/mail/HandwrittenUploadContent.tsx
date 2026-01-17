@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { User, UserPlus, Loader2, Check, AlertCircle, Send, RotateCcw, ZoomIn, ZoomOut, PenLine, ChevronLeft, ChevronRight, ChevronDown, Archive, Plus, Trash2, ArrowUpDown } from "lucide-react";
+import { User, UserPlus, Loader2, Check, AlertCircle, Send, RotateCcw, ZoomIn, ZoomOut, PenLine, ChevronLeft, ChevronRight, ChevronDown, Archive, Plus, Trash2, ArrowUpDown, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,7 +40,7 @@ interface Recipient {
 interface HandwrittenUploadContentProps {
   onClose: () => void;
   onComposeWithText?: (text: string, senderName?: string) => void;
-  onSaveToInbox?: (data: { senderName: string; originalImage: string; ocrText: string }) => void;
+  onSaveToArchive?: () => void;
   onOpenArchive?: () => void;
 }
 
@@ -58,7 +58,7 @@ const facilitiesByRegion: Record<string, string[]> = {
   "제주": ["제주교도소"],
 };
 
-export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToInbox, onOpenArchive }: HandwrittenUploadContentProps) {
+export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToArchive, onOpenArchive }: HandwrittenUploadContentProps) {
   // 주소록 (받는 사람 목록) - 실제로는 서버에서 가져옴
   const [recipientAddressBook, setRecipientAddressBook] = useState<Recipient[]>([]);
   const [selectedRecipient, setSelectedRecipient] = useState<Recipient | null>(null);
@@ -84,6 +84,9 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [originalOrderImages, setOriginalOrderImages] = useState<UploadedImage[]>([]);
   const [reorderExitConfirmOpen, setReorderExitConfirmOpen] = useState(false);
+
+  // 도움말 토글
+  const [showUploadHelp, setShowUploadHelp] = useState(false);
 
   const [ocrStatus, setOcrStatus] = useState<"idle" | "processing" | "completed" | "error">("idle");
   const [ocrTexts, setOcrTexts] = useState<string[]>([]);
@@ -354,7 +357,7 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
     setDraggedItem(null);
   };
 
-  const handleSaveToInbox = () => {
+  const handleSaveToArchive = () => {
     if (!selectedRecipient) {
       toast.error("받는 사람을 선택해주세요.");
       return;
@@ -368,19 +371,10 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
       return;
     }
 
-    // Save all images and OCR results
-    const sortedImages = [...uploadedImages].sort((a, b) => a.order - b.order);
-
-    if (onSaveToInbox) {
-      onSaveToInbox({
-        senderName: selectedRecipient.name,
-        originalImage: sortedImages[0].preview,
-        ocrText: ocrTexts.join("\n\n---\n\n"),
-      });
+    // 손편지보관함에 저장하고 보관함으로 이동
+    if (onSaveToArchive) {
+      onSaveToArchive();
     }
-
-    toast.success("손편지가 보관함에 저장되었습니다.");
-    onClose();
   };
 
   const handleReplyLetter = () => {
@@ -421,11 +415,13 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
             <h2 className="text-2xl font-bold text-foreground mb-4">
               받은 <span className="text-primary">손편지</span>를 담아보세요
             </h2>
-            <p className="text-base text-muted-foreground leading-relaxed mb-6">
-              수기로 작성된 손편지를 사진으로 찍어 업로드하면, AI가 자동으로 글씨를 인식하여 텍스트로 변환해드립니다.
-              <br />
-              <span className="font-bold text-foreground">여러 장의 편지를 순서대로 등록</span>할 수 있으며, 드래그하여 순서를 변경할 수 있어요.
-            </p>
+            <div className="text-base text-muted-foreground leading-relaxed mb-6">
+              <p>
+                종이에 적어 받은 손편지를 휴대폰으로 사진 찍어 올리면,<br />
+                AI가 원본이미지 글씨를 인식해 글자로 옮겨드립니다.<br />
+                편지는 사진과 텍스트로 함께 <span className="text-primary font-medium">"손편지보관함"</span>으로 저장되어 언제든 다시 꺼내볼 수 있어요.
+              </p>
+            </div>
 
             {/* 손편지 보관함 버튼 - 오렌지색 */}
             <Button
@@ -611,12 +607,53 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
                     alt="편지 스캔 예시"
                     className="w-16 h-16 mx-auto mb-3 object-contain"
                   />
-                  <p className="text-sm font-medium text-foreground mb-1">
-                    손편지 이미지를 드래그하거나, 클릭하여 파일을 선택하세요
+                  <p className="text-base font-medium text-foreground mb-2">
+                    손편지 사진을 여기에 올려주세요
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    JPG · PNG · PDF 지원 (최대 10MB, 10장까지)
+                  <p className="text-sm text-muted-foreground mb-3">
+                    (최대 10장까지 가능해요)
                   </p>
+                  <p className="text-sm text-orange-600">
+                    휴대폰으로 찍은 사진도 괜찮아요
+                  </p>
+                </div>
+              )}
+
+              {/* 도움말 토글 */}
+              {uploadedImages.length === 0 && (
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowUploadHelp(!showUploadHelp)}
+                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    <span>사진 올리는 방법이 어려우신가요?</span>
+                    <ChevronDown className={cn(
+                      "w-4 h-4 transition-transform",
+                      showUploadHelp && "rotate-180"
+                    )} />
+                  </button>
+
+                  {showUploadHelp && (
+                    <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="space-y-3 text-sm text-muted-foreground">
+                        <p className="font-medium text-foreground mb-2">휴대폰 사진을 PC로 옮기는 방법</p>
+                        <div className="flex items-start gap-2">
+                          <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                          <p>휴대폰 카카오톡에서 <span className="font-medium text-foreground">"나에게 보내기"</span>로 손편지 사진을 전송하세요</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                          <p>PC 카카오톡에서 사진을 <span className="font-medium text-foreground">다운로드</span>하세요</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                          <p>위 주황색 네모 칸을 클릭해서 다운로드한 사진을 선택하세요</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -725,7 +762,7 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground ml-8 mt-2">
-                    작성되어온 손편지를 <span className="text-primary font-medium">텍스트 → 글씨</span>로 변환해드립니다. 인식된 텍스트는 <span className="text-primary font-medium">손편지 보관함</span>에 원본파일과 함께 저장됩니다.
+                    원본을 글자로 옮겨드렸어요. 내용이 맞는지 확인해보세요.
                   </p>
                 </div>
                 {ocrStatus === "processing" && (
@@ -831,7 +868,7 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
                     <div className="mt-6 pt-4 border-t border-border flex flex-col sm:flex-row gap-3">
                       <Button
                         variant="outline"
-                        onClick={handleSaveToInbox}
+                        onClick={handleSaveToArchive}
                         className="w-full sm:flex-1"
                         size="lg"
                       >
@@ -864,6 +901,14 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToI
               </div>
             </section>
           )}
+
+          {/* 하단 안내 메시지 */}
+          <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 text-center">
+            <p className="text-sm text-orange-800 leading-relaxed">
+              손편지는 시간이 지나면 잃어버리거나 훼손되기 쉽습니다.<br />
+              <span className="font-medium">지금 담아두면, 소중한 마음을 오래오래 간직할 수 있어요.</span>
+            </p>
+          </div>
 
           {/* 하단 취소 버튼 */}
           <div className="flex justify-end">

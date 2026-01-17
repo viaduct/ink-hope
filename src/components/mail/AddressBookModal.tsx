@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Plus, Pencil, Trash2, Check, User, Users } from "lucide-react";
+import { X, Plus, Pencil, Trash2, User, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,15 +12,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { FamilyMember } from "@/types/mail";
-import { 
-  facilities, 
-  regions, 
-  relationTypes, 
+import {
+  facilities,
+  regions,
   facilityTypeValues,
   type FacilityType,
   type Region,
-  type SavedAddress 
+  type SavedAddress
 } from "@/data/facilities";
+
+// AddRecipientModal과 동일한 관계 목록 사용
+const relations = ["아들", "딸", "남편", "아내", "아버지", "어머니", "형제", "자매", "친구", "기타"];
 
 interface AddressBookModalProps {
   isOpen: boolean;
@@ -273,7 +275,7 @@ export function AddressBookModal({
                           onChange={(e) =>
                             setEditForm({ ...editForm, name: e.target.value })
                           }
-                          placeholder="수용자 이름"
+                          placeholder="수용자이름"
                         />
 
                         {/* 관계 선택 */}
@@ -282,12 +284,12 @@ export function AddressBookModal({
                           onValueChange={(value) => setEditForm({ ...editForm, relation: value })}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="관계 선택" />
+                            <SelectValue placeholder="관계선택" />
                           </SelectTrigger>
                           <SelectContent>
-                            {relationTypes.map((relation) => (
-                              <SelectItem key={relation} value={relation}>
-                                {relation}
+                            {relations.map((rel) => (
+                              <SelectItem key={rel} value={rel}>
+                                {rel}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -303,7 +305,7 @@ export function AddressBookModal({
                             }}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="시설 유형" />
+                              <SelectValue placeholder="받는 곳" />
                             </SelectTrigger>
                             <SelectContent>
                               {facilityTypeValues.filter(t => t !== "일반 주소").map((type) => (
@@ -322,7 +324,7 @@ export function AddressBookModal({
                             }}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="지역 선택" />
+                              <SelectValue placeholder="지역선택" />
                             </SelectTrigger>
                             <SelectContent>
                               {regions.map((region) => (
@@ -348,7 +350,7 @@ export function AddressBookModal({
                             }}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="시설 선택" />
+                              <SelectValue placeholder="시설선택" />
                             </SelectTrigger>
                             <SelectContent>
                               {filteredFacilities.map((facility) => (
@@ -366,7 +368,7 @@ export function AddressBookModal({
                           onChange={(e) =>
                             setEditForm({ ...editForm, prisonerNumber: e.target.value })
                           }
-                          placeholder="수용자 번호 (예: 2024-12345)"
+                          placeholder="수용자번호 (예: 2024-12345)"
                         />
 
                         <div className="flex justify-end">
@@ -376,7 +378,7 @@ export function AddressBookModal({
                             onClick={handleSaveMemberEdit}
                             className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300"
                           >
-                            추가
+                            {member.name ? "저장" : "추가"}
                           </Button>
                         </div>
                       </div>

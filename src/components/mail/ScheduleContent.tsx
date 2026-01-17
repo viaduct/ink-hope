@@ -1,13 +1,14 @@
 import { useState, useMemo, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CalendarDays, ChevronLeft, ChevronRight, ChevronDown, Plus,
   MapPin, Car, Train, Clock, Info,
   Users, Home, Cake, Heart, Scale, GraduationCap, Activity,
-  Mail, X, Navigation, Hotel, CheckSquare, AlertCircle,
+  X, Navigation, Hotel, CheckSquare, AlertCircle,
   Edit3, Lightbulb, Camera, Smile, MessageCircle, Gift,
   Pencil, Save, Trash2, Building, Flag, Check,
-  Briefcase, FileText, Search, Phone, ExternalLink, Map, ChevronUp
+  Briefcase, FileText, Search, Phone, ExternalLink, Map, ChevronUp, Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,9 +16,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { specialDays, orangeTrees, familyMembers } from "@/data/mockData";
 import { toast } from "sonner";
+import ScheduleRegisterPage from "./ScheduleRegisterPage";
+import ScheduleDetailPage from "./ScheduleDetailPage";
+import ScheduleEditPage from "./ScheduleEditPage";
 
 // 일정 타입 정의
-interface ScheduleEvent {
+export interface ScheduleEvent {
   id: string;
   type: "special_day" | "letter_send" | "visit" | "custom";
   title: string;
@@ -42,8 +46,12 @@ const typeIcons: Record<string, typeof CalendarDays> = {
   program: GraduationCap,
   trial: Scale,
   health: Activity,
-  letter_send: Mail,
   other: Edit3,
+  // 타임캡슐 유형
+  release_celebration: Home,
+  parole_celebration: Sparkles,
+  birthday_celebration: Cake,
+  anniversary_celebration: Heart,
 };
 
 // 타입별 색상 매핑 (그레이 배경 + 오렌지 아이콘으로 통일)
@@ -57,32 +65,12 @@ const typeColors: Record<string, { color: string; bgColor: string }> = {
   program: { color: "text-orange-500", bgColor: "bg-gray-100" },
   trial: { color: "text-orange-500", bgColor: "bg-gray-100" },
   health: { color: "text-orange-500", bgColor: "bg-gray-100" },
-  letter_send: { color: "text-orange-500", bgColor: "bg-gray-100" },
   other: { color: "text-orange-500", bgColor: "bg-gray-100" },
-};
-
-// 매주 금요일 쪽지 발송일 생성
-const generateFridayLetterDays = (year: number, month: number): ScheduleEvent[] => {
-  const fridays: ScheduleEvent[] = [];
-  const date = new Date(year, month, 1);
-
-  while (date.getMonth() === month) {
-    if (date.getDay() === 5) { // 금요일
-      fridays.push({
-        id: `letter-${date.toISOString()}`,
-        type: "letter_send",
-        title: "쪽지 발송일",
-        date: date.toISOString().split("T")[0],
-        icon: Mail,
-        color: "text-orange-500",
-        bgColor: "bg-gray-100",
-        description: "매주 금요일 정기 발송",
-      });
-    }
-    date.setDate(date.getDate() + 1);
-  }
-
-  return fridays;
+  // 타임캡슐 유형
+  release_celebration: { color: "text-white", bgColor: "bg-green-500" },
+  parole_celebration: { color: "text-white", bgColor: "bg-purple-500" },
+  birthday_celebration: { color: "text-white", bgColor: "bg-pink-500" },
+  anniversary_celebration: { color: "text-white", bgColor: "bg-red-400" },
 };
 
 interface ScheduleContentProps {
@@ -100,12 +88,13 @@ interface FrequentPlace {
 }
 
 export function ScheduleContent({ onClose }: ScheduleContentProps) {
+  const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showDateDetail, setShowDateDetail] = useState<Date | null>(null); // 날짜 상세 화면
   const [showEventDetail, setShowEventDetail] = useState<ScheduleEvent | null>(null); // 일정 상세 보기
-  const [showEventEdit, setShowEventEdit] = useState<ScheduleEvent | null>(null); // 일정 수정
   const [showAddPage, setShowAddPage] = useState(false); // 일정 등록 페이지
+  const [showEventEditPage, setShowEventEditPage] = useState<ScheduleEvent | null>(null); // 일정 수정 페이지
   const [showPlaceModal, setShowPlaceModal] = useState<"home" | "custom" | null>(null);
   const [frequentPlaces, setFrequentPlaces] = useState<FrequentPlace[]>([]);
 
@@ -140,24 +129,178 @@ export function ScheduleContent({ onClose }: ScheduleContentProps) {
       });
     });
 
-    // 매주 금요일 쪽지 발송일
-    const fridayEvents = generateFridayLetterDays(year, month);
-    events.push(...fridayEvents);
+    // 1월 예시 일정들 (드롭다운 일정유형과 일치)
+    const januaryEvents: ScheduleEvent[] = [
+      {
+        id: "visit-2026-01-04",
+        type: "visit",
+        title: "일반접견",
+        date: "2026-01-04",
+        time: "10:00",
+        facility: "서울남부교도소",
+        facilityAddress: "서울특별시 금천구 시흥대로 439",
+        icon: Users,
+        color: "text-white",
+        bgColor: "bg-orange-500",
+      },
+      {
+        id: "consultation-2026-01-04",
+        type: "consultation",
+        title: "공식변호인접견",
+        date: "2026-01-04",
+        time: "14:00",
+        facility: "서울남부교도소",
+        icon: Briefcase,
+        color: "text-white",
+        bgColor: "bg-orange-400",
+      },
+      {
+        id: "visit-2026-01-08",
+        type: "visit",
+        title: "일반접견",
+        date: "2026-01-08",
+        time: "09:30",
+        facility: "수원구치소",
+        icon: Users,
+        color: "text-white",
+        bgColor: "bg-orange-500",
+      },
+      {
+        id: "special-2026-01-11",
+        type: "special_day",
+        title: "사건관련일",
+        date: "2026-01-11",
+        time: "14:00",
+        facility: "수원지방법원",
+        icon: Scale,
+        color: "text-white",
+        bgColor: "bg-orange-600",
+      },
+      {
+        id: "visit-2026-01-11",
+        type: "visit",
+        title: "일반접견",
+        date: "2026-01-11",
+        time: "10:00",
+        facility: "수원구치소",
+        icon: Users,
+        color: "text-white",
+        bgColor: "bg-orange-500",
+      },
+      {
+        id: "visit-2026-01-16",
+        type: "visit",
+        title: "일반접견",
+        date: "2026-01-16",
+        time: "10:30",
+        facility: "서울구치소",
+        icon: Users,
+        color: "text-white",
+        bgColor: "bg-orange-500",
+      },
+      {
+        id: "consultation-2026-01-19",
+        type: "consultation",
+        title: "공식변호인접견",
+        date: "2026-01-19",
+        time: "15:00",
+        facility: "수원구치소",
+        icon: Briefcase,
+        color: "text-white",
+        bgColor: "bg-orange-400",
+      },
+      {
+        id: "special-2026-01-23",
+        type: "special_day",
+        title: "사건관련일",
+        date: "2026-01-23",
+        time: "10:00",
+        facility: "서울중앙지방법원",
+        icon: Scale,
+        color: "text-white",
+        bgColor: "bg-orange-600",
+      },
+      {
+        id: "visit-2026-01-23",
+        type: "visit",
+        title: "일반접견",
+        date: "2026-01-23",
+        time: "14:00",
+        facility: "서울구치소",
+        icon: Users,
+        color: "text-white",
+        bgColor: "bg-orange-500",
+      },
+      {
+        id: "visit-2026-01-26",
+        type: "visit",
+        title: "일반접견",
+        date: "2026-01-26",
+        time: "09:00",
+        facility: "인천구치소",
+        icon: Users,
+        color: "text-white",
+        bgColor: "bg-orange-500",
+      },
+      {
+        id: "consultation-2026-01-29",
+        type: "consultation",
+        title: "공식변호인접견",
+        date: "2026-01-29",
+        time: "11:00",
+        facility: "서울남부교도소",
+        icon: Briefcase,
+        color: "text-white",
+        bgColor: "bg-orange-400",
+      },
+      {
+        id: "special-2026-01-31",
+        type: "special_day",
+        title: "사건관련일",
+        date: "2026-01-31",
+        time: "14:00",
+        facility: "수원지방법원",
+        icon: Scale,
+        color: "text-white",
+        bgColor: "bg-orange-600",
+      },
+      // 타임캡슐 일정
+      {
+        id: "release-2026-01-15",
+        type: "custom",
+        title: "출소 축하",
+        date: "2026-01-15",
+        personName: "김철수",
+        description: "출소 축하 일정",
+        icon: Home,
+        color: "text-white",
+        bgColor: "bg-green-500",
+      },
+      {
+        id: "birthday-2026-01-20",
+        type: "custom",
+        title: "생일 축하",
+        date: "2026-01-20",
+        personName: "김철수",
+        description: "생일 축하",
+        icon: Cake,
+        color: "text-white",
+        bgColor: "bg-pink-500",
+      },
+      {
+        id: "anniversary-2026-01-25",
+        type: "custom",
+        title: "기념일",
+        date: "2026-01-25",
+        personName: "김철수",
+        description: "결혼기념일",
+        icon: Heart,
+        color: "text-white",
+        bgColor: "bg-red-400",
+      },
+    ];
 
-    // 1월 3일 접견일 (D-DAY)
-    events.push({
-      id: "consultation-2026-01-03",
-      type: "consultation",
-      title: "접견일",
-      date: "2026-01-03",
-      time: "10:00",
-      facility: "서울남부교도소",
-      facilityAddress: "서울특별시 금천구 시흥대로 439",
-      icon: Briefcase,
-      color: "text-white",
-      bgColor: "bg-orange-500",
-      description: "D-DAY",
-    });
+    events.push(...januaryEvents);
 
     return events;
   }, [year, month]);
@@ -367,8 +510,7 @@ export function ScheduleContent({ onClose }: ScheduleContentProps) {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              setShowDateDetail(null);
-                              setShowEventEdit(event);
+                              toast.info("일정 수정 기능은 준비 중입니다.");
                             }}
                             className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                           >
@@ -403,18 +545,6 @@ export function ScheduleContent({ onClose }: ScheduleContentProps) {
                                 </div>
                               )}
 
-
-                              {/* 메모 */}
-                              {event.description && (
-                                <div className="flex items-start gap-3 py-4">
-                                  <Info className="w-5 h-5 text-orange-500 mt-0.5" />
-                                  <div>
-                                    <p className="text-sm text-muted-foreground">메모</p>
-                                    <p className="font-medium text-foreground">{event.description}</p>
-                                  </div>
-                                </div>
-                              )}
-
                               {/* 접견 안내 섹션 */}
                               {event.title.includes("접견") && (
                                 <ConsultationGuideSection facility={event.facility} />
@@ -439,39 +569,37 @@ export function ScheduleContent({ onClose }: ScheduleContentProps) {
     );
   }
 
-  // 일정 상세 페이지 (읽기 전용)
-  if (showEventDetail) {
+  // 일정 수정 페이지
+  if (showEventEditPage) {
     return (
-      <EventViewPage
-        event={showEventDetail}
-        onClose={() => setShowEventDetail(null)}
-        onEdit={() => {
-          setShowEventEdit(showEventDetail);
-          setShowEventDetail(null);
-        }}
-        onDelete={() => {
-          // 삭제 처리
-          toast.success("일정이 삭제되었습니다.");
-          setShowEventDetail(null);
+      <ScheduleEditPage
+        event={showEventEditPage}
+        onClose={() => setShowEventEditPage(null)}
+        onSave={(updatedEvent) => {
+          toast.success("일정이 수정되었습니다.");
+          setShowEventEditPage(null);
         }}
       />
     );
   }
 
-  // 일정 수정 페이지
-  if (showEventEdit) {
+  // 일정 상세 페이지 (읽기 전용)
+  if (showEventDetail) {
     return (
-      <EventEditPage
-        event={showEventEdit}
-        onClose={() => setShowEventEdit(null)}
-        onSave={(updatedEvent) => {
-          toast.success("일정이 수정되었습니다.");
-          setShowEventEdit(null);
+      <ScheduleDetailPage
+        event={showEventDetail}
+        onClose={() => setShowEventDetail(null)}
+        onEdit={() => {
+          setShowEventEditPage(showEventDetail);
+          setShowEventDetail(null);
         }}
-        frequentPlaces={frequentPlaces}
-        onOpenPlaceModal={(type) => {
-          setShowEventEdit(null);
-          setShowPlaceModal(type);
+        onDelete={() => {
+          toast.success("일정이 삭제되었습니다.");
+          setShowEventDetail(null);
+        }}
+        onNavigateToTimeCapsule={() => {
+          // 타임캡슐 상세 페이지의 쪽지작성 탭으로 이동
+          navigate("/time-capsule/1?tab=write");
         }}
       />
     );
@@ -480,12 +608,12 @@ export function ScheduleContent({ onClose }: ScheduleContentProps) {
   // 일정 등록 페이지
   if (showAddPage) {
     return (
-      <AddSchedulePage
+      <ScheduleRegisterPage
         onClose={() => setShowAddPage(false)}
-        frequentPlaces={frequentPlaces}
-        onOpenPlaceModal={(type) => {
+        initialDate={selectedDate || undefined}
+        onSave={(formData) => {
+          toast.success("일정이 등록되었습니다.");
           setShowAddPage(false);
-          setShowPlaceModal(type);
         }}
       />
     );
@@ -613,51 +741,62 @@ export function ScheduleContent({ onClose }: ScheduleContentProps) {
                   day.date.getFullYear() === selectedDate.getFullYear();
 
                 return (
-                  <button
+                  <div
                     key={index}
-                    onClick={() => {
-                      setSelectedDate(day.date);
-                      setShowDateDetail(day.date); // 날짜 상세 화면으로 전환
-                    }}
                     className={cn(
-                      "relative min-h-[80px] p-1 border-b border-r border-border/20 transition-colors",
+                      "relative min-h-[100px] p-1 pt-0.5 border-b border-r border-border/20 transition-colors",
                       !day.isCurrentMonth && "bg-muted/30",
                       day.isCurrentMonth && "hover:bg-muted/50",
                       isSelected && "bg-primary/10 ring-1 ring-primary",
                       isToday(day.date) && "bg-orange-50"
                     )}
                   >
-                    <span
-                      className={cn(
-                        "block text-sm font-medium mb-1",
-                        !day.isCurrentMonth && "text-muted-foreground/50",
-                        day.date.getDay() === 0 && "text-red-500",
-                        isToday(day.date) && "w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mx-auto"
-                      )}
+                    {/* 날짜 숫자 - 클릭 시 일정 없으면 등록 페이지로 */}
+                    <button
+                      onClick={() => {
+                        setSelectedDate(day.date);
+                        if (day.events.length === 0) {
+                          setShowAddPage(true);
+                        }
+                      }}
+                      className="w-full"
                     >
-                      {day.date.getDate()}
-                    </span>
-                    {/* 일정 표시 (최대 2개) */}
-                    <div className="space-y-0.5">
-                      {day.events.slice(0, 2).map((event) => (
-                        <div
+                      <span
+                        className={cn(
+                          "block text-sm font-medium",
+                          !day.isCurrentMonth && "text-muted-foreground/50",
+                          day.date.getDay() === 0 && "text-red-500",
+                          isToday(day.date) && "w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mx-auto"
+                        )}
+                      >
+                        {day.date.getDate()}
+                      </span>
+                    </button>
+                    {/* 일정 표시 (최대 3개) - 각 일정 클릭 시 바로 상세로 이동 */}
+                    <div className="space-y-0.5 mt-0.5">
+                      {day.events.slice(0, 3).map((event) => (
+                        <button
                           key={event.id}
+                          onClick={() => setShowEventDetail(event)}
                           className={cn(
-                            "text-[10px] px-1 py-0.5 rounded truncate",
+                            "w-full text-left text-[10px] px-1 py-0.5 rounded truncate hover:opacity-80 transition-opacity",
                             event.bgColor,
                             event.color
                           )}
                         >
                           {event.title}
-                        </div>
+                        </button>
                       ))}
-                      {day.events.length > 2 && (
-                        <div className="text-[10px] text-muted-foreground text-center">
-                          +{day.events.length - 2}
-                        </div>
+                      {day.events.length > 3 && (
+                        <button
+                          onClick={() => setShowDateDetail(day.date)}
+                          className="w-full text-[10px] text-muted-foreground text-center hover:text-foreground"
+                        >
+                          +{day.events.length - 3}
+                        </button>
                       )}
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -692,6 +831,62 @@ const nearbyAccommodations = [
   { id: 2, name: "역세권 모텔", distance: "1.8", image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=200&h=120&fit=crop" },
   { id: 3, name: "편안한 게스트하우스", distance: "3.1", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=200&h=120&fit=crop" },
 ];
+
+// 면회 준비물 체크리스트 (공통)
+const VISIT_CHECKLIST = [
+  { id: 1, text: "신분증 (주민등록증, 운전면허증)", checked: false },
+  { id: 2, text: "면회 신청서 (사전 작성)", checked: false },
+  { id: 3, text: "영치금 (필요시)", checked: false },
+  { id: 4, text: "편한 복장 착용", checked: false },
+  { id: 5, text: "휴대폰/전자기기 보관 준비", checked: false },
+];
+
+// 주변 숙박업소 데이터 (공통)
+const NEARBY_HOTELS = [
+  { name: "○○ 호텔", distance: "500m", price: "65,000원~", rating: 4.2 },
+  { name: "△△ 모텔", distance: "800m", price: "45,000원~", rating: 3.8 },
+  { name: "□□ 게스트하우스", distance: "1.2km", price: "35,000원~", rating: 4.0 },
+];
+
+// 교통편 정보 (공통)
+const TRANSPORT_INFO = {
+  publicTransport: "지하철 2호선 ○○역 3번 출구에서 도보 15분, 또는 버스 123번 이용",
+  car: "네비게이션 '○○교도소' 검색, 주차장 이용 가능 (무료)",
+  estimatedTime: "서울역 기준 약 1시간 30분 소요",
+};
+
+// 숙박 정보 카드 섹션 (공통 컴포넌트)
+function AccommodationCardsSection({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="bg-gray-50 rounded-xl p-4">
+      <h4 className="font-bold text-foreground">{title}</h4>
+      <p className="text-xs text-muted-foreground mt-1 mb-4">{description}</p>
+
+      <div className="flex gap-3 overflow-x-auto pb-2">
+        {nearbyAccommodations.map((acc) => (
+          <div key={acc.id} className="flex-shrink-0 w-40 bg-white rounded-lg overflow-hidden border border-border/40">
+            <div className="h-20 bg-gray-200">
+              <img src={acc.image} alt={acc.name} className="w-full h-full object-cover" />
+            </div>
+            <div className="p-2">
+              <p className="text-sm font-medium truncate">{acc.name}</p>
+              <p className="text-xs text-muted-foreground">교정시설 기준 약 {acc.distance}km</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button className="w-full mt-3 flex items-center justify-center gap-2 text-sm text-gray-600 font-medium py-2 border border-border/60 rounded-lg hover:bg-gray-100">
+        <Map className="w-4 h-4" />
+        지도에서 위치 확인
+      </button>
+
+      <p className="text-xs text-muted-foreground mt-3 text-center">
+        숙박 정보는 교정시설 위치 기준이며, 실제 이용 조건은 숙소별로 다를 수 있습니다.
+      </p>
+    </div>
+  );
+}
 
 // 접견 안내 섹션 컴포넌트
 function ConsultationGuideSection({ facility }: { facility?: string }) {
@@ -808,33 +1003,10 @@ function ConsultationGuideSection({ facility }: { facility?: string }) {
       </div>
 
       {/* 섹션 3: 숙박 정보 */}
-      <div className="bg-gray-50 rounded-xl p-4">
-        <h4 className="font-bold text-foreground">접견 일정으로 숙박이 필요한 경우</h4>
-        <p className="text-xs text-muted-foreground mt-1 mb-4">접견은 대기 시간이나 연속 일정으로 당일 이동이 어려울 수 있습니다.</p>
-
-        <div className="flex gap-3 overflow-x-auto pb-2">
-          {nearbyAccommodations.map((acc) => (
-            <div key={acc.id} className="flex-shrink-0 w-40 bg-white rounded-lg overflow-hidden border border-border/40">
-              <div className="h-20 bg-gray-200">
-                <img src={acc.image} alt={acc.name} className="w-full h-full object-cover" />
-              </div>
-              <div className="p-2">
-                <p className="text-sm font-medium truncate">{acc.name}</p>
-                <p className="text-xs text-muted-foreground">교정시설 기준 약 {acc.distance}km</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <button className="w-full mt-3 flex items-center justify-center gap-2 text-sm text-gray-600 font-medium py-2 border border-border/60 rounded-lg hover:bg-gray-100">
-          <Map className="w-4 h-4" />
-          지도에서 위치 확인
-        </button>
-
-        <p className="text-xs text-muted-foreground mt-3 text-center">
-          숙박 정보는 교정시설 위치 기준이며, 실제 이용 조건은 숙소별로 다를 수 있습니다.
-        </p>
-      </div>
+      <AccommodationCardsSection
+        title="접견 일정으로 숙박이 필요한 경우"
+        description="접견은 대기 시간이나 연속 일정으로 당일 이동이 어려울 수 있습니다."
+      />
     </div>
   );
 }
@@ -842,79 +1014,9 @@ function ConsultationGuideSection({ facility }: { facility?: string }) {
 // 면회 안내 섹션 컴포넌트
 function VisitGuideSection({ facility }: { facility?: string }) {
   const [isGuideExpanded, setIsGuideExpanded] = useState(false);
-  const [showWarmMessage, setShowWarmMessage] = useState(false);
 
   return (
     <div className="mt-6 pt-4 border-t border-border/40 space-y-4">
-      {/* 따뜻한 메시지 팝업 */}
-      <AnimatePresence>
-        {showWarmMessage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
-          >
-            {/* X 닫기 버튼 - 우측 상단 */}
-            <button
-              onClick={() => setShowWarmMessage(false)}
-              className="absolute top-6 right-6 p-2 text-white/80 hover:text-white"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-orange-50 rounded-2xl p-8 max-w-sm w-full text-center"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 1.2 }}
-                className="text-orange-600 leading-relaxed"
-              >
-                무슨 말을 해야 할지 고민되는 건<br />자연스러운 일입니다.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.5, duration: 1.2 }}
-                className="text-orange-600 leading-relaxed mt-4"
-              >
-                면회는 특별한 대화를 준비하지 않아도 괜찮습니다.<br />안부와 일상만 전해도 충분합니다.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 2.7, duration: 1.2 }}
-                className="text-orange-600 leading-relaxed mt-4"
-              >
-                잘하려고 가지 않아도 괜찮습니다.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 3.9, duration: 1.2 }}
-                className="text-orange-700 font-bold leading-relaxed mt-4"
-              >
-                와 있다는 것만으로도 충분합니다.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 5.1, duration: 0.8 }}
-                className="mt-8 text-sm text-orange-400"
-              >
-                - 투오렌지팀 일동 -
-              </motion.p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* 섹션 1: 핵심 안내 */}
       <div className="bg-orange-50 rounded-xl p-4">
         <button
@@ -938,47 +1040,16 @@ function VisitGuideSection({ facility }: { facility?: string }) {
                 교정시설별 규정과 재소자 상태에 따라 제한될 수 있습니다.<br />
                 방문 전 면회 가능 여부와 신분증 지참 여부를 꼭 확인하세요.
               </p>
-
-              <button
-                onClick={() => setShowWarmMessage(true)}
-                className="w-full flex items-center justify-between text-sm text-orange-600 font-medium py-3 px-4 bg-orange-100 rounded-lg"
-              >
-                <span>면회는 시험이 아니라 잠시 얼굴을 마주하는 시간입니다</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
       {/* 섹션 2: 숙박 정보 */}
-      <div className="bg-gray-50 rounded-xl p-4">
-        <h4 className="font-bold text-foreground">이 장소 근처에서 머물러야 한다면</h4>
-        <p className="text-xs text-muted-foreground mt-1 mb-4">면회 일정은 이동 거리와 시간에 따라 하루 일정이 크게 달라질 수 있습니다.</p>
-
-        <div className="flex gap-3 overflow-x-auto pb-2">
-          {nearbyAccommodations.map((acc) => (
-            <div key={acc.id} className="flex-shrink-0 w-40 bg-white rounded-lg overflow-hidden border border-border/40">
-              <div className="h-20 bg-gray-200">
-                <img src={acc.image} alt={acc.name} className="w-full h-full object-cover" />
-              </div>
-              <div className="p-2">
-                <p className="text-sm font-medium truncate">{acc.name}</p>
-                <p className="text-xs text-muted-foreground">교정시설 기준 약 {acc.distance}km</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <button className="w-full mt-3 flex items-center justify-center gap-2 text-sm text-gray-600 font-medium py-2 border border-border/60 rounded-lg hover:bg-gray-100">
-          <Map className="w-4 h-4" />
-          지도에서 위치 확인
-        </button>
-
-        <p className="text-xs text-muted-foreground mt-3 text-center">
-          숙박 정보는 교정시설 위치 기준이며, 실제 이용 조건은 숙소별로 다를 수 있습니다.
-        </p>
-      </div>
+      <AccommodationCardsSection
+        title="이 장소 근처에서 머물러야 한다면"
+        description="면회 일정은 이동 거리와 시간에 따라 하루 일정이 크게 달라질 수 있습니다."
+      />
     </div>
   );
 }
@@ -1062,19 +1133,6 @@ function EventViewPage({ event, onClose, onEdit, onDelete }: {
               </div>
             )}
 
-            {/* 메모 */}
-            {event.description && (
-              <div className="flex items-start gap-4 py-4 border-t border-border/40">
-                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-                  <Info className="w-5 h-5 text-orange-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">메모</p>
-                  <p className="font-medium text-foreground">{event.description}</p>
-                </div>
-              </div>
-            )}
-
             {/* 하단 버튼: 삭제, 수정 */}
             <div className="flex gap-3 pt-4 border-t border-border/40">
               <Button
@@ -1123,594 +1181,6 @@ const prisonsByRegionData: Record<string, string[]> = {
   "제주": ["제주교도소"]
 };
 
-function EventEditPage({ event, onClose, onSave, frequentPlaces, onOpenPlaceModal }: {
-  event: ScheduleEvent;
-  onClose: () => void;
-  onSave?: (updatedEvent: ScheduleEvent) => void;
-  frequentPlaces: FrequentPlace[];
-  onOpenPlaceModal: (type: "home" | "custom") => void;
-}) {
-  // 일정 유형 매핑
-  const getScheduleTypeFromEvent = (event: ScheduleEvent): string => {
-    if (event.type === "special_day" && event.facility) return "visit";
-    if (event.title.includes("면회")) return "visit";
-    if (event.title.includes("접견")) return "consultation";
-    if (event.title.includes("출소")) return "release";
-    if (event.title.includes("생일")) return "birthday";
-    if (event.title.includes("기념일")) return "anniversary";
-    if (event.title.includes("재판")) return "trial";
-    if (event.title.includes("쪽지")) return "letter";
-    if (event.title.includes("교육")) return "program";
-    if (event.title.includes("건강")) return "health";
-    return "other";
-  };
-
-  const [selectedType, setSelectedType] = useState(getScheduleTypeFromEvent(event));
-  const [customTitle, setCustomTitle] = useState(event.title);
-  const [startDate, setStartDate] = useState(event.date);
-  const [startTime, setStartTime] = useState("9:00");
-  const [startAmPm, setStartAmPm] = useState<"AM" | "PM">("AM");
-  const [endDate, setEndDate] = useState(event.date); // 종료일도 시작일과 동일하게 초기화
-  const [endTime, setEndTime] = useState("10:00");
-  const [endAmPm, setEndAmPm] = useState<"AM" | "PM">("AM");
-  const [memo, setMemo] = useState(event.description || "");
-  const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
-  // 기존 장소 정보가 있으면 locationMode를 자동 설정
-  const [locationMode, setLocationMode] = useState<"search" | "prison" | "recipient" | null>(
-    event.facility ? "prison" : event.facilityAddress ? "search" : null
-  );
-  const [searchAddress, setSearchAddress] = useState(event.facilityAddress || "");
-  const [selectedPrison, setSelectedPrison] = useState(event.facility || "");
-  const [selectedRegion, setSelectedRegion] = useState("");
-  const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
-  const [showAddressPopup, setShowAddressPopup] = useState(false);
-  const [addressType, setAddressType] = useState<"road" | "jibun">("road");
-  const [addressSearchQuery, setAddressSearchQuery] = useState("");
-  const [addressSearchResults, setAddressSearchResults] = useState<Array<{
-    roadAddress: string;
-    jibunAddress: string;
-    buildingName: string;
-    zipCode: string;
-  }>>([]);
-  const [hasSearched, setHasSearched] = useState(false);
-
-  const scheduleTypes = [
-    { id: "visit", label: "면회", icon: Users },
-    { id: "consultation", label: "변호사접견", icon: Briefcase },
-    { id: "trial", label: "재판일", icon: Scale },
-    { id: "letter", label: "쪽지발송", icon: FileText },
-    { id: "release", label: "출소", icon: Home },
-    { id: "birthday", label: "생일", icon: Cake },
-    { id: "anniversary", label: "기념일", icon: Heart },
-    { id: "program", label: "교육", icon: GraduationCap },
-    { id: "health", label: "건강", icon: Activity },
-    { id: "other", label: "기타", icon: Edit3 },
-  ];
-
-  const prisons = selectedRegion ? (prisonsByRegionData[selectedRegion] || []) : [];
-
-  const handleTypeClick = (typeId: string, label: string) => {
-    setSelectedType(typeId);
-    setCustomTitle(label);
-    setLocationMode(null);
-    setSelectedPlace(null);
-    setSelectedRegion("");
-  };
-
-  const handleAddressSearch = () => {
-    if (!addressSearchQuery.trim()) return;
-    setHasSearched(true);
-    setAddressSearchResults([
-      {
-        roadAddress: "서울특별시 종로구 세종대로 209 정부서울청사(행정자치부, 여성가족부 등)",
-        jibunAddress: "서울특별시 종로구 세종로 77-6",
-        buildingName: "정부서울청사",
-        zipCode: "03171"
-      }
-    ]);
-  };
-
-  const handleSelectAddress = (result: { roadAddress: string; jibunAddress: string; zipCode: string }) => {
-    const address = addressType === "road" ? result.roadAddress : result.jibunAddress;
-    setSearchAddress(address);
-    setShowAddressPopup(false);
-    setAddressSearchQuery("");
-    setAddressSearchResults([]);
-    setHasSearched(false);
-  };
-
-  const showLocationSection = selectedType === "visit" || selectedType === "consultation" || selectedType === "trial" || selectedType === "letter" || selectedType === "release";
-
-  const handleSave = () => {
-    const finalTitle = selectedType === "other" ? customTitle : scheduleTypes.find(t => t.id === selectedType)?.label || customTitle;
-    if (!finalTitle.trim()) {
-      toast.error("제목을 입력해주세요.");
-      return;
-    }
-    if (!startDate) {
-      toast.error("날짜를 선택해주세요.");
-      return;
-    }
-
-    const updatedEvent: ScheduleEvent = {
-      ...event,
-      title: finalTitle,
-      date: startDate,
-    };
-
-    onSave?.(updatedEvent);
-    onClose();
-  };
-
-  const isFormValid = (selectedType === "other" ? customTitle.trim() : selectedType) && startDate;
-
-  return (
-    <div className="flex-1 flex flex-col h-full bg-white overflow-hidden">
-      {/* Header */}
-      <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center px-6">
-        <button
-          onClick={onClose}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" />
-          <span className="text-sm">취소</span>
-        </button>
-      </header>
-
-      {/* Content */}
-      <div className="flex-1 overflow-auto px-4 py-6 lg:px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 lg:p-8 space-y-6">
-            <h2 className="text-xl font-bold text-foreground">일정을 수정하세요.</h2>
-
-            {/* 일정 유형 선택 */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">일정 유형</label>
-              {/* 아이콘+라벨 칩 */}
-              <div className="flex flex-wrap gap-2">
-                {scheduleTypes.map((type) => {
-                  const Icon = type.icon;
-                  const isSelected = selectedType === type.id;
-                  return (
-                    <button
-                      key={type.id}
-                      onClick={() => handleTypeClick(type.id, type.id === "other" ? "" : type.label)}
-                      className={cn(
-                        "flex items-center gap-1.5 px-3 py-2 rounded-full border-2 transition-all text-sm",
-                        isSelected
-                          ? "border-orange-400 bg-orange-50"
-                          : "border-border/60 hover:border-orange-200 bg-white"
-                      )}
-                    >
-                      <Icon className={cn("w-4 h-4", isSelected ? "text-orange-500" : "text-gray-500")} />
-                      <span className={cn("font-medium", isSelected ? "text-orange-600" : "text-gray-600")}>
-                        {type.id === "other" ? "직접입력" : type.label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              {/* 기타(직접입력) 선택 시 인풋 표시 */}
-              {selectedType === "other" && (
-                <input
-                  type="text"
-                  placeholder="일정 제목을 입력하세요"
-                  value={customTitle}
-                  onChange={(e) => setCustomTitle(e.target.value)}
-                  className="w-full h-12 px-3 text-sm border border-border/60 rounded-xl focus:border-orange-400 focus:outline-none"
-                  autoFocus
-                />
-              )}
-            </div>
-
-            {/* 날짜 및 시간 선택 */}
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-                <CalendarDays className="w-4 h-4 text-orange-500" />
-                날짜 및 시간
-              </label>
-
-              {/* 시작 날짜/시간 */}
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <select
-                    value={startDate ? startDate.split("-")[0] : ""}
-                    onChange={(e) => {
-                      const year = e.target.value;
-                      const month = startDate ? startDate.split("-")[1] : "01";
-                      const day = startDate ? startDate.split("-")[2] : "01";
-                      const newDate = `${year}-${month}-${day}`;
-                      setStartDate(newDate);
-                      if (!endDate) setEndDate(newDate);
-                    }}
-                    className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
-                  >
-                    <option value="">연도</option>
-                    {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
-                      <option key={year} value={year}>{year}년</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
-                <div className="relative flex-1">
-                  <select
-                    value={startDate ? startDate.split("-")[1] : ""}
-                    onChange={(e) => {
-                      const year = startDate ? startDate.split("-")[0] : new Date().getFullYear().toString();
-                      const month = e.target.value;
-                      const day = startDate ? startDate.split("-")[2] : "01";
-                      const newDate = `${year}-${month}-${day}`;
-                      setStartDate(newDate);
-                      if (!endDate) setEndDate(newDate);
-                    }}
-                    className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
-                  >
-                    <option value="">월</option>
-                    {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((month) => (
-                      <option key={month} value={month}>{parseInt(month)}월</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
-                <div className="relative flex-1">
-                  <select
-                    value={startDate ? startDate.split("-")[2] : ""}
-                    onChange={(e) => {
-                      const year = startDate ? startDate.split("-")[0] : new Date().getFullYear().toString();
-                      const month = startDate ? startDate.split("-")[1] : "01";
-                      const day = e.target.value;
-                      const newDate = `${year}-${month}-${day}`;
-                      setStartDate(newDate);
-                      if (!endDate) setEndDate(newDate);
-                    }}
-                    className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
-                  >
-                    <option value="">일</option>
-                    {Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0")).map((day) => (
-                      <option key={day} value={day}>{parseInt(day)}일</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
-                <div className="relative w-[130px]">
-                  <select
-                    value={`${startAmPm} ${startTime}`}
-                    onChange={(e) => {
-                      const [ampm, time] = e.target.value.split(" ");
-                      setStartAmPm(ampm as "AM" | "PM");
-                      setStartTime(time);
-                    }}
-                    className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
-                  >
-                    {["AM", "PM"].map((ampm) =>
-                      Array.from({ length: 12 }, (_, h) => h + 1).map((hour) =>
-                        ["00", "15", "30", "45"].map((min) => (
-                          <option key={`start-${ampm}-${hour}-${min}`} value={`${ampm} ${hour}:${min}`}>
-                            {ampm === "AM" ? "오전" : "오후"} {hour}:{min}
-                          </option>
-                        ))
-                      )
-                    )}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* 변호사접견 팁 */}
-              {selectedType === "consultation" && (
-                <p className="text-sm text-orange-500">
-                  <span className="font-medium">[오렌지Tip]</span> 접견이 시작되기전 최소 30분안에 도착해주시는게 좋아요!
-                </p>
-              )}
-            </div>
-
-            {/* 장소 섹션 - 조건부 표시 */}
-            {showLocationSection && (
-              <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-                  <MapPin className="w-4 h-4 text-orange-500" />
-                  {selectedType === "trial" ? "재판장소" : "위치"}
-                </label>
-
-                {/* 장소 입력 방식 선택 */}
-                <div className="flex gap-2">
-                  {(selectedType === "visit" || selectedType === "letter" || selectedType === "consultation" || selectedType === "release") && (
-                    <button
-                      onClick={() => setLocationMode("prison")}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
-                        locationMode === "prison"
-                          ? "border-orange-400 bg-orange-50 text-orange-700"
-                          : "border-border/60 hover:border-orange-200 text-foreground"
-                      )}
-                    >
-                      <Building className="w-4 h-4" />
-                      <span>교도소 선택</span>
-                    </button>
-                  )}
-                  {(selectedType === "visit" || selectedType === "letter" || selectedType === "release") && (
-                    <button
-                      onClick={() => setLocationMode("recipient")}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
-                        locationMode === "recipient"
-                          ? "border-orange-400 bg-orange-50 text-orange-700"
-                          : "border-border/60 hover:border-orange-200 text-foreground"
-                      )}
-                    >
-                      <Users className="w-4 h-4" />
-                      <span>수신자 불러오기</span>
-                    </button>
-                  )}
-                  {selectedType === "trial" && (
-                    <button
-                      onClick={() => setLocationMode("court")}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-sm",
-                        locationMode === "court"
-                          ? "border-orange-400 bg-orange-50 text-orange-700"
-                          : "border-border/60 hover:border-orange-200 text-foreground"
-                      )}
-                    >
-                      <Scale className="w-4 h-4" />
-                      <span>재판장소 선택</span>
-                    </button>
-                  )}
-                </div>
-
-                {/* 교도소 선택 */}
-                {locationMode === "prison" && (
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <select
-                        value={selectedRegion}
-                        onChange={(e) => {
-                          setSelectedRegion(e.target.value);
-                          setSelectedPrison("");
-                        }}
-                        className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
-                      >
-                        <option value="">지역 선택</option>
-                        {regionsData.map((region) => (
-                          <option key={region} value={region}>{region}</option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                    </div>
-                    <div className="relative flex-1">
-                      <select
-                        value={selectedPrison}
-                        onChange={(e) => setSelectedPrison(e.target.value)}
-                        className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
-                        disabled={!selectedRegion}
-                      >
-                        <option value="">교도소/구치소 선택</option>
-                        {prisons.map((prison) => (
-                          <option key={prison} value={prison}>{prison}</option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                    </div>
-                  </div>
-                )}
-
-                {/* 수신자 불러오기 */}
-                {locationMode === "recipient" && (
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap gap-2">
-                      {familyMembers.map((member) => (
-                        <button
-                          key={member.id}
-                          onClick={() => setSelectedRecipient(selectedRecipient === member.id ? null : member.id)}
-                          className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all text-sm",
-                            selectedRecipient === member.id
-                              ? "border-orange-400 bg-orange-50 text-orange-700"
-                              : "border-border/60 hover:border-orange-200 text-foreground"
-                          )}
-                        >
-                          <span className="font-medium">{member.name}</span>
-                          <span className="text-xs text-muted-foreground">({member.facility})</span>
-                          {selectedRecipient === member.id && (
-                            <Check className="w-4 h-4 text-orange-500" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                    {selectedRecipient && (
-                      <p className="text-xs text-muted-foreground pl-1">
-                        선택됨: {familyMembers.find(m => m.id === selectedRecipient)?.facilityAddress}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* 재판장소 선택 */}
-                {locationMode === "court" && (
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <select
-                        value={selectedRegion}
-                        onChange={(e) => {
-                          setSelectedRegion(e.target.value);
-                          setSelectedPrison("");
-                        }}
-                        className="w-full h-12 px-3 pr-8 text-sm border border-border/60 rounded-xl bg-white appearance-none"
-                      >
-                        <option value="">지역 선택</option>
-                        {regionsData.map((region) => (
-                          <option key={region} value={region}>{region}</option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                    </div>
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        placeholder="재판장소 입력 (예: 서울중앙지방법원)"
-                        className="w-full h-12 px-3 text-sm border border-border/60 rounded-xl bg-white"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* 하단 버튼: 취소, 저장 */}
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="flex-1 h-12 font-bold text-base"
-                onClick={onClose}
-              >
-                취소
-              </Button>
-              <Button
-                className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-bold text-base"
-                disabled={!isFormValid}
-                onClick={handleSave}
-              >
-                저장
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 주소 검색 팝업 */}
-      <AnimatePresence>
-        {showAddressPopup && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center"
-          >
-            <div
-              className="absolute inset-0 bg-black/60"
-              onClick={() => {
-                setShowAddressPopup(false);
-                setAddressSearchQuery("");
-                setAddressSearchResults([]);
-                setHasSearched(false);
-              }}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative z-10 w-full max-w-xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden"
-            >
-              {/* 탭 헤더 */}
-              <div className="flex border-b-2 border-gray-200">
-                <button
-                  onClick={() => setAddressType("road")}
-                  className={cn(
-                    "flex-1 py-4 text-center font-medium transition-colors",
-                    addressType === "road"
-                      ? "text-red-500 border-b-2 border-red-500 -mb-[2px]"
-                      : "text-gray-500 hover:text-gray-700"
-                  )}
-                >
-                  도로명주소
-                </button>
-                <button
-                  onClick={() => setAddressType("jibun")}
-                  className={cn(
-                    "flex-1 py-4 text-center font-medium transition-colors",
-                    addressType === "jibun"
-                      ? "text-red-500 border-b-2 border-red-500 -mb-[2px]"
-                      : "text-gray-500 hover:text-gray-700"
-                  )}
-                >
-                  지번주소
-                </button>
-              </div>
-
-              {/* 검색 안내 */}
-              <div className="px-6 py-4 border-b border-gray-100">
-                <p className="text-center text-gray-700">
-                  도로명과 건물번호를 입력해 주세요. (예: 영동대로 502)
-                </p>
-                <p className="text-center text-sm text-gray-500 mt-1">
-                  · 도로명주소 확인하기: <a href="https://www.juso.go.kr" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">www.juso.go.kr</a>
-                </p>
-              </div>
-
-              {/* 검색 입력 */}
-              <div className="px-6 py-4">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="주소를 입력하세요"
-                    value={addressSearchQuery}
-                    onChange={(e) => setAddressSearchQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleAddressSearch()}
-                    className="flex-1 h-12 px-4 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                  />
-                  <button
-                    onClick={handleAddressSearch}
-                    className="px-6 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                  >
-                    검색
-                  </button>
-                </div>
-              </div>
-
-              {/* 검색 결과 */}
-              <div className="px-6 pb-6 max-h-[300px] overflow-y-auto">
-                {hasSearched && addressSearchResults.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    검색 결과가 없습니다.
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {addressSearchResults.map((result, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleSelectAddress(result)}
-                        className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
-                      >
-                        <div className="flex items-start gap-2">
-                          <span className="px-2 py-0.5 bg-blue-100 text-blue-600 text-xs rounded">
-                            {addressType === "road" ? "도로명" : "지번"}
-                          </span>
-                          <div className="flex-1">
-                            <p className="font-medium text-gray-900">
-                              {addressType === "road" ? result.roadAddress : result.jibunAddress}
-                            </p>
-                            <p className="text-sm text-gray-500 mt-1">
-                              [지번] {result.jibunAddress}
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* 닫기 버튼 */}
-              <div className="px-6 pb-6">
-                <button
-                  onClick={() => {
-                    setShowAddressPopup(false);
-                    setAddressSearchQuery("");
-                    setAddressSearchResults([]);
-                    setHasSearched(false);
-                  }}
-                  className="w-full h-12 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  닫기
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 // PC용 오른쪽 패널 컴포넌트
 function EventDetailPanel({ event, onSave, onDelete }: {
@@ -1725,13 +1195,11 @@ function EventDetailPanel({ event, onSave, onDelete }: {
   // 수정용 상태
   const [editTitle, setEditTitle] = useState(event.title);
   const [editDate, setEditDate] = useState(event.date);
-  const [editDescription, setEditDescription] = useState(event.description || "");
 
   // event가 변경되면 편집 상태 초기화
   useMemo(() => {
     setEditTitle(event.title);
     setEditDate(event.date);
-    setEditDescription(event.description || "");
     setIsEditing(false);
   }, [event.id]);
 
@@ -1756,7 +1224,6 @@ function EventDetailPanel({ event, onSave, onDelete }: {
       ...event,
       title: editTitle,
       date: editDate,
-      description: editDescription,
     };
 
     onSave?.(updatedEvent);
@@ -1774,34 +1241,10 @@ function EventDetailPanel({ event, onSave, onDelete }: {
   const handleCancelEdit = () => {
     setEditTitle(event.title);
     setEditDate(event.date);
-    setEditDescription(event.description || "");
     setIsEditing(false);
   };
 
   const isVisitEvent = event.type === "special_day" && event.facility;
-
-  // 면회 준비물 체크리스트
-  const visitChecklist = [
-    { id: 1, text: "신분증 (주민등록증, 운전면허증)", checked: false },
-    { id: 2, text: "면회 신청서 (사전 작성)", checked: false },
-    { id: 3, text: "영치금 (필요시)", checked: false },
-    { id: 4, text: "편한 복장 착용", checked: false },
-    { id: 5, text: "휴대폰/전자기기 보관 준비", checked: false },
-  ];
-
-  // 주변 숙박업소 예시 데이터
-  const nearbyHotels = [
-    { name: "○○ 호텔", distance: "500m", price: "65,000원~", rating: 4.2 },
-    { name: "△△ 모텔", distance: "800m", price: "45,000원~", rating: 3.8 },
-    { name: "□□ 게스트하우스", distance: "1.2km", price: "35,000원~", rating: 4.0 },
-  ];
-
-  // 교통편 정보
-  const transportInfo = {
-    publicTransport: "지하철 2호선 ○○역 3번 출구에서 도보 15분, 또는 버스 123번 이용",
-    car: "네비게이션 '○○교도소' 검색, 주차장 이용 가능 (무료)",
-    estimatedTime: "서울역 기준 약 1시간 30분 소요",
-  };
 
   return (
     <div className="h-full flex flex-col bg-white">
@@ -1859,26 +1302,6 @@ function EventDetailPanel({ event, onSave, onDelete }: {
             />
           ) : (
             <p className="font-semibold text-foreground">{event.date}</p>
-          )}
-        </div>
-
-        {/* 설명/메모 */}
-        <div className="space-y-2">
-          <h4 className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5" />
-            메모
-          </h4>
-          {isEditing ? (
-            <Textarea
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-              placeholder="메모를 입력하세요..."
-              className="min-h-[80px] text-sm bg-white border-orange-200 focus:border-orange-400 resize-none"
-            />
-          ) : (
-            <p className="text-sm text-foreground bg-muted/50 rounded-xl p-3">
-              {event.description || "메모 없음"}
-            </p>
           )}
         </div>
 
@@ -1965,14 +1388,14 @@ function EventDetailPanel({ event, onSave, onDelete }: {
                       <Train className="w-3.5 h-3.5 text-orange-500 mt-0.5" />
                       <div>
                         <p className="text-[11px] font-medium text-foreground">대중교통</p>
-                        <p className="text-[11px] text-muted-foreground">{transportInfo.publicTransport}</p>
+                        <p className="text-[11px] text-muted-foreground">{TRANSPORT_INFO.publicTransport}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
                       <Car className="w-3.5 h-3.5 text-orange-500 mt-0.5" />
                       <div>
                         <p className="text-[11px] font-medium text-foreground">자가용</p>
-                        <p className="text-[11px] text-muted-foreground">{transportInfo.car}</p>
+                        <p className="text-[11px] text-muted-foreground">{TRANSPORT_INFO.car}</p>
                       </div>
                     </div>
                   </div>
@@ -1995,7 +1418,7 @@ function EventDetailPanel({ event, onSave, onDelete }: {
                 </button>
                 {expandedSection === "hotel" && (
                   <div className="p-3 bg-white border-t border-gray-200 space-y-1.5">
-                    {nearbyHotels.map((hotel, idx) => (
+                    {NEARBY_HOTELS.map((hotel, idx) => (
                       <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                         <div>
                           <p className="text-xs font-medium text-foreground">{hotel.name}</p>
@@ -2024,7 +1447,7 @@ function EventDetailPanel({ event, onSave, onDelete }: {
                 </button>
                 {expandedSection === "checklist" && (
                   <div className="p-3 bg-white border-t border-gray-200 space-y-1">
-                    {visitChecklist.map((item) => (
+                    {VISIT_CHECKLIST.map((item) => (
                       <label key={item.id} className="flex items-center gap-2 p-1.5 hover:bg-gray-50 rounded cursor-pointer">
                         <input type="checkbox" className="w-3.5 h-3.5 rounded border-orange-300 text-orange-500 focus:ring-orange-500" />
                         <span className="text-xs text-foreground">{item.text}</span>
@@ -2056,13 +1479,11 @@ function EventDetailSection({ event, onClose, onSave, onDelete }: {
   // 수정용 상태
   const [editTitle, setEditTitle] = useState(event.title);
   const [editDate, setEditDate] = useState(event.date);
-  const [editDescription, setEditDescription] = useState(event.description || "");
 
   // event가 변경되면 편집 상태 초기화
   useMemo(() => {
     setEditTitle(event.title);
     setEditDate(event.date);
-    setEditDescription(event.description || "");
     setIsEditing(false);
   }, [event.id]);
 
@@ -2087,7 +1508,6 @@ function EventDetailSection({ event, onClose, onSave, onDelete }: {
       ...event,
       title: editTitle,
       date: editDate,
-      description: editDescription,
     };
 
     onSave?.(updatedEvent);
@@ -2105,34 +1525,10 @@ function EventDetailSection({ event, onClose, onSave, onDelete }: {
   const handleCancelEdit = () => {
     setEditTitle(event.title);
     setEditDate(event.date);
-    setEditDescription(event.description || "");
     setIsEditing(false);
   };
 
   const isVisitEvent = event.type === "special_day" && event.facility;
-
-  // 면회 준비물 체크리스트
-  const visitChecklist = [
-    { id: 1, text: "신분증 (주민등록증, 운전면허증)", checked: false },
-    { id: 2, text: "면회 신청서 (사전 작성)", checked: false },
-    { id: 3, text: "영치금 (필요시)", checked: false },
-    { id: 4, text: "편한 복장 착용", checked: false },
-    { id: 5, text: "휴대폰/전자기기 보관 준비", checked: false },
-  ];
-
-  // 주변 숙박업소 예시 데이터
-  const nearbyHotels = [
-    { name: "○○ 호텔", distance: "500m", price: "65,000원~", rating: 4.2 },
-    { name: "△△ 모텔", distance: "800m", price: "45,000원~", rating: 3.8 },
-    { name: "□□ 게스트하우스", distance: "1.2km", price: "35,000원~", rating: 4.0 },
-  ];
-
-  // 교통편 정보
-  const transportInfo = {
-    publicTransport: "지하철 2호선 ○○역 3번 출구에서 도보 15분, 또는 버스 123번 이용",
-    car: "네비게이션 '○○교도소' 검색, 주차장 이용 가능 (무료)",
-    estimatedTime: "서울역 기준 약 1시간 30분 소요",
-  };
 
   return (
     <div className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden">
@@ -2201,26 +1597,6 @@ function EventDetailSection({ event, onClose, onSave, onDelete }: {
                 />
               ) : (
                 <p className="text-lg font-semibold text-foreground">{event.date}</p>
-              )}
-            </div>
-
-            {/* 메모 */}
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Info className="w-4 h-4" />
-                메모
-              </h4>
-              {isEditing ? (
-                <Textarea
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                  placeholder="메모를 입력하세요..."
-                  className="min-h-[100px] bg-white border-orange-200 focus:border-orange-400 resize-none"
-                />
-              ) : (
-                <p className="text-foreground bg-muted/50 rounded-xl p-4">
-                  {event.description || "메모 없음"}
-                </p>
               )}
             </div>
 
@@ -2311,19 +1687,19 @@ function EventDetailSection({ event, onClose, onSave, onDelete }: {
                         <Train className="w-4 h-4 text-orange-500 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-foreground">대중교통</p>
-                          <p className="text-xs text-muted-foreground">{transportInfo.publicTransport}</p>
+                          <p className="text-xs text-muted-foreground">{TRANSPORT_INFO.publicTransport}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2">
                         <Car className="w-4 h-4 text-orange-500 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-foreground">자가용</p>
-                          <p className="text-xs text-muted-foreground">{transportInfo.car}</p>
+                          <p className="text-xs text-muted-foreground">{TRANSPORT_INFO.car}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                         <Clock className="w-4 h-4 text-orange-500" />
-                        <p className="text-xs text-muted-foreground">{transportInfo.estimatedTime}</p>
+                        <p className="text-xs text-muted-foreground">{TRANSPORT_INFO.estimatedTime}</p>
                       </div>
                     </div>
                   )}
@@ -2340,13 +1716,13 @@ function EventDetailSection({ event, onClose, onSave, onDelete }: {
                     </div>
                     <div className="flex-1 text-left">
                       <p className="font-medium text-foreground text-sm">주변 숙박업소</p>
-                      <p className="text-xs text-muted-foreground">{nearbyHotels.length}개 업소 추천</p>
+                      <p className="text-xs text-muted-foreground">{NEARBY_HOTELS.length}개 업소 추천</p>
                     </div>
                     <ChevronRight className={cn("w-4 h-4 text-muted-foreground transition-transform", expandedSection === "hotel" && "rotate-90")} />
                   </button>
                   {expandedSection === "hotel" && (
                     <div className="p-4 bg-white border-t border-gray-200 space-y-2">
-                      {nearbyHotels.map((hotel, idx) => (
+                      {NEARBY_HOTELS.map((hotel, idx) => (
                         <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div>
                             <p className="text-sm font-medium text-foreground">{hotel.name}</p>
@@ -2370,13 +1746,13 @@ function EventDetailSection({ event, onClose, onSave, onDelete }: {
                     </div>
                     <div className="flex-1 text-left">
                       <p className="font-medium text-foreground text-sm">준비물 체크리스트</p>
-                      <p className="text-xs text-muted-foreground">{visitChecklist.length}개 항목</p>
+                      <p className="text-xs text-muted-foreground">{VISIT_CHECKLIST.length}개 항목</p>
                     </div>
                     <ChevronRight className={cn("w-4 h-4 text-muted-foreground transition-transform", expandedSection === "checklist" && "rotate-90")} />
                   </button>
                   {expandedSection === "checklist" && (
                     <div className="p-4 bg-white border-t border-gray-200 space-y-2">
-                      {visitChecklist.map((item) => (
+                      {VISIT_CHECKLIST.map((item) => (
                         <label key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
                           <input type="checkbox" className="w-4 h-4 rounded border-orange-300 text-orange-500 focus:ring-orange-500" />
                           <span className="text-sm text-foreground">{item.text}</span>

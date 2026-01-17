@@ -309,9 +309,13 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
           </div>
           {/* 발송 완료 표시 */}
           {photo.sentTo && (
-            <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-              <Check className="w-3 h-3" />
-              <span>{photo.sentTo}님에게 발송완료</span>
+            <div className="flex items-center gap-1.5 text-xs text-gray-600 bg-gray-100 px-2.5 py-1.5 rounded-[17px]">
+              <div className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" className="text-gray-500">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
+                </svg>
+              </div>
+              <span>발송 1회</span>
             </div>
           )}
         </motion.div>
@@ -348,9 +352,13 @@ export function GalleryContent({ onClose }: GalleryContentProps) {
 
         {/* 발송 완료 표시 */}
         {photo.sentTo && (
-          <div className="absolute bottom-2 left-2 right-2 flex items-center gap-1 text-xs text-white bg-green-600/90 px-2 py-1.5 rounded-lg">
-            <Check className="w-3 h-3 flex-shrink-0" />
-            <span className="truncate">{photo.sentTo}님에게 발송완료</span>
+          <div className="absolute bottom-2 left-2 flex items-center gap-1.5 text-xs text-white bg-black/50 px-2.5 py-1.5 rounded-[17px]">
+            <div className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" className="text-gray-600">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
+              </svg>
+            </div>
+            <span>발송 1회</span>
           </div>
         )}
 

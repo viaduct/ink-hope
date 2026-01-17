@@ -75,6 +75,21 @@ export interface Mail {
   status?: MailStatus;
   isHandwritten?: boolean;
   originalImage?: string;
+  // 임시저장 관련 필드
+  draftData?: DraftData;
+}
+
+// 임시저장 데이터
+export interface DraftData {
+  step: number;
+  recipientId?: string;
+  senderId?: string;
+  mailType?: string;
+  stationeryId?: string;
+  letterContent?: string;
+  photos?: Array<{ id: string; preview: string; rotation: number }>;
+  additionalItems?: string[];
+  savedAt: string;
 }
 
 export type MailStatus = "편지발송완료" | "접수완료" | "동봉시작" | "우체국 접수" | "우체국 발송완료";

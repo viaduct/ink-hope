@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Loader2, Check } from "lucide-react";
+import { Loader2, User, Users, Building2, MapPin, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -93,102 +93,142 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg p-6">
-        <DialogHeader className="pb-4">
-          <DialogTitle className="text-lg font-semibold">수신자 등록</DialogTitle>
+      <DialogContent className="sm:max-w-lg p-0 gap-0">
+        {/* Header */}
+        <DialogHeader className="p-6 pb-4 border-b border-gray-100">
+          <DialogTitle className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+              <User className="w-5 h-5 text-orange-500" />
+            </div>
+            <span className="text-lg font-semibold">받는 사람 추가</span>
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          {/* 수용자이름 */}
-          <Input
-            placeholder="수용자이름"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="h-12 text-base border-gray-200"
-          />
+        {/* Form */}
+        <div className="p-6 space-y-5">
+          {/* 이름 */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5">
+              <User className="w-4 h-4 text-orange-400" />
+              <span className="text-sm font-medium text-foreground">이름</span>
+              <span className="text-orange-500">*</span>
+            </div>
+            <Input
+              placeholder="받는 분 이름을 입력하세요"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="h-12 text-base border-gray-200"
+            />
+          </div>
 
-          {/* 수용자번호 */}
-          <Input
-            placeholder="수용자번호 (예: 2024-12345)"
-            value={prisonerNumber}
-            onChange={(e) => setPrisonerNumber(e.target.value)}
-            className="h-12 text-base border-gray-200"
-          />
-
-          {/* 관계선택 */}
-          <Select value={relation} onValueChange={setRelation}>
-            <SelectTrigger className="h-12 text-base border-gray-200">
-              <SelectValue placeholder="관계선택" />
-            </SelectTrigger>
-            <SelectContent className="bg-white z-50">
-              {relations.map((rel) => (
-                <SelectItem key={rel} value={rel}>
-                  {rel}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* 받는 곳 + 지역선택 (나란히) */}
-          <div className="flex gap-3">
-            <Select value={facilityType} onValueChange={handleFacilityTypeChange}>
-              <SelectTrigger className="flex-1 h-12 text-base border-gray-200">
-                <SelectValue placeholder="받는 곳" />
+          {/* 관계 */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5">
+              <Users className="w-4 h-4 text-orange-400" />
+              <span className="text-sm font-medium text-foreground">관계</span>
+              <span className="text-orange-500">*</span>
+            </div>
+            <Select value={relation} onValueChange={setRelation}>
+              <SelectTrigger className="h-12 text-base border-gray-200">
+                <SelectValue placeholder="관계를 선택하세요" />
               </SelectTrigger>
               <SelectContent className="bg-white z-50">
-                {facilityTypes.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={region} onValueChange={handleRegionChange}>
-              <SelectTrigger className="flex-1 h-12 text-base border-gray-200">
-                <SelectValue placeholder="지역선택" />
-              </SelectTrigger>
-              <SelectContent className="bg-white z-50">
-                {regions.map((reg) => (
-                  <SelectItem key={reg} value={reg}>
-                    {reg}
+                {relations.map((rel) => (
+                  <SelectItem key={rel} value={rel}>
+                    {rel}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
+          {/* 시설 정보 */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5">
+              <Building2 className="w-4 h-4 text-orange-400" />
+              <span className="text-sm font-medium text-foreground">시설 종류</span>
+              <span className="text-orange-500">*</span>
+            </div>
+            <div className="flex gap-2">
+              <Select value={facilityType} onValueChange={handleFacilityTypeChange}>
+                <SelectTrigger className="flex-1 h-12 text-base border-gray-200">
+                  <SelectValue placeholder="시설 유형" />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  {facilityTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={region} onValueChange={handleRegionChange}>
+                <SelectTrigger className="flex-1 h-12 text-base border-gray-200">
+                  <SelectValue placeholder="지역 선택" />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  {regions.map((reg) => (
+                    <SelectItem key={reg} value={reg}>
+                      {reg}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* 시설선택 - 지역과 받는 곳 선택 후 표시 */}
           {region && facilityType && availableFacilities.length > 0 && (
-            <Select value={selectedFacility} onValueChange={setSelectedFacility}>
-              <SelectTrigger className="h-12 text-base border-gray-200">
-                <SelectValue placeholder="시설선택" />
-              </SelectTrigger>
-              <SelectContent className="bg-white z-50">
-                {availableFacilities.map((fac) => (
-                  <SelectItem key={fac.name} value={fac.name}>
-                    {fac.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-orange-400" />
+                <span className="text-sm font-medium text-foreground">시설 선택</span>
+              </div>
+              <Select value={selectedFacility} onValueChange={setSelectedFacility}>
+                <SelectTrigger className="h-12 text-base border-gray-200">
+                  <SelectValue placeholder="시설을 선택하세요" />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  {availableFacilities.map((fac) => (
+                    <SelectItem key={fac.name} value={fac.name}>
+                      {fac.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
+
+          {/* 수용자번호 */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5">
+              <Hash className="w-4 h-4 text-orange-400" />
+              <span className="text-sm font-medium text-foreground">수용자번호</span>
+            </div>
+            <Input
+              placeholder="수용자번호를 입력하세요 (예: 2024-12345)"
+              value={prisonerNumber}
+              onChange={(e) => setPrisonerNumber(e.target.value)}
+              className="h-12 text-base border-gray-200"
+            />
+          </div>
         </div>
 
-        {/* 버튼 */}
-        <div className="flex justify-end gap-3 mt-6">
+        {/* Buttons */}
+        <div className="flex gap-3 p-6 pt-2">
           <Button
             variant="outline"
+            className="flex-1 h-12 text-base border-gray-200"
             onClick={() => onOpenChange(false)}
             disabled={isCreating}
-            className="px-6 border-gray-300"
           >
             취소
           </Button>
           <Button
+            className="flex-1 h-12 text-base bg-orange-400 hover:bg-orange-500 text-white"
             onClick={handleSubmit}
             disabled={!isValid || isCreating}
-            className="px-6 bg-orange-500 hover:bg-orange-600"
           >
             {isCreating ? (
               <>
@@ -196,10 +236,7 @@ export function AddRecipientModal({ open, onOpenChange, onSuccess }: AddRecipien
                 등록 중...
               </>
             ) : (
-              <>
-                <Check className="w-4 h-4 mr-2" />
-                확인
-              </>
+              "추가하기"
             )}
           </Button>
         </div>

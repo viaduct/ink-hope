@@ -270,6 +270,21 @@ export const mockMails: Mail[] = [
     isRead: true,
     isNew: false,
     folder: "draft",
+    draftData: {
+      step: 3,
+      recipientId: "1",
+      senderId: "1",
+      mailType: "준등기우편",
+      stationeryId: "white",
+      letterContent: `여보, 오늘 면회 다녀왔어요.
+
+아이들이 아빠 만나서 너무 좋아했어요. 막내가 아빠 손잡고 안 놓으려고 해서 가슴이 아팠어요.
+
+다음에 또 면회 갈게요. 건강히 지내고 있어요.`,
+      photos: [],
+      additionalItems: [],
+      savedAt: "2024-01-16T10:30:00Z",
+    },
   },
   // 중요편지함 (archive)
   {
