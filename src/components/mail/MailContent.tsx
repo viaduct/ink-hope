@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Image, Reply, Bookmark, ChevronLeft, ChevronRight, Printer, Download, Star, Trash2, Mail as MailIcon, Send, Calendar, Pencil, Truck, FileEdit, Forward, AlertTriangle, FolderInput, MoreHorizontal, RefreshCw, Eye, EyeOff, ReplyAll, Gift } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,8 +16,123 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Mail, FolderType, FamilyMember } from "@/types/mail";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from "framer-motion";
 import { toast } from "sonner";
+
+// 스와이프 가능한 메일 아이템 컴포넌트 (모바일용)
+interface SwipeableMailItemProps {
+  mail: Mail;
+  onSelect: () => void;
+  onDelete: () => void;
+  onSpam: () => void;
+  onMove: () => void;
+  onToggleRead: () => void;
+  activeFolder: FolderType;
+}
+
+function SwipeableMailItem({ mail, onSelect, onDelete, onSpam, onMove, onToggleRead, activeFolder }: SwipeableMailItemProps) {
+  const x = useMotionValue(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // 왼쪽 스와이프: 삭제 (빨간색)
+  const leftBgOpacity = useTransform(x, [-150, -50, 0], [1, 0.5, 0]);
+  // 오른쪽 스와이프: 읽음/안읽음 (파란색)
+  const rightBgOpacity = useTransform(x, [0, 50, 150], [0, 0.5, 1]);
+
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    setIsDragging(false);
+    const threshold = 100;
+
+    if (info.offset.x < -threshold) {
+      // 왼쪽 스와이프 - 삭제
+      onDelete();
+    } else if (info.offset.x > threshold) {
+      // 오른쪽 스와이프 - 읽음/안읽음 토글
+      onToggleRead();
+    }
+  };
+
+  return (
+    <div className="relative overflow-hidden">
+      {/* 왼쪽 배경 (삭제) */}
+      <motion.div
+        className="absolute inset-y-0 right-0 w-full bg-red-500 flex items-center justify-end px-6"
+        style={{ opacity: leftBgOpacity }}
+      >
+        <Trash2 className="w-6 h-6 text-white" />
+      </motion.div>
+
+      {/* 오른쪽 배경 (읽음 토글) */}
+      <motion.div
+        className="absolute inset-y-0 left-0 w-full bg-blue-500 flex items-center justify-start px-6"
+        style={{ opacity: rightBgOpacity }}
+      >
+        {mail.isRead ? <EyeOff className="w-6 h-6 text-white" /> : <Eye className="w-6 h-6 text-white" />}
+      </motion.div>
+
+      {/* 메일 아이템 */}
+      <motion.div
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.2}
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={handleDragEnd}
+        style={{ x }}
+        onClick={() => !isDragging && onSelect()}
+        className="relative bg-card px-4 py-3 cursor-pointer active:bg-secondary/50"
+      >
+        <div className="flex items-center gap-3">
+          {/* 중요편지 별표 */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="p-1 rounded hover:bg-secondary transition-colors flex-shrink-0"
+          >
+            <Star className={cn(
+              "w-4 h-4 transition-colors",
+              mail.isImportant
+                ? "fill-yellow-400 text-yellow-400"
+                : "text-muted-foreground/50"
+            )} />
+          </button>
+
+          {/* 발신자명 */}
+          <span
+            className={cn(
+              "text-sm w-20 flex-shrink-0 truncate",
+              mail.isRead ? "font-medium text-foreground/80" : "font-semibold text-foreground"
+            )}
+          >
+            {mail.sender.name}
+          </span>
+
+          {/* 제목 */}
+          <p
+            className={cn(
+              "text-sm flex-1 min-w-0 truncate",
+              mail.isRead ? "font-medium text-foreground/80" : "font-semibold text-foreground"
+            )}
+          >
+            {mail.subject}
+          </p>
+
+          {/* 보낸편지함 진행상태 */}
+          {activeFolder === "sent" && mail.status && (
+            <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full flex-shrink-0">
+              {mail.status}
+            </span>
+          )}
+
+          {/* 날짜 */}
+          <span className="text-xs text-muted-foreground flex-shrink-0">
+            {mail.date}
+          </span>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 interface MailContentProps {
   mails: Mail[];
@@ -62,6 +178,7 @@ export function MailContent({
   onEditAddressBook,
   onEditDraft,
 }: MailContentProps) {
+  const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [selectedMailIds, setSelectedMailIds] = useState<Set<string>>(new Set());
   const [spamReportOpen, setSpamReportOpen] = useState(false);
@@ -201,7 +318,8 @@ export function MailContent({
                 </div>
               )}
 
-              {/* Action Toolbar - 전체/읽지않음 탭 바로 위 */}
+              {/* Action Toolbar - 데스크톱에서만 표시 */}
+              {!isMobile && (
               <div className="h-12 border-b border-border bg-muted/30 flex items-center justify-between px-4">
                 <div className="flex items-center gap-1">
                   {/* 전체선택 체크박스 */}
@@ -287,6 +405,7 @@ export function MailContent({
                   </button>
                 </div>
               </div>
+              )}
 
               {/* Tabs */}
               <div className="px-6 py-3 border-b border-border flex items-center gap-6">
@@ -318,6 +437,32 @@ export function MailContent({
               <div className="flex-1 overflow-y-auto scrollbar-thin">
                 <div className="divide-y divide-border">
                   {sortedMails.map((mail) => (
+                    isMobile ? (
+                      <SwipeableMailItem
+                        key={mail.id}
+                        mail={mail}
+                        activeFolder={activeFolder}
+                        onSelect={() => {
+                          if (activeFolder === 'draft' && onEditDraft) {
+                            onEditDraft(mail);
+                          } else {
+                            onSelectMail(mail);
+                          }
+                        }}
+                        onDelete={() => {
+                          onMoveToFolder?.(mail.id, "trash");
+                          toast.success("편지가 삭제되었습니다");
+                        }}
+                        onSpam={() => {
+                          onMoveToFolder?.(mail.id, "spam");
+                          toast.success("스팸으로 이동되었습니다");
+                        }}
+                        onMove={() => {}}
+                        onToggleRead={() => {
+                          toast.success(mail.isRead ? "읽지않음으로 표시되었습니다" : "읽음으로 표시되었습니다");
+                        }}
+                      />
+                    ) : (
                     <div
                       key={mail.id}
                       onClick={() => {
@@ -406,6 +551,7 @@ export function MailContent({
                         </span>
                       </div>
                     </div>
+                    )
                   ))}
                 </div>
               </div>

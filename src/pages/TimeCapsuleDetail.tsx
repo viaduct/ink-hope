@@ -155,7 +155,6 @@ export default function TimeCapsuleDetail() {
     { id: "write", label: "쪽지 작성하기" },
     { id: "status", label: "타임캡슐 현황" },
     { id: "gift", label: "선물하기" },
-    { id: "prepare", label: "준비하기" },
   ];
 
   // 무한 롤링을 위해 메시지 복제
@@ -223,26 +222,27 @@ export default function TimeCapsuleDetail() {
 
       <div className="h-full overflow-auto bg-muted/30 relative">
         {/* Header */}
-        <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-6">
+        <header className="h-14 border-b border-border/40 bg-white/80 backdrop-blur-sm flex items-center justify-between px-3 md:px-6">
           <button
             onClick={() => navigate("/time-capsule")}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="text-sm">타임캡슐로 돌아가기</span>
+            <span className="text-sm hidden md:inline">타임캡슐로 돌아가기</span>
           </button>
-          <div className="flex items-center gap-4">
-            <span className="text-[#ff7430] text-[14px] font-semibold">
+          <div className="flex items-center gap-2 md:gap-4">
+            <span className="text-[#ff7430] text-[13px] md:text-[14px] font-semibold">
               전달일: {capsule.targetDate}
             </span>
             <button
               onClick={() => navigate(`/time-capsule/${id}/edit`)}
-              className="bg-[#ff7d3c] text-white text-[14px] font-medium px-4 py-2 rounded-[8px] flex items-center gap-1.5 hover:bg-[#ff6b24] transition-colors"
+              className="bg-[#ff7d3c] text-white text-[13px] md:text-[14px] font-medium px-3 md:px-4 py-1.5 md:py-2 rounded-[8px] flex items-center gap-1 md:gap-1.5 hover:bg-[#ff6b24] transition-colors"
             >
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-4 h-4 hidden md:block" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.25 12.9375V15.75H5.0625L13.3575 7.455L10.545 4.6425L2.25 12.9375ZM15.5325 5.28C15.825 4.9875 15.825 4.515 15.5325 4.2225L13.7775 2.4675C13.485 2.175 13.0125 2.175 12.72 2.4675L11.3475 3.84L14.16 6.6525L15.5325 5.28Z" fill="white"/>
               </svg>
-              타임캡슐 수정하기
+              <span className="md:hidden">수정</span>
+              <span className="hidden md:inline">타임캡슐 수정하기</span>
             </button>
           </div>
         </header>
@@ -262,12 +262,12 @@ export default function TimeCapsuleDetail() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-3 mb-8 flex-wrap justify-center">
+          <div className="flex gap-2 mb-8 w-full max-w-[491px]">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-8 py-2.5 rounded-full text-[16px] transition-all ${
+                className={`flex-1 py-2.5 rounded-full text-[14px] md:text-[16px] transition-all ${
                   activeTab === tab.id
                     ? 'bg-[#ff7512] text-white font-semibold'
                     : 'bg-white border border-[#e4e4e4] text-[#767676]'
