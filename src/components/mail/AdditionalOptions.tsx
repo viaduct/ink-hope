@@ -11,6 +11,10 @@ interface AdditionalItem {
   description: string;
   isNew?: boolean;
   previewContent?: string;
+  price?: number;
+  image?: string;
+  isGift?: boolean;
+  hidden?: boolean;
 }
 
 const additionalItems: AdditionalItem[] = [
@@ -71,6 +75,26 @@ const additionalItems: AdditionalItem[] = [
     description: "10가지 테마별 질문",
     previewContent: "서로를 더 깊이 알아갈 수 있는 100가지 질문 카드입니다. 가족, 추억, 미래 등 다양한 테마로 구성되어 있습니다.",
   },
+  {
+    id: "coffee-gift",
+    icon: "☕",
+    title: "커피 한잔 하자",
+    description: "추운 겨울날 커피한잔하자",
+    previewContent: "날씨도 추운데, 매일 같이 가던 카페에서 커피한잔하기 딱 좋은날이네. 조금이나마 도움이되었으면 좋겠어",
+    price: 5000,
+    image: "/present-coffee-thumbnail.png",
+    isGift: true,
+  },
+  {
+    id: "orange-gift",
+    icon: "🍊",
+    title: "오렌지 선물",
+    description: "오늘은 닿지 않아도, 그날을 위해 남겨두는 마음",
+    previewContent: "지금 맺어주는 오렌지는 출소 후 새로운 하루를 시작하는 데 쓰일 수 있는 준비가 됩니다.",
+    price: 10000,
+    image: "/present-orange-thumbnail.png",
+    isGift: true,
+  },
 ];
 
 interface AdditionalOptionsProps {
@@ -107,7 +131,7 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
       <div className="bg-card rounded-xl lg:rounded-3xl p-4 lg:p-6 shadow-md lg:shadow-lg border border-border/50 space-y-4 lg:space-y-6">
         {/* 아이템 그리드 */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4">
-          {additionalItems.map((item) => {
+          {additionalItems.filter((item) => !item.hidden).map((item) => {
             const isSelected = selectedItems.includes(item.id);
             
             return (
@@ -139,10 +163,16 @@ export function AdditionalOptions({ selectedItems, onSelectedItemsChange }: Addi
                   </motion.div>
                 )}
 
-                {/* 아이콘 */}
-                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-card flex items-center justify-center text-2xl lg:text-3xl mb-2 lg:mb-4">
-                  {item.icon}
-                </div>
+                {/* 아이콘/이미지 */}
+                {item.image ? (
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-[#fff8ed] flex items-center justify-center mb-2 lg:mb-4 overflow-hidden">
+                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-card flex items-center justify-center text-2xl lg:text-3xl mb-2 lg:mb-4">
+                    {item.icon}
+                  </div>
+                )}
 
                 {/* 내용 */}
                 <h3 className="font-semibold text-foreground mb-0.5 lg:mb-1 text-xs lg:text-base">{item.title}</h3>

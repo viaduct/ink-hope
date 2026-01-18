@@ -95,10 +95,15 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                           transition={{ duration: 0.2 }}
-                          whileHover={{ y: -4, boxShadow: "0px 4px 50px 0px rgba(0,0,0,0.12)" }}
+                          whileHover={{ y: -4, boxShadow: "0px 4px 50px 0px rgba(255, 116, 48, 0.25)" }}
                           onClick={() => navigate(`/time-capsule/${capsule.id}`)}
-                          className="w-[290px] bg-white border border-[#f8f8f8] rounded-[20px] shadow-[0px_1px_40px_0px_rgba(0,0,0,0.09)] px-5 py-[30px] cursor-pointer transition-shadow"
+                          className="relative w-[290px] bg-white border border-[#f8f8f8] rounded-[20px] shadow-[0px_1px_40px_0px_rgba(0,0,0,0.09)] px-5 py-[30px] cursor-pointer transition-shadow"
                         >
+                          {/* 예시카드 배지 */}
+                          <span className="absolute top-3 right-3 text-[10px] text-[#666] bg-[#f0f0f0] px-1.5 pt-0.5 pb-[5px] rounded">
+                            예시카드
+                          </span>
+
                           {/* D-Day & Message */}
                           <div className="flex gap-3 items-start">
                             <div className="bg-[#ff7430] rounded-[4px] px-2 py-1.5 flex flex-col items-center justify-center flex-shrink-0">

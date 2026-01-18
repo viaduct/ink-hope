@@ -75,35 +75,20 @@ interface GiftCard {
 const giftCards: GiftCard[] = [
   {
     id: "coffee",
-    category: "가볍게 툭",
+    category: "커피 한잔 하자",
     name: "스타벅스 커피쿠폰",
     price: 5500,
-    description: "예시 메시지",
-    exampleMessage: "날씨도 추운데, 매일 같이 가던 카페에서\n커피한잔하기 딱 좋은날이네",
-  },
-  {
-    id: "gukbap",
-    category: "밥한번 사줄게요",
-    name: "국밥 한그릇",
-    price: 9000,
-    description: "예시 메시지",
-    exampleMessage: "밥한번 같이 먹고싶다. 나와서 맛있는 국밥 먹으러가자. 기다리고있으마. 힘내자",
-  },
-  {
-    id: "chimaek",
-    category: "같이 쓰는 약속형",
-    name: "치맥",
-    price: 25000,
-    description: "예시 메시지",
-    exampleMessage: "이맘때쯤 너랑 우리집에서 치맥하면서\n밤새 술마신거 생각난다! 나오면 맥주한잔하자 친구야",
+    description: "추운 겨울날 커피한잔하자",
+    exampleMessage: "날씨도 추운데, 매일 같이 가던 카페에서\n커피한잔하기 딱 좋은날이네\n조금이나마 도움이되었으면 좋겠어",
+    image: "/present-coffee-thumbnail.png",
   },
   {
     id: "orange",
     category: "오렌지 나무",
     name: "오렌지",
     price: 10000,
-    description: "그날을 위해 남겨두는 마음",
-    exampleMessage: "하나 선물하면 마이페이지\n내 선물내역에서 확인할 수 있어요.",
+    description: "오늘은 닿지 않아도, 그날을 위해 남겨두는 마음",
+    exampleMessage: "지금 맺어주는 오렌지는 출소 후 새로운 하루를 시작하는 데 쓰일 수 있는 준비가 됩니다.",
     image: "/present-orange-thumbnail.png",
   },
 ];
@@ -392,9 +377,23 @@ export default function TimeCapsuleDetail() {
                     </div>
 
                     {/* Stats */}
-                    <div className="flex items-center justify-center gap-5 mt-8">
-                      <span className="text-black text-[16px] font-medium tracking-[-0.32px]">🧡 쪽지: {capsule.letterCount}개</span>
-                      <span className="text-black text-[16px] font-medium tracking-[-0.32px]">🧡 선물: {capsule.giftCount}개</span>
+                    <div className="flex items-center justify-center gap-8 mt-8">
+                      {/* 쪽지 */}
+                      <div className="flex items-center gap-2">
+                        <img src="/iconletter.png" alt="쪽지" className="w-[32px] h-[32px]" />
+                        <span className="text-[#333] text-[16px] font-semibold tracking-[-0.32px]">쪽지</span>
+                        <span className="bg-[#ff7430] text-white text-[13px] font-bold px-2.5 py-0.5 rounded-full min-w-[24px] text-center">
+                          {capsule.letterCount}
+                        </span>
+                      </div>
+                      {/* 선물 */}
+                      <div className="flex items-center gap-2">
+                        <img src="/icongift.png" alt="선물" className="w-[32px] h-[32px]" />
+                        <span className="text-[#333] text-[16px] font-semibold tracking-[-0.32px]">선물</span>
+                        <span className="bg-[#ff7430] text-white text-[13px] font-bold px-2.5 py-0.5 rounded-full min-w-[24px] text-center">
+                          {capsule.giftCount}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -415,7 +414,12 @@ export default function TimeCapsuleDetail() {
                   <div className="bg-white border border-t-0 border-[#d4d4d4] rounded-b-[20px] p-6 flex-1 overflow-y-auto h-[400px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                     <div className="flex flex-col gap-6">
                       {/* Message 1 */}
-                      <div className="flex gap-2">
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="flex gap-2"
+                      >
                         <div className="w-[46px] h-[46px] rounded-full border border-[#ff7430] bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
                           <img src="/2ae7077bc7abdb19b28ad47b8561f4b6154115ee.png" alt="" className="w-[34px] h-[34px] rounded-full object-cover" />
                         </div>
@@ -423,7 +427,7 @@ export default function TimeCapsuleDetail() {
                           <div className="bg-[#f9f9f9] rounded-tl-[20px] rounded-tr-[4px] rounded-br-[20px] rounded-bl-[4px] px-3 py-3.5">
                             <div className="flex gap-1.5 items-start">
                               <span className="bg-[#ffdfad] text-[#fd752f] text-[12px] px-2 py-0.5 rounded-full flex-shrink-0">쪽지</span>
-                              <p className="text-[#333] text-[16px] leading-[1.4]">오늘 하루도 정말 고생많았어!! 화이팅하자~오늘 하루도 정말 고생많았어!! 화이팅하자~오늘 하루도 정말 고생많았어!! 화이팅하자~</p>
+                              <p className="text-[#333] text-[16px] leading-[1.4]">별일 없어도 안부 남기고 싶었어 오늘도 잘 견뎌줘서 고마워. 무사히 하루 보냈기를 바라.</p>
                             </div>
                           </div>
                           <div className="bg-[#f9f9f9] rounded-tl-[20px] rounded-tr-[4px] rounded-br-[20px] rounded-bl-[4px] px-3 py-3.5">
@@ -436,37 +440,47 @@ export default function TimeCapsuleDetail() {
                             <span className="font-semibold">김흥오(엄마)</span> 2026.2.12 10:00
                           </p>
                         </div>
-                      </div>
+                      </motion.div>
 
                       {/* AI Message */}
-                      <div className="flex gap-2">
-                        <div className="w-[44px] h-[44px] rounded-full border border-[#ff7430] bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
-                          <div className="w-[24px] h-[24px] rounded-full bg-gradient-to-br from-orange-400 to-orange-500" />
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
+                        className="flex gap-2"
+                      >
+                        <div className="w-[44px] h-[44px] rounded-full border-2 border-[#ff7430] bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                          <img src="/iconletter.png" alt="쪽지" className="w-[26px] h-[26px] object-contain" />
                         </div>
                         <div className="flex-1">
                           <div className="bg-[#fff6e7] rounded-tl-[20px] rounded-tr-[4px] rounded-br-[20px] rounded-bl-[4px] px-3 py-3.5">
                             <p className="text-[#333] text-[16px] leading-[1.4]">우와! 이번주 총 20개의 쪽지들이 모였어요 🙌🏻</p>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
 
                       {/* Message 2 */}
-                      <div className="flex gap-2">
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 1.0 }}
+                        className="flex gap-2"
+                      >
                         <div className="w-[46px] h-[46px] rounded-full border border-[#ff7430] bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
-                          <img src="/2ae7077bc7abdb19b28ad47b8561f4b6154115ee.png" alt="" className="w-[34px] h-[34px] rounded-full object-cover" />
+                          <img src="/7fbdbcaf3cf21c7f39c2da9974d9094a8234e755.png" alt="" className="w-[34px] h-[34px] rounded-full object-cover" />
                         </div>
                         <div className="flex-1 flex flex-col gap-4">
                           <div className="bg-[#f9f9f9] rounded-tl-[20px] rounded-tr-[4px] rounded-br-[20px] rounded-bl-[4px] px-3 py-3.5">
                             <div className="flex gap-1.5 items-start">
                               <span className="bg-[#ffdfad] text-[#fd752f] text-[12px] px-2 py-0.5 rounded-full flex-shrink-0">쪽지</span>
-                              <p className="text-[#333] text-[16px] leading-[1.4]">오늘 하루도 정말 고생많았어!! 화이팅하자~오늘 하루도 정말 고생많았어!! 화이팅하자~오늘 하루도 정말 고생많았어!! 화이팅하자~</p>
+                              <p className="text-[#333] text-[16px] leading-[1.4]">네가 나오는 날까지 우리 다 너 기다리고 있으니까, 힘내자!</p>
                             </div>
                           </div>
                           <p className="text-right text-[14px] text-[#898989]">
-                            <span className="font-semibold">김흥오(엄마)</span> 2026.2.12 10:00
+                            <span className="font-semibold">김나래(친구)</span> 2026.2.12 10:00
                           </p>
                         </div>
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
                 </div>
@@ -494,16 +508,8 @@ export default function TimeCapsuleDetail() {
                   </span>
                 </div>
 
-                {/* 보유 포인트 표시 */}
-                <div className="flex items-center justify-end mb-6">
-                  <div className="bg-[#fff8ed] px-4 py-2 rounded-full flex items-center gap-2">
-                    <span className="text-[14px] text-[#5f5f63]">보유 포인트</span>
-                    <span className="text-[16px] font-bold text-[#ff7430]">{userPoints.toLocaleString()}P</span>
-                  </div>
-                </div>
-
                 {/* Gift Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-8">
                   {giftCards.map((gift) => (
                     <div key={gift.id}>
                       <h3 className="text-[18px] font-semibold text-[#5f5f63] tracking-[-0.36px] leading-[1.5] mb-4">
@@ -557,8 +563,8 @@ export default function TimeCapsuleDetail() {
         <DialogContent className="max-w-[320px] rounded-[20px] p-8 text-center">
           <div className="flex flex-col items-center gap-4">
             {/* 오렌지 아이콘 */}
-            <div className="w-16 h-16 rounded-full bg-[#fff3e0] flex items-center justify-center">
-              <img src="/timecapsule-orange.png" alt="orange" className="w-10 h-10" />
+            <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center overflow-visible">
+              <img src="/timecapsule-orange.png" alt="orange" className="w-36 h-auto -mt-4" />
             </div>
 
             <h3 className="text-[20px] font-bold text-[#333] leading-[1.4]">
@@ -622,7 +628,7 @@ export default function TimeCapsuleDetail() {
                 {/* 메시지 입력 */}
                 <div className="mb-6">
                   <label className="text-[14px] font-medium text-[#333] mb-1 block">함께 마음을 전할 메시지를 입력해주세요</label>
-                  <p className="text-[12px] text-[#ff7430] mb-2">오렌지하나가 출소후 큰힘이 됩니다.</p>
+                  <p className="text-[12px] text-[#ff7430] mb-2">스타벅스 커피쿠폰 하나가 출소후 큰 힘이됩니다.</p>
                   <textarea
                     value={giftMessage}
                     onChange={(e) => setGiftMessage(e.target.value)}
@@ -675,7 +681,7 @@ export default function TimeCapsuleDetail() {
                         : 'bg-[#ccc] text-white cursor-not-allowed'
                     }`}
                   >
-                    오렌지 보내기
+                    선물하기
                   </button>
                 </div>
               </div>

@@ -595,15 +595,15 @@ export default function TimeCapsuleEdit() {
               </Select>
             </div>
 
-            {/* 전화번호 */}
+            {/* 전화번호 또는 이메일 */}
             <div>
               <Label htmlFor="editPhone" className="text-sm font-medium text-foreground mb-1.5 block">
-                전화번호 <span className="text-destructive">*</span>
+                전화번호 또는 이메일 <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="editPhone"
-                type="tel"
-                placeholder="010-0000-0000"
+                type="text"
+                placeholder="010-0000-0000 또는 이메일주소"
                 value={editParticipantPhone}
                 onChange={(e) => setEditParticipantPhone(e.target.value)}
                 className="w-full"
@@ -669,15 +669,15 @@ export default function TimeCapsuleEdit() {
               </Select>
             </div>
 
-            {/* 전화번호 */}
+            {/* 전화번호 또는 이메일 */}
             <div>
               <Label htmlFor="newPhone" className="text-sm font-medium text-foreground mb-1.5 block">
-                전화번호 <span className="text-destructive">*</span>
+                전화번호 또는 이메일 <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="newPhone"
-                type="tel"
-                placeholder="010-0000-0000"
+                type="text"
+                placeholder="010-0000-0000 또는 이메일주소"
                 value={newParticipantPhone}
                 onChange={(e) => setNewParticipantPhone(e.target.value)}
                 className="w-full"
