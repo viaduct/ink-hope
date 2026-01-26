@@ -99,11 +99,6 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                           onClick={() => navigate(`/time-capsule/${capsule.id}`)}
                           className="relative w-[290px] bg-white border border-[#f8f8f8] rounded-[20px] shadow-[0px_1px_40px_0px_rgba(0,0,0,0.09)] px-5 py-[30px] cursor-pointer transition-shadow"
                         >
-                          {/* 예시카드 배지 */}
-                          <span className="absolute top-3 right-3 text-[10px] text-[#666] bg-[#f0f0f0] px-1.5 pt-0.5 pb-[5px] rounded">
-                            예시카드
-                          </span>
-
                           {/* D-Day & Message */}
                           <div className="flex gap-3 items-start">
                             <div className="bg-[#ff7430] rounded-[4px] px-2 py-1.5 flex flex-col items-center justify-center flex-shrink-0">
@@ -112,16 +107,16 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                                 D-{capsule.collectingDays}
                               </span>
                             </div>
-                            <p className="text-[#3d3d3d] text-[13px] font-medium leading-[1.5] tracking-[-0.26px] flex-1">
+                            <p className="text-[#3d3d3d] text-[14px] font-medium leading-[1.5] tracking-[-0.28px] flex-1">
                               곧 마음이 모이는 날이에요.<br />
                               지금부터 천천히 적어도 괜찮아요
                             </p>
                           </div>
 
                           {/* Capsule Image */}
-                          <div className="relative w-[196px] h-[207px] mx-auto my-2">
+                          <div className="relative w-[167px] h-[207px] mx-auto my-2">
                             <img
-                              src="/timecapsule-orange.png"
+                              src="/timecapsule-orange-new.png"
                               alt="타임캡슐"
                               className="w-full h-full object-contain"
                             />
@@ -205,7 +200,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
                   {/* Empty Capsule Image */}
                   <div className="relative w-[196px] h-[207px] mx-auto my-2 opacity-50">
                     <img
-                      src="/timecapsule-orange.png"
+                      src="/timecapsule-orange-new.png"
                       alt="타임캡슐"
                       className="w-full h-full object-contain grayscale"
                     />
@@ -231,7 +226,7 @@ export function TimeCapsuleContent({ onClose }: TimeCapsuleContentProps) {
               + 새 타임캡슐 생성하기
             </Button>
             <p className="text-[#808080] text-[15px] text-center leading-[1.7]">
-              의미 있는 그 날을 위해, 지금부터 타임캡슐을 만들어 둘 수 있어요.
+              예시모드입니다. 내 타임캡슐을 만들면 그대로 시작할 수 있어요.
             </p>
           </section>
 
