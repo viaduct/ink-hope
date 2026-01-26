@@ -71,6 +71,7 @@ export default function TimeCapsuleCreate() {
 
   // 기본 상태
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [roomTitle, setRoomTitle] = useState("");
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedDay, setSelectedDay] = useState<string>("");
@@ -311,10 +312,31 @@ export default function TimeCapsuleCreate() {
               </button>
             </section>
 
-            {/* 4. 참여자 초대 */}
+            {/* 4. 타임캡슐 방 제목 */}
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">4</span>
+                <Label className="text-base font-semibold text-foreground">
+                  타임캡슐 방 제목
+                </Label>
+              </div>
+
+              <Input
+                type="text"
+                placeholder="예: 서은우의 출소를 기다리며 우리끼리 몰래 준비중🤫"
+                value={roomTitle}
+                onChange={(e) => setRoomTitle(e.target.value)}
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground mt-2">
+                참여자들에게 보여질 타임캡슐의 제목입니다.
+              </p>
+            </section>
+
+            {/* 5. 참여자 초대 */}
+            <section>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">5</span>
                 <Label className="text-base font-semibold text-foreground">
                   참여자 초대
                 </Label>
@@ -368,10 +390,10 @@ export default function TimeCapsuleCreate() {
               </div>
             </section>
 
-            {/* 5. 쪽지 작성 요일 선택 (선택) */}
+            {/* 6. 쪽지 작성 요일 선택 (선택) */}
             <section>
               <div className="flex items-center gap-2 mb-2">
-                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">5</span>
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">6</span>
                 <Label className="text-base font-semibold text-foreground">
                   쪽지 작성 요일 선택
                 </Label>

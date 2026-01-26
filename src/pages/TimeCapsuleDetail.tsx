@@ -61,7 +61,7 @@ const mockCapsuleData: Record<string, {
   },
 };
 
-type TabType = "write" | "status" | "gift" | "prepare";
+type TabType = "timecapsule" | "write" | "status" | "gift";
 
 // 선물 카드 데이터
 interface GiftCard {
@@ -69,9 +69,12 @@ interface GiftCard {
   category: string;
   name: string;
   price: number;
+  title: string;
   description: string;
-  exampleMessage: string;
-  image?: string;
+  image: string;
+  bgColor: string;
+  titleColor: string;
+  borderColor: string;
 }
 
 const giftCards: GiftCard[] = [
@@ -80,18 +83,24 @@ const giftCards: GiftCard[] = [
     category: "커피 한잔 하자",
     name: "스타벅스 커피쿠폰",
     price: 5500,
-    description: "추운 겨울날 커피한잔하자",
-    exampleMessage: "날씨도 추운데, 매일 같이 가던 카페에서\n커피한잔하기 딱 좋은날이네\n조금이나마 도움이되었으면 좋겠어",
-    image: "/present-coffee-thumbnail.png",
+    title: "추운 겨울날 커피한잔하자",
+    description: "날씨도 추운데, 매일 같이 가던 카페에서\n커피 한 잔하기 딱 좋은날이네. 생활자금에 도움이 되었으면 좋겠어",
+    image: "/gift-coffee.png",
+    bgColor: "#dcf0c5",
+    titleColor: "#028262",
+    borderColor: "#eaeaea",
   },
   {
     id: "orange",
     category: "오렌지 나무",
     name: "오렌지",
     price: 10000,
-    description: "오늘은 닿지 않아도, 그날을 위해 남겨두는 마음",
-    exampleMessage: "지금 맺어주는 오렌지는 출소 후 새로운 하루를 시작하는 데 쓰일 수 있는 준비가 됩니다.",
-    image: "/present-orange-thumbnail.png",
+    title: "그날을 위해 남겨두는 마음",
+    description: "지금 맺어주는 오렌지는 출소 후 투오렌지에서\n사용할 수 있는 형태로 직접 전달됩니다.",
+    image: "/gift-orange.png",
+    bgColor: "#ffeccd",
+    titleColor: "#ff7430",
+    borderColor: "#ff7430",
   },
 ];
 
@@ -139,10 +148,10 @@ export default function TimeCapsuleDetail() {
   const capsule = mockCapsuleData[id || "1"];
 
   const tabs: { id: TabType; label: string }[] = [
+    { id: "timecapsule", label: "타임캡슐" },
     { id: "write", label: "쪽지 작성하기" },
     { id: "status", label: "타임캡슐 현황" },
     { id: "gift", label: "선물하기" },
-    { id: "prepare", label: "준비하기" },
   ];
 
   // 무한 롤링을 위해 메시지 복제
@@ -257,7 +266,13 @@ export default function TimeCapsuleDetail() {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (tab.id === "timecapsule") {
+                    navigate("/time-capsule");
+                  } else {
+                    setActiveTab(tab.id);
+                  }
+                }}
                 className={`flex-1 py-2.5 rounded-full text-[14px] md:text-[16px] transition-all ${
                   activeTab === tab.id
                     ? 'bg-[#ff7512] text-white font-semibold'
@@ -458,47 +473,51 @@ export default function TimeCapsuleDetail() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="w-full max-w-[896px]"
+                className="w-full max-w-[513px] flex flex-col gap-10"
               >
-                {/* Title */}
-                <h2 className="text-[20px] font-semibold text-black tracking-[-0.4px] leading-[1.2] mb-4">
-                  이런 선물 해보는건 어때요?
-                </h2>
-
-                {/* Notice */}
-                <div className="flex items-center gap-2 mb-8">
-                  <span className="text-[#fd752f] text-[14px] font-bold tracking-[-0.28px]">필독</span>
-                  <span className="text-[#4b4b4b] text-[13px] tracking-[-0.26px]">
-                    투오렌지는 선물을 사용 가능한 형태로 전환해 필요한 순간에 닿을 수 있도록 전달합니다.
-                  </span>
+                {/* Title & Notice Section */}
+                <div className="flex flex-col gap-3">
+                  <h2 className="text-[16px] font-semibold text-black tracking-[-0.32px] leading-[1.2]">
+                    이런 선물 해보는건 어때요?
+                  </h2>
+                  <div className="bg-[#fff0d8] rounded-[8px] px-3 py-2">
+                    <div className="flex gap-4 items-center">
+                      <span className="text-[#fd752f] text-[14px] font-bold tracking-[-0.28px]">필독</span>
+                      <span className="text-[#4b4b4b] text-[13px] tracking-[-0.26px] leading-[1.5]">
+                        투오렌지는 선물을 사용 가능한 형태로 전환해 필요한 순간에 닿을 수 있도록 전달합니다.
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Gift Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-8">
+                {/* Gift Cards */}
+                <div className="flex flex-col gap-[14px]">
                   {giftCards.map((gift) => (
-                    <div key={gift.id}>
-                      <h3 className="text-[18px] font-semibold text-[#5f5f63] tracking-[-0.36px] leading-[1.5] mb-4">
+                    <div key={gift.id} className="flex flex-col gap-1.5">
+                      <h3 className="text-[16px] font-semibold text-[#5f5f63] tracking-[-0.32px] leading-[1.5]">
                         {gift.category}
                       </h3>
                       <div
                         onClick={() => handleSelectGift(gift)}
-                        className={`border ${
-                          selectedGift?.id === gift.id ? 'border-[#ff7430]' : 'border-[#eaeaea]'
-                        } rounded-[8px] p-5 flex gap-[18px] items-center cursor-pointer hover:border-[#fd752f] hover:shadow-md transition-all`}
+                        className="border rounded-[8px] p-5 flex gap-[18px] items-center cursor-pointer shadow-[0px_0px_8px_0px_rgba(0,0,0,0.15)] hover:shadow-[0px_0px_12px_0px_rgba(0,0,0,0.2)] transition-all"
+                        style={{ borderColor: gift.borderColor }}
                       >
-                        <div className="w-[117px] h-[117px] bg-[#fff8ed] rounded-[9px] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                          {gift.image ? (
-                            <img src={gift.image} alt={gift.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <span className="text-[#5f5f63] text-[13px] tracking-[-0.26px] text-center">{gift.name}</span>
-                          )}
+                        <div
+                          className="w-[117px] h-[117px] rounded-[9px] flex items-center justify-center flex-shrink-0 overflow-hidden"
+                          style={{ backgroundColor: gift.bgColor }}
+                        >
+                          <img src={gift.image} alt={gift.name} className="w-[76px] h-[76px] object-contain" />
                         </div>
-                        <div className="flex-1">
-                          <p className="text-[#c2c2c2] text-[13px] tracking-[-0.26px] leading-[1.5] mb-1.5">{gift.description}</p>
-                          <p className="text-[#5f5f63] text-[13px] tracking-[-0.26px] leading-[1.5] whitespace-pre-line">
-                            {gift.exampleMessage}
+                        <div className="flex-1 flex flex-col gap-1.5">
+                          <p
+                            className="text-[13px] tracking-[-0.26px] leading-[1.5]"
+                            style={{ color: gift.titleColor }}
+                          >
+                            {gift.title}
                           </p>
-                          <p className="text-[#ff7430] text-[14px] font-semibold mt-2">{gift.price.toLocaleString()}P</p>
+                          <p className="text-[#5f5f63] text-[13px] tracking-[-0.26px] leading-[1.5] whitespace-pre-line">
+                            {gift.description}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -507,17 +526,6 @@ export default function TimeCapsuleDetail() {
               </motion.div>
             )}
 
-            {activeTab === 'prepare' && (
-              <motion.div
-                key="prepare"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-center text-[#808080] text-[16px] py-20"
-              >
-                준비하기 기능 준비중입니다.
-              </motion.div>
-            )}
           </AnimatePresence>
         </div>
 

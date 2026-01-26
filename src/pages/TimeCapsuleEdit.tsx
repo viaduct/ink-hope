@@ -78,6 +78,7 @@ const mockCapsuleData: Record<string, {
   recipientId: string;
   recipientName: string;
   recipientRelation: string;
+  roomTitle: string;
   year: string;
   month: string;
   day: string;
@@ -89,6 +90,7 @@ const mockCapsuleData: Record<string, {
     recipientId: "1",
     recipientName: "서은우",
     recipientRelation: "자녀",
+    roomTitle: "서은우의 출소를 기다리며 우리끼리 몰래 준비중🤫",
     year: "2026",
     month: "12",
     day: "23",
@@ -112,6 +114,7 @@ export default function TimeCapsuleEdit() {
   const [selectedType, setSelectedType] = useState<string | null>(existingData?.type || null);
   const [recipientName, setRecipientName] = useState(existingData?.recipientName || "");
   const [recipientRelation, setRecipientRelation] = useState(existingData?.recipientRelation || "");
+  const [roomTitle, setRoomTitle] = useState(existingData?.roomTitle || "");
 
   // 기타 수정 가능한 상태
   const [selectedYear, setSelectedYear] = useState<string>(existingData?.year || "");
@@ -432,10 +435,32 @@ export default function TimeCapsuleEdit() {
               </div>
             </section>
 
-            {/* 4. 참여자 관리 - 수정 가능 */}
+            {/* 4. 타임캡슐 방 제목 - 수정 가능 */}
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">4</span>
+                <Label className="text-base font-semibold text-foreground">
+                  타임캡슐 방 제목
+                </Label>
+                <span className="text-xs text-primary ml-2">(수정 가능)</span>
+              </div>
+
+              <Input
+                type="text"
+                placeholder="예: 서은우의 출소를 기다리며 우리끼리 몰래 준비중🤫"
+                value={roomTitle}
+                onChange={(e) => setRoomTitle(e.target.value)}
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground mt-2">
+                참여자들에게 보여질 타임캡슐의 제목입니다.
+              </p>
+            </section>
+
+            {/* 5. 참여자 관리 - 수정 가능 */}
+            <section>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">5</span>
                 <Label className="text-base font-semibold text-foreground">
                   참여자 관리
                 </Label>
@@ -492,10 +517,10 @@ export default function TimeCapsuleEdit() {
               </button>
             </section>
 
-            {/* 5. 쪽지 작성 요일 선택 - 수정 가능 */}
+            {/* 6. 쪽지 작성 요일 선택 - 수정 가능 */}
             <section>
               <div className="flex items-center gap-2 mb-2">
-                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">5</span>
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">6</span>
                 <Label className="text-base font-semibold text-foreground">
                   쪽지 작성 요일 선택
                 </Label>
