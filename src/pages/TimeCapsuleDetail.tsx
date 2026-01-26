@@ -43,6 +43,7 @@ const mockCapsuleData: Record<string, {
   id: number;
   recipientName: string;
   eventLabel: string;
+  roomPurpose: string;
   targetDate: string;
   daysLeft: number;
   letterCount: number;
@@ -52,6 +53,7 @@ const mockCapsuleData: Record<string, {
     id: 1,
     recipientName: "서은우",
     eventLabel: "출소 축하",
+    roomPurpose: "서은우의 출소를 기다리며 우리끼리 몰래 준비중🤫",
     targetDate: "2026.12.23",
     daysLeft: 180,
     letterCount: 9,
@@ -140,6 +142,7 @@ export default function TimeCapsuleDetail() {
     { id: "write", label: "쪽지 작성하기" },
     { id: "status", label: "타임캡슐 현황" },
     { id: "gift", label: "선물하기" },
+    { id: "prepare", label: "준비하기" },
   ];
 
   // 무한 롤링을 위해 메시지 복제
@@ -244,10 +247,13 @@ export default function TimeCapsuleDetail() {
               <span className="font-bold">{capsule.recipientName}</span>
               <span className="font-normal text-[22px] tracking-[-0.44px]">를 위한 타임캡슐</span>
             </h1>
+            <p className="text-[#6a6a6a] text-[17px] tracking-[-0.34px] leading-[1.5]">
+              {capsule.roomPurpose}
+            </p>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-8 w-full max-w-[491px]">
+          <div className="flex gap-3 mb-8 w-full max-w-[513px]">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
