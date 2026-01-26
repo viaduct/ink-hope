@@ -34,7 +34,6 @@ const foldersTop = [
   { id: "inbox" as FolderType, label: "받은 편지함", icon: Mail },
   { id: "sent" as FolderType, label: "보낸 편지함", icon: Send },
   { id: "draft" as FolderType, label: "임시보관함", icon: FileText },
-  { id: "gallery" as FolderType, label: "갤러리", icon: Image },
   { id: "schedule" as FolderType, label: "스케줄 관리", icon: CalendarDays },
 ];
 
@@ -165,14 +164,12 @@ export function Sidebar({
             
             {/* 통계 카드 - 가로 배치 */}
             <div className="flex gap-2 w-full">
-              <button 
-                onClick={() => onFolderChange("inbox")}
+              <button
+                onClick={() => onFolderChange("gallery")}
                 className="flex-1 bg-muted/50 rounded-xl py-2.5 px-2 hover:bg-muted transition-colors"
               >
-                <svg viewBox="0 0 24 24" className="w-5 h-5 mx-auto mb-1 fill-primary">
-                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                </svg>
-                <p className="text-[10px] text-muted-foreground">새로운편지</p>
+                <Image className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <p className="text-[10px] text-muted-foreground">갤러리</p>
               </button>
               <button 
                 onClick={onHandwrittenUpload}

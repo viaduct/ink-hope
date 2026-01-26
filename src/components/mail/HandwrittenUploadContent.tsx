@@ -418,19 +418,9 @@ export function HandwrittenUploadContent({ onClose, onComposeWithText, onSaveToA
             <div className="text-base text-muted-foreground leading-relaxed mb-6">
               <p>
                 종이에 적어 받은 손편지를 휴대폰으로 사진 찍어 올리면,<br />
-                AI가 원본이미지 글씨를 인식해 글자로 옮겨드립니다.<br />
-                편지는 사진과 텍스트로 함께 <span className="text-primary font-medium">"손편지보관함"</span>으로 저장되어 언제든 다시 꺼내볼 수 있어요.
+                AI가 원본이미지 글씨를 인식해 글자로 옮겨드립니다.
               </p>
             </div>
-
-            {/* 손편지 보관함 버튼 - 오렌지색 */}
-            <Button
-              onClick={onOpenArchive}
-              className="gap-2 bg-orange-500 hover:bg-orange-600 text-white"
-            >
-              <Archive className="w-4 h-4" />
-              손편지 보관함
-            </Button>
           </div>
 
           {/* Step 1: 누구로부터 받은 편지인가요? */}
