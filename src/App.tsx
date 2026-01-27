@@ -13,8 +13,8 @@ import TimeCapsuleDetail from "./pages/TimeCapsuleDetail";
 import TimeCapsuleCreate from "./pages/TimeCapsuleCreate";
 import TimeCapsuleEdit from "./pages/TimeCapsuleEdit";
 import TimeCapsuleWrite from "./pages/TimeCapsuleWrite";
+import TimeCapsuleWriteB from "./pages/TimeCapsuleWriteB";
 import AboutTimeCapsule from "./pages/AboutTimeCapsule";
-import AboutOrangeTree from "./pages/AboutOrangeTree";
 import MyOrangeTree from "./pages/MyOrangeTree";
 import ReviewWrite from "./pages/ReviewWrite";
 import MyPage from "./pages/MyPage";
@@ -89,6 +89,14 @@ const App = () => (
                 }
               />
               <Route
+                path="/time-capsule/:id/write-b"
+                element={
+                  <ProtectedRoute>
+                    <TimeCapsuleWriteB />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/time-capsule/:id"
                 element={
                   <ProtectedRoute>
@@ -101,14 +109,6 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <AboutTimeCapsule />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/about/orange-tree"
-                element={
-                  <ProtectedRoute>
-                    <AboutOrangeTree />
                   </ProtectedRoute>
                 }
               />
