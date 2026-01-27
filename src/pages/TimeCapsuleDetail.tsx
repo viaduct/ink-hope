@@ -362,7 +362,7 @@ export default function TimeCapsuleDetail() {
                 {/* 타임캡슐 이미지 + 통계 */}
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-[214px] h-[248px]">
-                    <img src="/timecapsule-status.png" alt="타임캡슐" className="w-full h-full object-contain" />
+                    <img src="/timecapsule-status2.png" alt="타임캡슐" className="w-full h-full object-contain" />
                   </div>
                   <div className="flex items-center gap-[25px] text-[16px] font-medium text-black tracking-[-0.32px]">
                     <span>쪽지: {capsule.letterCount}개</span>

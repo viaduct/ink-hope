@@ -431,17 +431,19 @@ export function MailContent({
                 >
                   읽지않음 <span className="ml-1">{unreadCount}</span>
                 </button>
-                <button
-                  onClick={() => setActiveTab("handwritten")}
-                  className={cn(
-                    "text-sm font-medium transition-colors pb-2 -mb-3 border-b-2",
-                    activeTab === "handwritten"
-                      ? "text-primary border-primary"
-                      : "text-muted-foreground border-transparent hover:text-foreground"
-                  )}
-                >
-                  손편지 <span className="ml-1">{handwrittenCount}</span>
-                </button>
+                {activeFolder === "inbox" && (
+                  <button
+                    onClick={() => setActiveTab("handwritten")}
+                    className={cn(
+                      "text-sm font-medium transition-colors pb-2 -mb-3 border-b-2",
+                      activeTab === "handwritten"
+                        ? "text-primary border-primary"
+                        : "text-muted-foreground border-transparent hover:text-foreground"
+                    )}
+                  >
+                    손편지 <span className="ml-1">{handwrittenCount}</span>
+                  </button>
+                )}
               </div>
 
               {/* Mail List */}
