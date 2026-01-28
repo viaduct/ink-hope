@@ -1,4 +1,7 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { Cloud } from "lucide-react";
+import { OrangeTreeStep1 } from "./OrangeTreeStep1";
 
 interface OrangeTreeContentProps {
   onClose: () => void;
@@ -6,6 +9,7 @@ interface OrangeTreeContentProps {
 }
 
 export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
+  const [currentStep, setCurrentStep] = useState<"intro" | "step1">("intro");
   // 애니메이션 설정
   const animationDelay = 1;
   const animationDuration = 1.5;
@@ -16,17 +20,32 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
   // 앞면 열린 상태: 좌측은 뒷면 좌측에 맞닿고, 우측은 원근감으로 좁아짐
   const openPath = "M151 269 L0 301 L0 34 L151 0 Z";
 
+  // Step1 화면 렌더링
+  if (currentStep === "step1") {
+    return (
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        {/* Header - 기존과 동일 */}
+        <header className="h-14 border-b border-border/40 bg-white flex items-center justify-between px-4 shrink-0">
+          <h1 className="text-lg font-bold text-foreground">오렌지 나무</h1>
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Cloud className="w-4 h-4" />
+            <span>-3°</span>
+          </div>
+        </header>
+        <OrangeTreeStep1 onBack={() => setCurrentStep("intro")} />
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#fffdf6]">
       {/* Header - 다른 화면과 동일한 스타일 */}
       <header className="h-14 border-b border-border/40 bg-white flex items-center justify-between px-4">
         <h1 className="text-lg font-bold text-foreground">오렌지 나무</h1>
-        <button
-          onClick={onClose}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          편지함
-        </button>
+        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+          <Cloud className="w-4 h-4" />
+          <span>-3°</span>
+        </div>
       </header>
 
       {/* Content */}
@@ -122,7 +141,8 @@ export function OrangeTreeContent({ onClose }: OrangeTreeContentProps) {
 
         {/* 입장하기 버튼 */}
         <button
-          className="border border-[#d7d3c2] px-[30px] py-[9px] text-[18px] text-[#875e42] tracking-[-0.36px] leading-[1.8] font-semibold mt-auto mb-10"
+          onClick={() => setCurrentStep("step1")}
+          className="border border-[#d7d3c2] px-[30px] py-[9px] text-[18px] text-[#875e42] tracking-[-0.36px] leading-[1.8] font-semibold mt-auto mb-10 hover:bg-[#f5f0e5] transition-colors"
           style={{ fontFamily: "'Noto Serif KR', serif" }}
         >
           + 오렌지나무 입장하기
