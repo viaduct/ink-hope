@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { UserPlus } from "lucide-react";
+import { UserPlus, ChevronRight } from "lucide-react";
 
 interface OrangeTreeStep1Props {
   recipientName?: string;
@@ -146,6 +146,16 @@ export function OrangeTreeStep1({
                 className="absolute left-0 w-full h-[126%] object-cover block"
                 style={{ top: '-26%' }}
               />
+              {/* 다음 버튼 - 벽면 우측 끝 */}
+              <button
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-colors z-20"
+                onClick={() => {
+                  // TODO: 다음 화면으로 이동
+                  console.log("다음 화면");
+                }}
+              >
+                <ChevronRight className="w-6 h-6 text-[#875e42]" />
+              </button>
             </div>
 
             {/* 바닥 이미지 컨테이너 - 새싹 포함 */}
